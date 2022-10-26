@@ -1,0 +1,43 @@
+#layout {
+	display: flex;
+	column-gap: 10px;
+	height: 30px;
+	font-size: 1rem;
+}
+
+.button {
+	width: 30px;
+	height: 30px;
+	border: solid 1px rgb(200, 200, 200);
+	background: white;
+	color: black;
+	font-size: 1.1rem;
+	line-height: 0;
+}
+
+.button-previous {
+	padding: 5px 2px 5px 9px;
+}
+
+.button-next {
+	padding: 5px 5px 5px 5px;
+}
+
+.button:enabled:hover {
+	border: solid 1px black;
+	background: black;
+	color: white;
+	cursor: pointer;
+}
+
+.pageNumber {
+	border: solid 1px rgb(200, 200, 200);
+	padding: 4px 5px 0 5px;
+	background: white;
+}
+
+.pageNumber:hover {
+	background: black;
+	color: white;
+	cursor: pointer;
+}

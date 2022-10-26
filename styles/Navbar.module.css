@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700&display=swap');
+
+.nav-layout {
+	height: 60px;
+	background: var(--background);
+	color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 7px 0 7px;
+}
+
+.mobile-search {
+	height: 60px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+}
+
+.nav-left {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.nav-left .nav-actions-item {
+	padding: 0 7px 0 0;
+}
+
+.navBrand {
+	float: left;
+}
+
+.nav-item-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.nav-item {
+	margin-right: 100px;
+}
+
+.nav-right {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.nav-actions-item {
+	font-size: 1.7rem;
+	padding: 0 10px 0 10px;
+	line-height: 0;
+	color: black;
+}
+
+.nav-actions-item:last-child {
+	padding: 0 5px 0 10px;
+}
+
+#search-bar {
+	margin-right: 30px;
+}
+
+#cart-icon {
+	display: flex;
+	flex-direction: row;
+}
+
+#cart-icon:hover {
+	cursor: pointer;
+}
+
+#cart-size-icon {
+	margin-left: 8px;
+	align-self: center;
+	background: orangered;
+	padding: 1px 5px 3px 5px;
+	border-radius: 4px;
+	font-weight: bold;
+}
+
+.cart-size {
+	position: absolute;
+	top: 12px;
+	right: 10px;
+	height: 20px;
+	width: fit-content;
+	display: flex;
+	align-items: center;
+	font-size: 0.8rem;
+	background: orangered;
+	padding: 1px 5px 3px 5px;
+	border-radius: 4px;
+	font-weight: 900;
+	color: white;
+}
+
+#login-icon:hover {
+	cursor: pointer;
+}

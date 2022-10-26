@@ -1,0 +1,45 @@
+.option {
+	padding: 0 0 0 5px;
+	border-bottom: solid 1px lightgray;
+	font-size: 1rem;
+	height: 50px;
+	font-weight: 700;
+	z-index: 99999999;
+	background: white;
+	color: black;
+	text-transform: uppercase;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.option-container a {
+	display: flex;
+	height: 100%;
+}
+
+.expandable {
+	max-height: 50px;
+	overflow-y: hidden;
+}
+
+.expandable.expanded {
+	max-height: 700px;
+	transition: max-height 0.6s ease-out;
+}
+
+.nested-option {
+	padding: 15px 0 15px 25px;
+	border-bottom: solid 1px lightgray;
+	height: 50px;
+	font-size: 1rem;
+	font-weight: 700;
+	z-index: 99999999;
+	color: black;
+	text-transform: lowercase;
+}
+
+.chevron {
+	float: right;
+	margin-right: 15px;
+}

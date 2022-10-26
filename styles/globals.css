@@ -1,26 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+
+:root {
+	--primary-color: rgb(0, 189, 223);
+	--secondary-color: rgb(255, 69, 0);
+	--background: rgb(255, 255, 255);
+	--gray-color: rgb(245, 245, 245);
+	--input-focus-color: rgb(232, 232, 232);
+}
+
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font-family: Lato, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+		sans-serif;
+}
+
+button,
+input[type='submit'] {
+	width: 100%;
+	height: 45px;
+	border: none;
+	padding: 13px;
+	transform: scale(1, 0.95);
+	background: black;
+	color: white;
+	font-family: Lato, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+		sans-serif;
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	text-align: center;
+	line-height: 1px;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+	color: inherit;
+	text-decoration: none;
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+	html {
+		color-scheme: dark;
+	}
+	body {
+		color: white;
+		background: black;
+	}
+}
+
+#__next {
+	width: 100%;
+	height: 100%;
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+	height: 45px;
+	border: none;
+	padding-left: 20px;
+	padding-right: 20px;
+	background: var(--gray-color);
+	font-size: 0.95rem;
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus {
+	outline: none;
+	background: var(--input-focus-color);
+}
+
+label {
+	padding-left: 10px;
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-transform: uppercase;
 }

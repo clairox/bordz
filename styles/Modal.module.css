@@ -1,0 +1,22 @@
+.modal-container {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	padding: 100px;
+	transform: translate(-50%, -50%);
+	z-index: 888888;
+	background: white;
+	display: flex;
+	justify-content: center;
+}
+
+#overlayContainer {
+	display: flex;
+	justify-content: center;
+}
+
+.no-scroll {
+	margin: 0;
+	height: 100%;
+	overflow: hidden;
+}

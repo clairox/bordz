@@ -1,0 +1,11 @@
+.loginForm {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	row-gap: 25px;
+	width: 300px;
+}
+
+#loginHeader {
+	margin: 0;
+}

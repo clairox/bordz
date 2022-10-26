@@ -1,0 +1,12 @@
+.gallery-container {
+	margin-bottom: 20px;
+}
+
+#gallery-slider {
+	overflow-x: scroll;
+	white-space: nowrap;
+}
+
+.gallery-image {
+	display: inline-block;
+}
