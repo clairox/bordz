@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				where: { id: parseInt(pid) },
 			})
 			.then(product => {
+				console.log(product);
 				if (product) {
 					return res.status(200).json({ ...product, price: parseInt(product.price.toString()) });
 				}
