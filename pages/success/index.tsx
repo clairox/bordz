@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useCart } from '../../context/cartContext';
+import Head from 'next/head';
 
 const SuccessPage: React.FunctionComponent = () => {
 	const { orderId } = useRouter().query;
@@ -21,12 +22,14 @@ const SuccessPage: React.FunctionComponent = () => {
 	}, [orderId, creatingOrder, clearCart, cartState]);
 
 	return (
-		<div>
+		<div style={{ width: '100%' }}>
+			<Head>
+				<title>Success | Bordz</title>
+			</Head>
 			<h2>Your order has been placed!</h2>
 			<p>
 				Your order number is <span>#{orderId}</span>
 			</p>
-			<ul></ul>
 		</div>
 	);
 };

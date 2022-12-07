@@ -9,9 +9,10 @@ type AuthUser = {
 
 const AuthContext = createContext<{
 	user?: AuthUser;
-	login?: (data: LoginData) => void;
-	register?: (data: RegisterData) => void;
+	login?: (data: LoginData) => Promise<boolean>;
+	register?: (data: RegisterData) => Promise<boolean>;
 	logout?: () => void;
+	isLoading?: boolean;
 	emailExists?: (email: string) => boolean;
 }>({});
 
@@ -30,7 +31,7 @@ export const useAuth = () => {
 
 const useProvideAuth = () => {
 	const [user, setUser] = useState<AuthUser | null>();
-	const [authState, setAuthState] = useState<LoadState>('idle');
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const reqConfig = { withCredentials: true };
 
@@ -65,90 +66,110 @@ const useProvideAuth = () => {
 		);
 	};
 
-	const login = async (data: LoginData) => {
-		console.log(data);
-		if (authState === 'idle' || authState === 'failed') {
-			setAuthState('loading');
-			await axios
-				.post(
-					'/api/session/new',
-					{
-						email: data.email,
-						password: data.password,
-					},
-					reqConfig
-				)
-				.then(async res => {
-					const loggedInUser = res.data;
+	const login = async (data: LoginData): Promise<boolean> => {
+		setIsLoading(true);
+		return await axios
+			.post(
+				'/api/session/new',
+				{
+					email: data.email,
+					password: data.password,
+				},
+				reqConfig
+			)
+			.then(async res => {
+				const loggedInUser = res.data;
 
-					await mergeLocalCartWithDB(loggedInUser.uid);
-					setUser(loggedInUser);
-					setAuthState('succeeded');
-				})
-				.catch(() => {});
-		}
+				await mergeLocalCartWithDB(loggedInUser.uid);
+				setUser(loggedInUser);
+				setIsLoading(false);
+				return loggedInUser;
+			})
+			.catch(err => {
+				setIsLoading(false);
+				switch (err.response.status) {
+					case 404:
+						throw {
+							message: 'Incorrect email address',
+						};
+					case 401: {
+						throw {
+							message: 'Incorrect password',
+						};
+					}
+					default:
+						throw null;
+				}
+			});
 	};
 
-	const register = async (data: RegisterData) => {
-		if (authState === 'idle' || authState === 'failed') {
-			setAuthState('loading');
-			const newUserData = {
-				firstName: data.firstName,
-				lastName: data.lastName,
-				email: data.email,
-				password: data.password,
-			};
-			await axios.post('/api/users', newUserData);
+	const register = async (data: RegisterData): Promise<boolean> => {
+		setIsLoading(true);
+		const newUserData = {
+			firstName: data.firstName,
+			lastName: data.lastName,
+			email: data.email,
+			password: data.password,
+		};
+		await axios
+			.post('/api/users', newUserData)
+			.then(() => {})
+			.catch(err => {
+				setIsLoading(false);
+				switch (err.response.status) {
+					case 409:
+						throw {
+							message: 'An account with that email already exists',
+						};
+					default:
+						throw null;
+				}
+			});
 
-			await axios
-				.post(
-					'/api/session/new',
-					{
-						email: data.email,
-						password: data.password,
-					},
-					reqConfig
-				)
-				.then(async res => {
-					const registeredUser = res.data;
+		return await axios
+			.post(
+				'/api/session/new',
+				{
+					email: data.email,
+					password: data.password,
+				},
+				reqConfig
+			)
+			.then(async res => {
+				const registeredUser = res.data;
 
-					await mergeLocalCartWithDB(registeredUser.uid);
-					setUser(registeredUser);
-					setAuthState('succeeded');
-				})
-				.catch(() => {
-					return null;
-				});
-		}
+				await mergeLocalCartWithDB(registeredUser.uid);
+				setUser(registeredUser);
+				setIsLoading(false);
+				return registeredUser;
+			})
+			.catch(err => {
+				setIsLoading(false);
+				throw err;
+			});
 	};
-	//TODO: fix cartSize updating before page refresh
+
 	const logout = async () => {
 		await axios.delete('/api/session', reqConfig).then(res => {
 			setUser(res.data);
 			localStorage.removeItem('cart-data');
-			setAuthState('idle');
+			setIsLoading(false);
 		});
 	};
 
 	useEffect(() => {
-		if (authState === 'idle') {
-			setAuthState('loading');
-			axios.get('/api/session', { withCredentials: true }).then(res => {
-				setUser(res.data);
-				if (res.data) {
-					setAuthState('succeeded');
-				} else {
-					setAuthState('failed');
-				}
-			});
-		}
-	}, [authState]);
+		setIsLoading(true);
+		axios.get('/api/session', { withCredentials: true }).then(res => {
+			setUser(res.data);
+			setIsLoading(false);
+		});
+	}, []);
 
 	return {
 		user,
 		login,
 		register,
 		logout,
-		authState,
+		isLoading,
 	};
 };

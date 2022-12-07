@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (prisma === undefined) return res.status(500).json(null);
-	if (!req.session.user) return res.status(405).json(null);
+	if (!req.session.user) return res.status(401).json(null);
 
 	if (req.method === 'POST') {
 		const items = await prisma.shoppingCart
@@ -43,7 +43,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 						product_data: {
 							name: item.product.name,
 						},
-						unit_amount: item.product.price,
+						unit_amount: item.product.salePrice,
 					},
 					quantity: item.quantity,
 				};

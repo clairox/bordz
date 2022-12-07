@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/SideMenu.module.css';
 import optionStyles from '../styles/MenuOption.module.css';
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '../context/authContext';
 import Router from 'next/router';
 import { CgClose } from 'react-icons/cg';
+import LoadingOverlay from './LoadingOverlay';
 
 interface SideMenuProps {
 	closeDrawer: (e: any) => void;
@@ -68,6 +69,7 @@ const MenuOption: React.FunctionComponent<MenuOptionProps> = ({ handleNavLinkCli
 const SideMenu: React.FunctionComponent<SideMenuProps> = ({ closeDrawer, isDrawerOpen, openRegModal }) => {
 	const [isNewOpen, setIsNewOpen] = useState<boolean>(false);
 	const [isExtrasOpen, setIsExtrasOpen] = useState<boolean>(false);
+
 	const { user, logout } = useAuth();
 
 	const handleNavLinkClick = (e: any) => {
@@ -159,7 +161,7 @@ const SideMenu: React.FunctionComponent<SideMenuProps> = ({ closeDrawer, isDrawe
 							</Link>
 						</li>
 						<li>
-							<Link href="/account">
+							<Link href="/account/orders">
 								<a onClick={handleNavLinkClick}>
 									<div className={styles['footer-item']}>Orders</div>
 								</a>
@@ -198,5 +200,4 @@ const SideMenu: React.FunctionComponent<SideMenuProps> = ({ closeDrawer, isDrawe
 	);
 };
 
-//TODO: make footer
 export default SideMenu;

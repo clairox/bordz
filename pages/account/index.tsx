@@ -1,46 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import prisma from '../../lib/prisma';
 import { withAuthSsr } from '../../lib/withAuth';
 import styles from '../../styles/Account.module.css';
-import Router from 'next/router';
-import { useAuth } from '../../context/authContext';
-
+import Head from 'next/head';
+import AccountMenu from '../../components/AccountMenu';
+import useWindowSize from '../../hooks/useWindowsize';
 interface AccountPageProps {
 	firstName: string;
 }
 
 const AccountPage: React.FunctionComponent<AccountPageProps> = ({ firstName }) => {
-	const { logout } = useAuth();
+	const { windowSize } = useWindowSize();
+	const [isWide, setIsWide] = useState(true);
+
+	useEffect(() => {
+		if (!windowSize.width) {
+			return;
+		}
+
+		setIsWide(windowSize.width >= 700);
+	}, [windowSize]);
+
 	return (
-		<div className={styles['main-container']}>
-			<div className={styles['header']}>
-				<h2>Hey, {firstName}!</h2>
+		<div className={styles['container']}>
+			<Head>
+				<title>Account | Bordz</title>
+			</Head>
+			<div className={styles['sidebar']}>
+				<AccountMenu firstName={firstName} />
 			</div>
-			<div className={styles['layout']}>
-				<div>
-					<ul className={styles['menu']}>
-						<li className={styles['menu-option']} onClick={() => Router.push('/account/details')}>
-							<p>Account Details</p>
-						</li>
-						<li className={styles['menu-option']} onClick={() => Router.push('/account/orders')}>
-							<p>Orders</p>
-						</li>
-						<li className={styles['menu-option']} onClick={() => Router.push('/account/change-password')}>
-							<p>Change Password</p>
-						</li>
-						<li
-							className={styles['menu-option']}
-							onClick={async () => {
-								await logout!();
-								Router.reload();
-							}}
-						>
-							<p>Logout</p>
-						</li>
-					</ul>
+			{isWide && (
+				<div className={styles['content']}>
+					<h1>Your Account</h1>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

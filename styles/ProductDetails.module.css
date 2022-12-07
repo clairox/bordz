@@ -1,5 +1,11 @@
 .container {
-	padding: 0 20px 0 20px;
+	padding: 0 20px;
+}
+
+@media (min-width: 1024px) {
+	.details-container {
+		width: 40%;
+	}
 }
 
 .header {
@@ -22,11 +28,30 @@
 	margin: 0 0 16px 0;
 }
 
+.price-container {
+	margin-top: 16px;
+	margin-bottom: 16px;
+	font-weight: 700;
+	display: flex;
+	flex-direction: column;
+}
+
 .price {
 	font-size: 1.3rem;
-	font-weight: 400;
+	font-weight: 900;
 	transform: scale(1, 0.95);
-	margin: 0 0 20px 0;
+}
+
+.sale-price {
+	color: red;
+}
+
+.original-price {
+	font-size: 0.95rem;
+}
+
+.line-through {
+	text-decoration: line-through;
 }
 
 .quantity {
@@ -92,16 +117,31 @@
 }
 
 .description {
-	padding: 0 2px 0 2px;
+	padding: 0 2px;
 	line-height: 1.4rem;
 	text-transform: lowercase;
 }
 
 .details-content {
-	padding: 0 2px 0 2px;
+	padding: 0 2px;
 	line-height: 1.4rem;
 	text-transform: lowercase;
 	margin-bottom: 20px;
 	padding-left: 20px;
 	list-style-type: disc;
+}
+
+button.adding:disabled {
+	background: var(--primary-color);
+}
+
+button.adding span {
+	min-width: 116px;
+}
+
+.check {
+	font-size: 1.5rem;
+	position: relative;
+	bottom: 2px;
+	min-width: 116px;
 }

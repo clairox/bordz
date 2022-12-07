@@ -65,16 +65,37 @@ const useDrawer = ({
 	const targetEl = useRef() as HTMLElRef; // this is the element you are clicking/hovering/whatever, to trigger opening the drawer
 	const drawer = useRef() as HTMLElRef;
 
+	//TODO: fix "Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received"
 	useEffect(() => {
 		if (!drawer.current) {
 			drawer.current = document.createElement('div');
 			drawer.current.classList.add(styles['drawer']);
-			fullScreen && drawer.current.classList.add(styles['full-screen']);
+			setFullScreen(fullScreen);
 			padded && drawer.current.classList.add(styles['padded']);
 			side === 'left' && drawer.current.classList.add(styles['left']);
 			side === 'right' && drawer.current.classList.add(styles['right']);
 		}
 	}, [fullScreen, padded, side]);
+
+	const [hidden, setHidden] = useState(false);
+
+	useEffect(() => {
+		if (hidden) {
+			drawer.current.hidden = true;
+			drawer.current.classList.remove(styles['drawer-open']);
+			setOpen(false);
+		} else {
+			drawer.current.hidden = false;
+		}
+	}, [hidden, setOpen]);
+
+	const setFullScreen = (value: boolean) => {
+		if (value) {
+			drawer.current.classList.add(styles['full-screen']);
+		} else {
+			drawer.current.classList.remove(styles['full-screen']);
+		}
+	};
 
 	const elToMountTo = useMemo(() => {
 		return (bindTo && bindTo) || (typeof document !== 'undefined' && document.body);
@@ -244,6 +265,8 @@ const useDrawer = ({
 		ref: targetEl,
 		closeDrawer,
 		toggleDrawer,
+		setFullScreen,
+		setHidden,
 		Drawer,
 		drawerRef: drawer,
 		...customEventHandlers,

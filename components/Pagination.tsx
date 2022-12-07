@@ -35,7 +35,7 @@ const Pagination: React.FunctionComponent<PaginationProps> = ({ onPageChange, to
 		<div id={pageStyles.layout}>
 			<div>
 				{currentPage > 1 && (
-					<button className={pageStyles['button'] + ' ' + pageStyles['button-previous']} onClick={onPrevious}>
+					<button aria-label="Previous Page" className={pageStyles['button'] + ' ' + pageStyles['button-previous']} onClick={onPrevious}>
 						<MdArrowBackIos />
 					</button>
 				)}
@@ -60,7 +60,12 @@ const Pagination: React.FunctionComponent<PaginationProps> = ({ onPageChange, to
 			})}
 			<div>
 				{currentPage < lastPage && (
-					<button className={pageStyles['button'] + ' ' + pageStyles['button-next']} onClick={onNext} disabled={currentPage >= lastPage}>
+					<button
+						aria-label="Next Page"
+						className={pageStyles['button'] + ' ' + pageStyles['button-next']}
+						onClick={onNext}
+						disabled={currentPage >= lastPage}
+					>
 						<MdArrowForwardIos />
 					</button>
 				)}

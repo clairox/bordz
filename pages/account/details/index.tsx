@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import prisma from '../../../lib/prisma';
 import { GetServerSideProps } from 'next';
 import { withAuthSsr } from '../../../lib/withAuth';
 import { UserInfo } from '../../../types';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import axios from 'axios';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import styles from '../../../styles/Account.module.css';
+import Head from 'next/head';
+import useWindowSize from '../../../hooks/useWindowsize';
+import AccountMenu from '../../../components/AccountMenu';
+import { BiArrowBack } from 'react-icons/bi';
+import AccountLayout from '../../../components/AccountLayout';
 
 interface DetailsProps {
 	userInfo: UserInfo;
 }
 
 const Details: React.FunctionComponent<DetailsProps> = ({ userInfo }) => {
+	const router = useRouter();
+
 	const {
 		register,
 		handleSubmit,
@@ -22,15 +29,23 @@ const Details: React.FunctionComponent<DetailsProps> = ({ userInfo }) => {
 	const onSubmit: SubmitHandler<UserInfo> = async data => {
 		const { firstName, lastName, email } = data;
 		await axios.patch('/api/session-user', { firstName, lastName, email }, { withCredentials: true });
-		Router.reload();
+		router.reload();
 	};
 
+	const { windowSize } = useWindowSize();
+	const [isWide, setIsWide] = useState(true);
+
+	useEffect(() => {
+		if (!windowSize.width) {
+			return;
+		}
+
+		setIsWide(windowSize.width >= 700);
+	}, [windowSize]);
+
 	return (
-		<div className={styles['container']}>
+		<AccountLayout {...{ firstName: userInfo.firstName, pageTitle: 'Account Details | Bordz', header: 'Details' }}>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className={styles['header']}>
-					<h2>Details</h2>
-				</div>
 				<div className={styles['input-group']}>
 					<label>First Name</label>
 					<input type="text" defaultValue={userInfo.firstName} {...register('firstName', { required: true, shouldUnregister: true })} />
@@ -45,7 +60,7 @@ const Details: React.FunctionComponent<DetailsProps> = ({ userInfo }) => {
 				</div>
 				<input type="submit" value="Save Changes" disabled={!isValid || !isDirty} />
 			</form>
-		</div>
+		</AccountLayout>
 	);
 };
 

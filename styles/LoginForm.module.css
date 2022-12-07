@@ -1,4 +1,10 @@
-.loginForm {
+.container {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 40px;
+}
+
+.form {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
@@ -6,6 +12,32 @@
 	width: 300px;
 }
 
-#loginHeader {
-	margin: 0;
+.form-header h2 {
+	margin: 20px 0 0 0;
+}
+
+ul.error-messages {
+	list-style-type: disc;
+	color: red;
+	padding-left: 20px;
+}
+
+.loaded {
+	background: var(--primary-color);
+}
+
+.check {
+	font-size: 1.5rem;
+	position: relative;
+	bottom: 2px;
+	min-width: 116px;
+}
+
+.link {
+	color: #777;
+	cursor: pointer;
+}
+
+.link:hover {
+	color: black;
 }

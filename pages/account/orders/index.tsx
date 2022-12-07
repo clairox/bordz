@@ -1,11 +1,17 @@
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import React from 'react';
 import prisma from '../../../lib/prisma';
 import { GetServerSideProps } from 'next';
 import { withAuthSsr } from '../../../lib/withAuth';
 import toPriceString from '../../../lib/toPriceString';
-import { Order, OrderItemWithProduct } from '../../../types';
+import { Order, OrderItemWithProduct, UserInfo } from '../../../types';
 import styles from '../../../styles/Account.module.css';
+import Head from 'next/head';
+import useWindowSize from '../../../hooks/useWindowsize';
+import AccountMenu from '../../../components/AccountMenu';
+import { BiArrowBack } from 'react-icons/bi';
+import { useRouter } from 'next/router';
+import AccountLayout from '../../../components/AccountLayout';
 
 interface OrderComponentProps {
 	order: Order;
@@ -26,7 +32,11 @@ const OrderComponent: React.FunctionComponent<OrderComponentProps> = ({ order })
 			</div>
 			<div className={styles['image-row']}>
 				{order.orderItems.slice(0, 3).map((item: OrderItemWithProduct) => {
-					return <Image key={item.pid} src={item.product.images[0]} alt="product image" width="100px" height="119px" />;
+					return (
+						<div key={item.pid}>
+							<Image src={item.product.images[0]} alt="product image" layout="responsive" width="100px" height="119px" />
+						</div>
+					);
 				})}
 			</div>
 		</li>
@@ -34,26 +44,38 @@ const OrderComponent: React.FunctionComponent<OrderComponentProps> = ({ order })
 };
 
 interface OrdersProps {
+	firstName: string;
 	orders: Order[];
 }
 
-const Orders: React.FunctionComponent<OrdersProps> = ({ orders }) => {
+const Orders: React.FunctionComponent<OrdersProps> = ({ firstName, orders }) => {
 	return (
-		<div className={styles['container']}>
-			<div className={styles['header']}>
-				<h2>Orders</h2>
-			</div>
-			<ul className={styles['order-list']}>
-				{orders.map((order: any) => {
-					return <OrderComponent order={order} key={order.id} />;
-				})}
-			</ul>
-		</div>
+		<AccountLayout {...{ firstName, pageTitle: 'Orders | Bordz', header: 'Orders' }}>
+			{orders.length ? (
+				<ul className={styles['order-list']}>
+					{orders.map((order: any) => {
+						return <OrderComponent order={order} key={order.id} />;
+					})}
+				</ul>
+			) : (
+				<p>You haven&apos;t bought anything yet!</p>
+			)}
+		</AccountLayout>
 	);
 };
 
 export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context: any) => {
 	const user = context.req.session.user;
+
+	const userInfo: UserInfo | null = await prisma.user.findUnique({
+		where: { id: user.uid },
+		select: {
+			id: true,
+			firstName: true,
+			lastName: true,
+			email: true,
+		},
+	});
 
 	const orders = await prisma.order
 		.findMany({
@@ -82,6 +104,7 @@ export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context
 							product: {
 								...item.product,
 								price: parseInt(item.product.price.toString()),
+								salePrice: parseInt(item.product.salePrice.toString()),
 								createdAt: JSON.stringify(item.product.createdAt),
 							},
 						};
@@ -90,9 +113,11 @@ export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context
 			});
 		})
 		.catch(() => {});
+	//TODO: add price to orderItem because it could be different from the original price
 
 	return {
 		props: {
+			firstName: userInfo?.firstName,
 			orders,
 		},
 	};

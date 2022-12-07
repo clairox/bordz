@@ -7,11 +7,11 @@ const useModal = () => {
 			if (typeof document !== 'undefined') {
 				document.getElementById('main-layout')!.classList.add(styles['no-scroll']);
 			}
-			portal.current.classList.add(styles['modal-container']);
+			portal.current.classList.add(styles['container']);
 		},
 		onClose({ portal }) {
 			document.getElementById('main-layout')!.classList.remove(styles['no-scroll']);
-			portal.current.classList.remove(styles['modal-container']);
+			portal.current.classList.remove(styles['container']);
 		},
 		closeOnEsc: false,
 	});

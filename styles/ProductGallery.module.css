@@ -2,11 +2,41 @@
 	margin-bottom: 20px;
 }
 
-#gallery-slider {
+@media (min-width: 1024px) {
+	.gallery-container {
+		width: 60%;
+		padding-left: 20px;
+	}
+}
+
+.gallery-slider {
 	overflow-x: scroll;
 	white-space: nowrap;
 }
 
-.gallery-image {
+.gallery-slider-image {
 	display: inline-block;
+}
+
+.gallery-full {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+}
+
+.images {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	min-width: 103px;
+	width: 103px;
+}
+
+.image {
+	height: 122px;
+}
+
+.image:hover,
+.image-main {
+	cursor: pointer;
 }

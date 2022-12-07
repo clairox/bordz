@@ -5,6 +5,7 @@ export interface ProductBasic {
 	name: string;
 	handle: string;
 	price: number;
+	salePrice: number;
 	quantity: number;
 	brand: string;
 	category: string;
@@ -20,6 +21,7 @@ export interface CartItem {
 	pid: int;
 	name: string;
 	price: number;
+	salePrice: number;
 	linePrice: number;
 	quantityInCart: number;
 	images: string[];

@@ -17,7 +17,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 		})
 		.then(user => {
 			if (!user) {
-				return res.status(401).json(null);
+				return res.status(404).json(null);
 			}
 
 			compare(password, user.passwordHash, async (err, isValid) => {

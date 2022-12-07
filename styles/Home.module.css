@@ -2,11 +2,29 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
-	padding-bottom: 20px;
+	gap: 4px;
+	width: 100%;
+	padding-bottom: 4px;
 }
 
 .grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	gap: 4px;
+}
+
+.frame {
+	padding: 10px 10px 3px 10px;
+	background: var(--dark-gray-color);
+}
+
+.frame p {
+	margin: 8px;
+	line-height: 1;
+	text-align: center;
+	color: white;
+	text-transform: uppercase;
+	font-weight: 400;
+	letter-spacing: 1px;
+	transform: scale(1, 0.95);
 }

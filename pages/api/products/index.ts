@@ -21,12 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			break;
 		case 'priceDescending':
 			orderByInput = {
-				price: 'desc',
+				salePrice: 'desc',
 			};
 			break;
 		case 'priceAscending':
 			orderByInput = {
-				price: 'asc',
+				salePrice: 'asc',
 			};
 			break;
 		default:
@@ -49,6 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				name: true,
 				handle: true,
 				price: true,
+				salePrice: true,
 				images: true,
 				quantity: true,
 				createdAt: true,
@@ -57,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			},
 		})
 		.then(products => {
-			return res.status(200).json(products.map(p => ({ ...p, price: toPriceString(p.price) })));
+			return res.status(200).json(products.map(p => ({ ...p, price: toPriceString(p.price), salePrice: toPriceString(p.salePrice) })));
 		})
 		.catch(err => {
 			console.error(err);

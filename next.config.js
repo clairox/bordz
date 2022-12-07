@@ -5,6 +5,10 @@ const nextConfig = {
 	images: {
 		domains: ['scene7.zumiez.com'],
 	},
+	i18n: {
+		locales: ['en'],
+		defaultLocale: 'en',
+	},
 };
 
 module.exports = nextConfig;

@@ -29,6 +29,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 												images: true,
 												name: true,
 												price: true,
+												salePrice: true,
 												quantity: true,
 											},
 										},
@@ -70,6 +71,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 							product: {
 								...product,
 								price: parseInt(product!.price.toString()),
+								salePrice: parseInt(product!.salePrice.toString()),
 							},
 						};
 					});

@@ -19,6 +19,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 					product: {
 						select: {
 							price: true,
+							salePrice: true,
 						},
 					},
 				},
@@ -39,11 +40,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 				? { decrement: body.quantity.decrement }
 				: body.quantity || oldItem.quantity,
 			linePrice: body.quantity.increment
-				? { increment: body.quantity.increment * parseInt(oldItem.product.price.toString()) }
+				? { increment: body.quantity.increment * parseInt(oldItem.product.salePrice.toString()) }
 				: body.quantity.decrement
-				? { decrement: body.quantity.decrement * parseInt(oldItem.product.price.toString()) }
+				? { decrement: body.quantity.decrement * parseInt(oldItem.product.salePrice.toString()) }
 				: body.quantity
-				? body.quantity * parseInt(oldItem.product.price.toString())
+				? body.quantity * parseInt(oldItem.product.salePrice.toString())
 				: oldItem.linePrice,
 		};
 
@@ -67,6 +68,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 							images: true,
 							name: true,
 							price: true,
+							salePrice: true,
 							quantity: true,
 						},
 					},
@@ -80,6 +82,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 					product: {
 						...product,
 						price: parseInt(product.price.toString()),
+						salePrice: parseInt(product.salePrice.toString()),
 					},
 				});
 			})

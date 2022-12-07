@@ -1,64 +1,112 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/LoginForm.module.css';
+import mStyles from '../styles/Modal.module.css';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAuth } from '../context/authContext';
 import Router from 'next/router';
 import { LoginData } from '../types';
+import { CgClose } from 'react-icons/cg';
+import axios from 'axios';
+import { FaCheck } from 'react-icons/fa';
+import Image from 'next/image';
 
-type RegisterModalWrapperProps = {
+type LoginModalWrapperProps = {
 	switchToRegister: (e: any) => void;
 	closeModal: (e: any) => void;
 };
 
-export const LoginModalWrapper: React.FunctionComponent<RegisterModalWrapperProps> = ({ switchToRegister, closeModal }) => {
+export const LoginModalWrapper: React.FunctionComponent<LoginModalWrapperProps> = ({ switchToRegister, closeModal }) => {
 	const handleSwitchToRegister = (e: any) => {
 		switchToRegister(e);
 	};
 
 	const onFormComplete = (e: any) => {
-		closeModal(e);
 		Router.reload();
 	};
 
-	return <LoginForm {...{ handleSwitchToRegister, onFormComplete }} />;
+	return (
+		<div>
+			<div className={mStyles['close']}>
+				<span onClick={e => closeModal(e)}>
+					<CgClose />
+				</span>
+			</div>
+			<div className={mStyles['content']}>
+				<LoginForm {...{ handleSwitchToRegister, onFormComplete }} />
+			</div>
+		</div>
+	);
 };
 
 type LoginFormProps = {
 	handleSwitchToRegister: (e: any) => void;
 	onFormComplete: (e: any) => void;
 };
-//TODO: fix page reloading if userinfo is wrong
+
 const LoginForm: React.FunctionComponent<LoginFormProps> = ({ handleSwitchToRegister, onFormComplete }) => {
 	const {
 		register,
 		handleSubmit,
-		formState: { isValid, errors },
-	} = useForm<LoginData>({ mode: 'onChange' });
+		formState: { isValid },
+	} = useForm<LoginData>({
+		mode: 'onChange',
+		reValidateMode: 'onSubmit',
+		criteriaMode: 'firstError',
+		shouldFocusError: true,
+		shouldUnregister: true,
+	});
 
-	const { login } = useAuth();
+	const { user, login, isLoading } = useAuth();
+	const [customError, setCustomError] = useState<{ message?: string } | null>(null);
 
 	const onSubmit: SubmitHandler<LoginData> = async data => {
-		await login!(data);
-		onFormComplete(data);
+		setCustomError(null);
+		if (login && !isLoading) {
+			await login(data)
+				.then(() => {
+					onFormComplete(data);
+				})
+				.catch(err => {
+					setCustomError({ message: err.message });
+				});
+		}
 	};
 
 	return (
-		<form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
-			<h2 id={styles.loginHeader}>Login</h2>
-			<input type="email" placeholder="Email" {...register('email', { required: true, shouldUnregister: true })} />
-			<input type="password" placeholder="Password" {...register('password', { required: true, minLength: 8, shouldUnregister: true })} />
-			<input type="submit" value="Log In" disabled={!isValid} />
-			<span>
-				{"Don't have an account? "}
-				<a
-					onClick={e => {
-						handleSwitchToRegister(e);
-					}}
-				>
-					Sign up
-				</a>
-			</span>
-		</form>
+		<div className={styles['container']}>
+			<form className={styles['form']} onSubmit={handleSubmit(onSubmit)}>
+				<div className={styles['form-header']}>
+					<h2>Login</h2>
+				</div>
+				<ul className={styles['error-messages']}>{customError && <li className={styles['error-message']}>{customError.message}</li>}</ul>
+				<input type="email" placeholder="Email" {...register('email', { required: true, shouldUnregister: true })} />
+				<input type="password" placeholder="Password" {...register('password', { required: true, shouldUnregister: true })} />
+				<button className={user ? styles['loaded'] : ''} aria-label="Log In" type="submit" disabled={!isValid}>
+					{isLoading ? (
+						<div style={{ position: 'relative', bottom: '6px' }}>
+							<Image src="/spinner.svg" alt="spinner" width="30px" height="30px" />
+						</div>
+					) : user ? (
+						<div className={styles['check']}>
+							<FaCheck />
+						</div>
+					) : (
+						'Log In'
+					)}
+				</button>
+				<span>
+					{"Don't have an account? "}
+					<a
+						className={styles['link']}
+						onClick={e => {
+							handleSwitchToRegister(e);
+						}}
+					>
+						Sign up
+					</a>
+				</span>
+			</form>
+		</div>
 	);
 };
 

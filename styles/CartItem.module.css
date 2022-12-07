@@ -48,10 +48,35 @@
 	width: fit-content;
 }
 
-.price {
+.price-container {
 	padding-top: 8px;
 	float: right;
 	text-align: right;
+}
+
+.price-container .sale-price,
+.price-container .original-price {
+	position: relative;
+	bottom: 22px;
+}
+
+.price {
+	display: block;
+	margin-left: 6px;
+	text-decoration: none;
+	font-weight: 900;
 	font-size: 1.1rem;
-	font-weight: 700;
+}
+
+.sale-price {
+	color: red;
+}
+
+.original-price {
+	font-size: 0.9rem;
+	font-weight: 900;
+}
+
+.line-through {
+	text-decoration: line-through;
 }

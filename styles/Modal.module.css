@@ -1,13 +1,29 @@
-.modal-container {
+.container {
+	display: flex;
+	flex-direction: column;
+	width: 101%;
+	height: 101%;
 	position: fixed;
 	left: 50%;
 	top: 50%;
-	padding: 100px;
 	transform: translate(-50%, -50%);
-	z-index: 888888;
 	background: white;
+	z-index: 888888;
+}
+
+@media (min-width: 600px) {
+	.container {
+		width: 500px;
+		height: fit-content;
+		top: 35%;
+	}
+}
+
+.content {
 	display: flex;
 	justify-content: center;
+	margin-top: 30px;
+	margin-bottom: 40px;
 }
 
 #overlayContainer {
@@ -19,4 +35,11 @@
 	margin: 0;
 	height: 100%;
 	overflow: hidden;
+}
+
+.close {
+	position: relative;
+	top: 10px;
+	left: 10px;
+	font-size: 1.4rem;
 }

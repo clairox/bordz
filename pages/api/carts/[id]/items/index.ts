@@ -53,6 +53,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 										images: true,
 										name: true,
 										price: true,
+										salePrice: true,
 										quantity: true,
 									},
 								},
@@ -70,6 +71,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 								product: {
 									...product,
 									price: parseInt(product.price.toString()),
+									salePrice: parseInt(product.salePrice.toString()),
 								},
 							};
 						})
@@ -80,7 +82,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 				});
 		} else {
 			const { product, quantity } = req.body;
-			const { id, price } = product;
+			const { id, salePrice } = product;
 
 			await prisma.shoppingCartItem
 				.upsert({
@@ -95,14 +97,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 							increment: quantity,
 						},
 						linePrice: {
-							increment: price * quantity,
+							increment: salePrice * quantity,
 						},
 					},
 					create: {
 						pid: id,
 						cartId: parseInt(cartId),
 						quantity,
-						linePrice: price * quantity,
+						linePrice: salePrice * quantity,
 					},
 					select: {
 						pid: true,
@@ -115,6 +117,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 								images: true,
 								name: true,
 								price: true,
+								salePrice: true,
 								quantity: true,
 							},
 						},
@@ -128,6 +131,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 						product: {
 							...product,
 							price: parseInt(product.price.toString()),
+							salePrice: parseInt(product.salePrice.toString()),
 						},
 					});
 				})

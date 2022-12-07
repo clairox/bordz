@@ -22,6 +22,7 @@ import styles from '../../styles/Shop.module.css';
 import { CgClose } from 'react-icons/cg';
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { FiCheck } from 'react-icons/fi';
+import Head from 'next/head';
 
 interface ShopProps {
 	products: ProductBasic[];
@@ -96,6 +97,8 @@ interface FilterCheckboxInputProps {
 const SearchPage: React.FunctionComponent<ShopProps> = props => {
 	const { query } = useRouter();
 
+	const search = query.q;
+
 	const [selectedCategories, setSelectedCategories] = useState(props.currentCategories.map(c => c.id) as number[]);
 	const [selectedBrands, setSelectedBrands] = useState(props.currentBrands.map(b => b.id) as number[]);
 	const [priceRange, setPriceRange] = useState(props.currentPriceRange);
@@ -157,6 +160,9 @@ const SearchPage: React.FunctionComponent<ShopProps> = props => {
 
 	return (
 		<div className={styles['container']}>
+			<Head>
+				<title>Search | Bordz</title>
+			</Head>
 			{/*<ShopSidebar {...sidebarProps} />*/}
 
 			<Content products={products} productCount={props.productCount} openFilterDrawer={openFilterDrawer} openSortDrawer={openSortDrawer} />
@@ -222,7 +228,6 @@ const Content: React.FunctionComponent<ContentProps> = ({ products, productCount
 	);
 };
 
-//TODO: add loading animation when anything is loading
 const SortSelect: React.FunctionComponent = () => {
 	const { query } = useRouter();
 
@@ -543,20 +548,22 @@ const SortDrawer: React.FunctionComponent<SortDrawerProps> = ({ closeDrawer }) =
 
 const FilterCheckboxInput: React.FunctionComponent<FilterCheckboxInputProps> = ({ section, label, value, setIsSelectedValue, checked }) => {
 	return (
-		<div
-			className={styles['checkbox-container']}
-			id={`${section}_${value}`}
-			onClick={() => {
-				setIsSelectedValue(section, value, !checked);
-			}}
-		>
-			<p className={`${checked && styles['checkbox-label-checked']}`}>{label}</p>
-			{checked && (
-				<div className={styles['checkmark']} id={`${section}_${value}`}>
-					<FiCheck />
-				</div>
-			)}
-		</div>
+		<li>
+			<div
+				className={styles['checkbox-container']}
+				id={`${section}_${value}`}
+				onClick={() => {
+					setIsSelectedValue(section, value, !checked);
+				}}
+			>
+				<p className={`${checked && styles['checkbox-label-checked']}`}>{label}</p>
+				{checked && (
+					<div className={styles['checkmark']} id={`${section}_${value}`}>
+						<FiCheck />
+					</div>
+				)}
+			</div>
+		</li>
 	);
 };
 
@@ -592,7 +599,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 				.split(',')
 				.map(p => parseInt(p))
 		: [0, 10000];
-	const wherePriceIsWithinRange = [{ price: { gte: currentPriceRange[0] } }, { price: { lt: currentPriceRange[1] } }];
+	const wherePriceIsWithinRange = [{ salePrice: { gte: currentPriceRange[0] } }, { salePrice: { lt: currentPriceRange[1] } }];
 
 	// Get sidebar data
 	// const productInPriceRangeExists = async (min: number, max: number): Promise<boolean> => {
@@ -631,12 +638,12 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			break;
 		case 'priceDescending':
 			orderByInput = {
-				price: 'desc',
+				salePrice: 'desc',
 			};
 			break;
 		case 'priceAscending':
 			orderByInput = {
-				price: 'asc',
+				salePrice: 'asc',
 			};
 			break;
 		default:
@@ -676,6 +683,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 				name: true,
 				handle: true,
 				price: true,
+				salePrice: true,
 				images: true,
 				quantity: true,
 				brandName: true,
@@ -689,6 +697,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 					name: p.name,
 					handle: p.handle,
 					price: parseInt(p.price.toString()),
+					salePrice: parseInt(p.salePrice.toString()),
 					images: p.images,
 					quantity: p.quantity,
 					brand: p.brandName,

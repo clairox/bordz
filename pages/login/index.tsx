@@ -1,10 +1,13 @@
+import { withIronSessionSsr } from 'iron-session/next';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import Router from 'next/router';
 import React, { useState } from 'react';
 import LoginForm from '../../components/LoginForm';
 import RegisterForm from '../../components/RegisterForm';
+import { sessionOptions } from '../../lib/withSession';
 import styles from '../../styles/LoginPage.module.css';
 
-//TODO: prevent seeing this page or register page when already logged in
 const Login: React.FunctionComponent = () => {
 	const handleSwitchToRegister = () => {
 		setForm(<RegisterForm handleSwitchToLogin={handleSwitchToLogin} onFormComplete={onRegisterFormComplete} />);
@@ -26,7 +29,30 @@ const Login: React.FunctionComponent = () => {
 		<LoginForm handleSwitchToRegister={handleSwitchToRegister} onFormComplete={onLoginFormComplete} />
 	);
 
-	return <div className={styles['container']}>{form}</div>;
+	return (
+		<div className={styles['container']}>
+			<Head>
+				<title>Login | Bordz</title>
+			</Head>
+			{form}
+		</div>
+	);
 };
+
+export const getServerSideProps: GetServerSideProps = withIronSessionSsr((context: any) => {
+	if (context.req.session.user) {
+		return {
+			redirect: {
+				destination: '/',
+				statusCode: 302,
+			},
+			props: {},
+		};
+	}
+
+	return {
+		props: {},
+	};
+}, sessionOptions);
 
 export default Login;

@@ -7,3 +7,20 @@
 	z-index: 9999;
 	background: rgba(0, 0, 0, 0.4);
 }
+
+.content {
+	z-index: 9998;
+}
+
+.light {
+	background: rgba(255, 255, 255, 0.7);
+}
+
+.loading::after {
+	content: url('/spinner2.svg');
+	position: absolute;
+	top: 50vh;
+	left: 50vw;
+	transform: translate(-50%, -50%);
+	opacity: 0.76;
+}

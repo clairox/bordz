@@ -5,7 +5,7 @@ import { useAuth } from './authContext';
 
 const CartContext = createContext<{
 	cart?: CartItem[];
-	addToCart?: (pid: number, quantity: number) => void;
+	addToCart?: (pid: number, quantity: number) => Promise<boolean>;
 	deleteFromCart?: (pid: number) => void;
 	incrementItemQuantity?: (pid: number) => void;
 	decrementItemQuantity?: (pid: number) => void;
@@ -59,7 +59,7 @@ const useProvideCart = () => {
 		setLocalCart([]);
 	};
 
-	const addToCart = async (pid: number, quantity: number): Promise<void> => {
+	const addToCart = async (pid: number, quantity: number): Promise<boolean> => {
 		let localCart: CartItem[] = getLocalCart();
 		let existingItem = localCart.find((item: CartItem) => item.pid === pid);
 
@@ -70,8 +70,12 @@ const useProvideCart = () => {
 			})
 			.catch(() => {});
 
+		if (existingItem && existingItem.quantityInCart >= product.quantity) {
+			return false;
+		}
+
 		if (cartState === 'succeeded') {
-			await axios
+			return await axios
 				.put(`/api/carts/${cartId}/items`, { product, quantity }, reqConfig)
 				.then(res => {
 					const data = res.data;
@@ -82,6 +86,7 @@ const useProvideCart = () => {
 						linePrice: data.linePrice,
 						name: data.product.name,
 						price: data.product.price,
+						salePrice: data.product.salePrice,
 						pid: data.pid,
 						quantityInCart: data.quantity,
 						quantityInStock: data.product.quantity,
@@ -98,8 +103,12 @@ const useProvideCart = () => {
 					}
 
 					setLocalCart(newLocalCart);
+
+					return true;
 				})
-				.catch(() => {});
+				.catch(() => {
+					throw false;
+				});
 		} else {
 			let newLocalCart: CartItem[] = [];
 
@@ -111,22 +120,25 @@ const useProvideCart = () => {
 					.concat({
 						...existingItem,
 						quantityInCart: existingItem.quantityInCart + 1,
-						linePrice: existingItem.linePrice + existingItem.price,
+						linePrice: existingItem.linePrice + existingItem.salePrice,
 					});
 			} else {
 				newLocalCart = localCart.concat({
 					createdAt: new Date(),
-					linePrice: product.price * quantity,
+					linePrice: product.salePrice * quantity,
 					quantityInCart: quantity,
 					images: product.images,
 					name: product.name,
 					price: product.price,
+					salePrice: product.salePrice,
 					pid: product.id,
 					quantityInStock: product.quantity,
 				});
 			}
 
 			setLocalCart(newLocalCart);
+
+			return true;
 		}
 	};
 
@@ -165,6 +177,7 @@ const useProvideCart = () => {
 						linePrice: data.linePrice,
 						name: data.product.name,
 						price: data.product.price,
+						salePrice: data.product.salePrice,
 						pid: data.pid,
 						quantityInCart: data.quantity,
 						quantityInStock: data.product.quantity,
@@ -177,7 +190,7 @@ const useProvideCart = () => {
 			newLocalCart.push({
 				...item,
 				quantityInCart: newQuantity,
-				linePrice: item.linePrice + item.price,
+				linePrice: item.linePrice + item.salePrice,
 			});
 		}
 		setLocalCart(newLocalCart);
@@ -215,6 +228,7 @@ const useProvideCart = () => {
 						linePrice: data.linePrice,
 						name: data.product.name,
 						price: data.product.price,
+						salePrice: data.product.salePrice,
 						pid: data.pid,
 						quantityInCart: data.quantity,
 						quantityInStock: data.product.quantity,
@@ -227,7 +241,7 @@ const useProvideCart = () => {
 			newLocalCart.push({
 				...item,
 				quantityInCart: newQuantity,
-				linePrice: item.linePrice - item.price,
+				linePrice: item.linePrice - item.salePrice,
 			});
 		}
 
@@ -237,10 +251,6 @@ const useProvideCart = () => {
 	const setItemQuantity = async (pid: number, quantity: number): Promise<number> => {
 		const localCart = getLocalCart();
 		const item = localCart.find((item: CartItem) => item.pid === pid);
-
-		if (!item) {
-			//TODO: create cartItem
-		}
 
 		let newLocalCart = localCart.filter((item: CartItem) => item.pid !== pid);
 
@@ -259,6 +269,7 @@ const useProvideCart = () => {
 						linePrice: data.linePrice,
 						name: data.product.name,
 						price: data.product.price,
+						salePrice: data.product.salePrice,
 						pid: data.pid,
 						quantityInCart: data.quantity,
 						quantityInStock: data.product.quantity,
@@ -276,7 +287,7 @@ const useProvideCart = () => {
 			newLocalCart.push({
 				...item,
 				quantityInCart: newQuantity,
-				linePrice: item.price * newQuantity,
+				linePrice: item.salePrice * newQuantity,
 			});
 			setLocalCart(newLocalCart);
 			return newQuantity;
@@ -299,6 +310,7 @@ const useProvideCart = () => {
 							linePrice: item.linePrice,
 							name: item.product.name,
 							price: item.product.price,
+							salePrice: item.product.salePrice,
 							pid: item.pid,
 							quantityInCart: item.quantity,
 							quantityInStock: item.product.quantity,
@@ -326,7 +338,6 @@ const useProvideCart = () => {
 		}
 	}, [cartState, user]);
 
-	//TODO: maybe get cart id as well
 	return {
 		cart,
 		addToCart,

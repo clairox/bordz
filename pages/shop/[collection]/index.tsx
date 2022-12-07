@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState, useRef } from 'react';
 import { GetServerSideProps } from 'next';
 import Router, { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -22,6 +22,9 @@ import styles from '../../../styles/Shop.module.css';
 import { CgClose } from 'react-icons/cg';
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { FiCheck } from 'react-icons/fi';
+import LoadingOverlay from '../../../components/LoadingOverlay';
+import { isEqual } from 'lodash';
+import Head from 'next/head';
 
 interface ShopProps {
 	products: ProductBasic[];
@@ -94,7 +97,9 @@ interface FilterCheckboxInputProps {
 }
 
 const Shop: React.FunctionComponent<ShopProps> = props => {
-	const { query } = useRouter();
+	const { query, asPath } = useRouter();
+
+	const collection = query.collection as string;
 
 	const [selectedCategories, setSelectedCategories] = useState(props.currentCategories.map(c => c.id) as number[]);
 	const [selectedBrands, setSelectedBrands] = useState(props.currentBrands.map(b => b.id) as number[]);
@@ -157,6 +162,9 @@ const Shop: React.FunctionComponent<ShopProps> = props => {
 
 	return (
 		<div className={styles['container']}>
+			<Head>
+				<title>{`Shop ${collection[0].toUpperCase() + collection.slice(1)} | Bordz`}</title>
+			</Head>
 			{/*<ShopSidebar {...sidebarProps} />*/}
 
 			<Content products={products} productCount={props.productCount} openFilterDrawer={openFilterDrawer} openSortDrawer={openSortDrawer} />
@@ -181,6 +189,7 @@ const Content: React.FunctionComponent<ContentProps> = ({ products, productCount
 			query: { ...query, page },
 		});
 	};
+
 	return (
 		<div className={styles['products']}>
 			{/*<SortSelect />*/}
@@ -228,7 +237,6 @@ const Content: React.FunctionComponent<ContentProps> = ({ products, productCount
 	);
 };
 
-//TODO: add loading animation when anything is loading
 const SortSelect: React.FunctionComponent = () => {
 	const { query } = useRouter();
 
@@ -251,7 +259,8 @@ const SortSelect: React.FunctionComponent = () => {
 };
 
 const ProductListItem: React.FunctionComponent<ProductListItemProps> = ({ product }) => {
-	const { name, handle, price, images } = product;
+	const { name, handle, price, salePrice, images } = product;
+	const useSalePrice = price != salePrice;
 
 	return (
 		<article className={styles['product-grid-item']}>
@@ -262,7 +271,10 @@ const ProductListItem: React.FunctionComponent<ProductListItemProps> = ({ produc
 					</div>
 					<div className={styles['product-details']}>
 						<h4 className={styles['product-name-text']}>{name}</h4>
-						<h5 className={styles['price-text']}>{toPriceString(price)}</h5>
+						<h5 className={`${styles['price-text']}`}>
+							{<span className={`${useSalePrice && styles['line-through']}`}>{toPriceString(price)}</span>}
+							{useSalePrice && <span className={styles['sale-price']}>{toPriceString(salePrice)}</span>}
+						</h5>
 					</div>
 				</a>
 			</Link>
@@ -422,7 +434,9 @@ const FilterSection: React.FunctionComponent<FilterSectionProps> = ({ checkboxPr
 		<div
 			className={`${styles['fd-section-container']} ${styles['expandable']} ${isOpen && styles['expanded']}`}
 			style={
-				isOpen ? { maxHeight: `${50 * checkboxProps.length}px`, transition: `max-height ${0.1 * (checkboxProps.length / 4)}s ease-out` } : {}
+				isOpen
+					? { maxHeight: `${50 * (checkboxProps.length + 1)}px`, transition: `max-height ${0.1 * (checkboxProps.length / 4)}s ease-out` }
+					: {}
 			}
 		>
 			<div className={`${styles['fd-section']}`} onClick={toggleExpand}>
@@ -604,7 +618,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 				.split(',')
 				.map(p => parseInt(p))
 		: [0, 10000];
-	const wherePriceIsWithinRange = [{ price: { gte: currentPriceRange[0] } }, { price: { lt: currentPriceRange[1] } }];
+	const wherePriceIsWithinRange = [{ salePrice: { gte: currentPriceRange[0] } }, { salePrice: { lt: currentPriceRange[1] } }];
 
 	// Get sidebar data
 	// const productInPriceRangeExists = async (min: number, max: number): Promise<boolean> => {
@@ -643,12 +657,12 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			break;
 		case 'priceDescending':
 			orderByInput = {
-				price: 'desc',
+				salePrice: 'desc',
 			};
 			break;
 		case 'priceAscending':
 			orderByInput = {
-				price: 'asc',
+				salePrice: 'asc',
 			};
 			break;
 		default:
@@ -679,6 +693,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 				name: true,
 				handle: true,
 				price: true,
+				salePrice: true,
 				images: true,
 				quantity: true,
 				brandName: true,
@@ -692,6 +707,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 					name: p.name,
 					handle: p.handle,
 					price: parseInt(p.price.toString()),
+					salePrice: parseInt(p.salePrice.toString()),
 					images: p.images,
 					quantity: p.quantity,
 					brand: p.brandName,

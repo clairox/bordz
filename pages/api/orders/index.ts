@@ -8,19 +8,18 @@ type ShoppingCartItemWithProduct = ShoppingCartItem & { product: Product };
 
 const calculateOrderAmount = (items: ShoppingCartItemWithProduct[]) => {
 	let total = items.reduce((prev: number, item: ShoppingCartItemWithProduct) => {
-		return parseInt(item.product.price.toString()) * item.quantity + prev;
+		return parseInt(item.product.salePrice.toString()) * item.quantity + prev;
 	}, 0);
 	return total;
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (prisma === undefined) return res.status(500).json(null);
-	if (!req.session.user) return res.status(405).json(null);
+	if (!req.session.user) return res.status(401).json(null);
 
 	if (req.method === 'POST') {
 		const { id } = req.body;
 		const idAsInt = parseInt(id);
-		console.log(id);
 
 		const existingOrder = await prisma.order.findUnique({
 			where: { id: idAsInt },
@@ -58,7 +57,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 				},
 			})
 			.then(order => order);
-		console.log(order);
+
 		await prisma.$transaction(
 			items.map((item: ShoppingCartItemWithProduct) => {
 				return prisma.orderItem.create({

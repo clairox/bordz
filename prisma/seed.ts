@@ -2,7 +2,6 @@ import { PrismaClient, Prisma, Brand, Category, Product } from '@prisma/client';
 const prisma: PrismaClient = new PrismaClient();
 
 //TODO: make buying stuff decrease stock
-//TODO: prevent adding more than in stock by clicking add to cart from product page when already at max in cart
 const createHandle = (str: string): string =>
 	str
 		.toLowerCase()
@@ -45,6 +44,7 @@ async function createProduct(
 			nameLower: name.toLowerCase(),
 			handle: createHandle(name),
 			price,
+			salePrice: price,
 			images,
 			size,
 			color,
