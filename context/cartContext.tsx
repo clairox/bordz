@@ -63,19 +63,16 @@ const useProvideCart = () => {
 		let localCart: CartItem[] = getLocalCart();
 		let existingItem = localCart.find((item: CartItem) => item.pid === pid);
 
-		console.log(pid);
 		const product = await axios
 			.get(`/api/products/${pid}`)
 			.then(res => {
 				return res.data;
 			})
 			.catch(() => {});
-		console.log(product);
 
 		if (existingItem && existingItem.quantityInCart >= product.quantity) {
 			return false;
 		}
-		console.log('test');
 
 		if (cartState === 'succeeded') {
 			return await axios
