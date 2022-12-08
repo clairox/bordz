@@ -12,6 +12,7 @@ import Image from 'next/image';
 import Head from 'next/head';
 import styles from '../../../../styles/Product.module.css';
 import useWindowSize from '../../../../hooks/useWindowsize';
+import ErrorPage from '../../../../components/ErrorPage';
 
 type ProductProps = {
 	product: Product;
@@ -20,6 +21,10 @@ type ProductProps = {
 const Product: React.FunctionComponent<ProductProps> = ({ product }) => {
 	const { images, ...rest } = product;
 	const { addToCart } = useCart();
+
+	if (!product) {
+		return <ErrorPage statusCode={404} />;
+	}
 
 	const handleAddToCart = async (quantity: number) => {
 		return await addToCart!(product.id, quantity)
