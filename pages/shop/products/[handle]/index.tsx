@@ -221,7 +221,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext) => {
 	const { handle } = context.params!;
 
-	if (typeof handle !== 'string') {
+	if (typeof handle !== 'string' || prisma === undefined) {
 		return {
 			props: {},
 		};
