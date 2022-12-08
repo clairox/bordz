@@ -32,17 +32,17 @@ const Product: React.FunctionComponent<ProductProps> = ({ product }) => {
 	const productDetailsProps = {
 		...rest,
 		handleAddToCart,
-	};
+	};*/
 
 	return (
 		<div className={styles['container']}>
-			<Head>
+			{/* <Head>
 				<title>{`${product.name} | Bordz`}</title>
 			</Head>
 			<ProductGallery images={images} />
-			<ProductDetails {...productDetailsProps} />
+			<ProductDetails {...productDetailsProps} /> */}
 		</div>
-	);*/
+	);
 };
 
 type ProductDetailsProps = {
