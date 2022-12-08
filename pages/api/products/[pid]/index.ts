@@ -12,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			})
 			.then(product => {
 				if (product) {
+					alert(product.quantity);
 					return res
 						.status(200)
 						.json({ ...product, price: parseInt(product.price.toString()), salePrice: parseInt(product.salePrice.toString()) });
