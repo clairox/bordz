@@ -3,6 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (prisma === undefined) return res.status(500).json(null);
 
+	console.log(prisma);
+
 	if (req.method === 'GET') {
 		const { pid } = req.query as { [key: string]: string };
 
