@@ -1,7 +1,8 @@
+import prisma from '../../../../lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	//if (prisma === undefined) return res.status(500).json(null);
+	if (prisma === undefined) return res.status(500).json(null);
 
 	if (req.method === 'GET') {
 		const { pid } = req.query as { [key: string]: string };
