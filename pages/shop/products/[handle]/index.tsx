@@ -18,7 +18,7 @@ type ProductProps = {
 };
 
 const Product: React.FunctionComponent<ProductProps> = ({ product }) => {
-	const { images, ...rest } = product;
+	/*const { images, ...rest } = product;
 	const { addToCart } = useCart();
 
 	const handleAddToCart = async (quantity: number) => {
@@ -42,7 +42,7 @@ const Product: React.FunctionComponent<ProductProps> = ({ product }) => {
 			<ProductGallery images={images} />
 			<ProductDetails {...productDetailsProps} />
 		</div>
-	);
+	);*/
 };
 
 type ProductDetailsProps = {
