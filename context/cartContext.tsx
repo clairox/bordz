@@ -60,6 +60,8 @@ const useProvideCart = () => {
 	};
 
 	const addToCart = async (pid: number, quantity: number): Promise<boolean> => {
+		console.log(quantity);
+
 		let localCart: CartItem[] = getLocalCart();
 		let existingItem = localCart.find((item: CartItem) => item.pid === pid);
 
