@@ -131,7 +131,6 @@ model OrderItem {
     pid       Int
     order     Order    @relation(fields: [orderId], references: [id])
     orderId   Int
-    price     BigInt   @default(0) @db.BigInt
     quantity  Int      @default(1) @db.SmallInt
     createdAt DateTime @default(now()) @map(name: "created_at")
 
