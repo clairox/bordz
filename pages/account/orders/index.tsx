@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context
 
 	const orders = await prisma.order
 		.findMany({
-			where: { uid: 1 },
+			where: { uid: user.uid },
 			orderBy: { createdAt: 'desc' },
 			include: {
 				orderItems: {
@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context
 				};
 			});
 		})
-		.catch(() => []);
+		.catch(err => console.log(err));
 	//TODO: add price to orderItem because it could be different from the original price
 
 	return {
