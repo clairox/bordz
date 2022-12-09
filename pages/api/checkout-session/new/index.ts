@@ -32,6 +32,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 		const orderNum = Math.floor(Math.random() * 10000000);
 
+		const { domain } = req.body;
+
 		const session = await stripe.checkout.sessions.create({
 			payment_method_types: ['card', 'afterpay_clearpay'],
 			mode: 'payment',
@@ -50,8 +52,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 			}),
 			shipping_address_collection: { allowed_countries: ['US', 'GB', 'CA', 'AU', 'NZ'] },
 			billing_address_collection: 'required',
-			success_url: `http://localhost:3000/success?orderId=${orderNum}&session_id={CHECKOUT_SESSION_ID}`,
-			cancel_url: 'http://localhost:3000/',
+			success_url: `http://${domain}/success?orderId=${orderNum}&session_id={CHECKOUT_SESSION_ID}`,
+			cancel_url: `http://${domain}/`,
 		});
 
 		//TODO: change urls to domain name

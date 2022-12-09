@@ -52,7 +52,7 @@ const Cart: React.FunctionComponent<CartProps> = ({ closeDrawer }) => {
 						<button
 							onClick={e => {
 								axios
-									.post('/api/checkout-session/new')
+									.post('/api/checkout-session/new', { domain: window.location.host })
 									.then(res => Router.push(res.data.url))
 									.catch(err => {
 										if (err.response.status === 401) {
