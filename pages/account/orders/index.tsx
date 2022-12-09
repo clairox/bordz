@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context
 				};
 			});
 		})
-		.catch(err => console.log(err));
+		.catch(() => []);
 	//TODO: add price to orderItem because it could be different from the original price
 
 	return {
