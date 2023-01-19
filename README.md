@@ -15,3 +15,4 @@ Visit the site at https://bordz.vercel.app/
 
 -   [Next.js](https://nextjs.org/)
 -   [Stripe](https://stripe.com/)
+-   [PostgreSQL](https://www.postgresql.org/)
