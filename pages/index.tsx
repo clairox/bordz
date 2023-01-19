@@ -89,48 +89,6 @@ const Home: NextPage = () => {
 						</a>
 					</Link>
 				</div>
-				{/* <div className={styles['grid-item']}>
-					<Link href="/shop/decks" passHref>
-						<a>
-							<Image src="/decks.png" alt="promo" layout="responsive" width="525" height="700" />
-						</a>
-					</Link>
-				</div>
-				<div className={styles['grid-item']}>
-					<Link href="/shop/wheels" passHref>
-						<a>
-							<Image src="/wheels.png" alt="promo" layout="responsive" width="525" height="700" />
-						</a>
-					</Link>
-				</div>
-				<div className={styles['grid-item']}>
-					<Link href="/shop/trucks" passHref>
-						<a>
-							<Image src="/trucks.png" alt="promo" layout="responsive" width="525" height="700" />
-						</a>
-					</Link>
-				</div>
-				<div className={styles['grid-item']}>
-					<Link href="/shop/griptape" passHref>
-						<a>
-							<Image src="/griptape.png" alt="promo" layout="responsive" width="525" height="700" />
-						</a>
-					</Link>
-				</div>
-				<div className={styles['grid-item']}>
-					<Link href="/shop/bearings" passHref>
-						<a>
-							<Image src="/bearings.png" alt="promo" layout="responsive" width="525" height="700" />
-						</a>
-					</Link>
-				</div>
-				<div className={styles['grid-item']}>
-					<Link href="/shop/hardware" passHref>
-						<a>
-							<Image src="/hardware.png" alt="promo" layout="responsive" width="525" height="700" />
-						</a>
-					</Link>
-				</div> */}
 			</div>
 		</div>
 	);
