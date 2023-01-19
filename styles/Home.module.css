@@ -7,6 +7,12 @@
 	padding-bottom: 4px;
 }
 
+.promo-container {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
 .grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -27,4 +33,14 @@
 	font-weight: 400;
 	letter-spacing: 1px;
 	transform: scale(1, 0.95);
+}
+
+@media (min-width: 1024px) {
+	.promo-container {
+		flex-direction: row;
+	}
+
+	.grid {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
 }

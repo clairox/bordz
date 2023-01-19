@@ -6,25 +6,27 @@ import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
 	return (
-		<div className={styles.container}>
+		<div className={styles['container']}>
 			<Head>
 				<title>Skateboard Equipment & More | Bordz</title>
 				<meta name="description" content="bordz" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<div>
-				<Link href="/shop/new?brand=12" passHref>
-					<a>
-						<Image src="/promo2.png" alt="promo" layout="responsive" width="1600" height="1200" />
-					</a>
-				</Link>
-			</div>
-			<div>
-				<Link href="/shop/new" passHref>
-					<a>
-						<Image src="/promo1.png" alt="promo" layout="responsive" width="1600" height="1400" />
-					</a>
-				</Link>
+			<div className={styles['promo-container']}>
+				<div>
+					<Link href="/shop/new?brand=12" passHref>
+						<a>
+							<Image src="/promo2.png" alt="promo" width="1600" height="1200" />
+						</a>
+					</Link>
+				</div>
+				<div>
+					<Link href="/shop/new" passHref>
+						<a>
+							<Image src="/promo1.png" alt="promo" width="1600" height="1200" />
+						</a>
+					</Link>
+				</div>
 			</div>
 			<div className={styles['grid']}>
 				<div className={styles['grid-item']}>
