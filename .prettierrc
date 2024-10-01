@@ -1,8 +1,10 @@
 arrowParens: "avoid"
 semi: false
 singleQuote: true
+tabWidth: 4
 trailingComma: "es5"
 overrides:
   - files: ["*.yaml", ".prettierrc"]
     options:
       singleQuote: false
+      tabWidth: 2
