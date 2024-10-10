@@ -1,3 +1,4 @@
+import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
@@ -9,8 +10,8 @@ const useDeleteCartLineMutation = () => {
     const deleteCartLine = useCallback(
         async ({ cartId, lineId }: DeleteCartLineVariables): Promise<Cart> => {
             try {
-                const res = await fetch(
-                    `/api/carts/${cartId}/lines/${lineId}`,
+                const res = await fetchAbsolute(
+                    `/carts/${cartId}/lines/${lineId}`,
                     {
                         method: 'DELETE',
                     }

@@ -1,7 +1,8 @@
 'use client'
 import { createContext, useCallback, useEffect, useState } from 'react'
-import { useAuth } from '@/providers/Auth'
+import { useAuth } from '@/context/authContext'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 type CartContextValue = UseQueryResult<Cart, Error>
 
@@ -22,7 +23,7 @@ const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const getCart = useCallback(async (): Promise<Cart> => {
         const createCart = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/carts`, {
+                const res = await fetchAbsolute(`/carts`, {
                     method: 'POST',
                 })
 
@@ -40,7 +41,7 @@ const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         }
 
         try {
-            const res = await fetch(`http://localhost:3000/api/carts/${cartId}`)
+            const res = await fetchAbsolute(`/carts/${cartId}`)
 
             return await res.json()
         } catch (error) {

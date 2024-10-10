@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
 import { useCartQuery } from '@/hooks'
-import { CartProvider } from '@/providers/Cart'
+import { CartProvider } from '@/context/cartContext'
 
 const Header: React.FC = () => {
     return (

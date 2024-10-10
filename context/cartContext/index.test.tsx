@@ -4,12 +4,14 @@ import { useContext } from 'react'
 import { CartContext, CartProvider } from '.'
 
 const useAuth = vi.hoisted(() => vi.fn())
-vi.mock('@/app/providers/Auth', () => ({
+vi.mock('@/providers/Auth', () => ({
     useAuth: useAuth.mockReturnValue({ user: null, status: 'success' }),
 }))
 
-const globalFetch = vi.hoisted(() => vi.fn())
-global.fetch = globalFetch
+const fetchAbsolute = vi.hoisted(() => vi.fn())
+vi.mock('@/lib/fetchAbsolute', () => ({
+    default: fetchAbsolute,
+}))
 
 const localStorageGetItem = vi.hoisted(() =>
     vi.spyOn(Storage.prototype, 'getItem')
@@ -35,10 +37,9 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:3000/api/carts',
-                { method: 'POST' }
-            )
+            expect(fetchAbsolute).toHaveBeenCalledWith('/carts', {
+                method: 'POST',
+            })
         })
     })
 
@@ -48,9 +49,7 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:3000/api/carts/testLocal'
-            )
+            expect(fetchAbsolute).toHaveBeenCalledWith('/carts/testLocal')
         })
     })
 
@@ -63,26 +62,20 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:3000/api/carts/testUser'
-            )
+            expect(fetchAbsolute).toHaveBeenCalledWith('/carts/testUser')
         })
     })
 
     it('posts new cart when cartId is invalid', async () => {
         localStorageGetItem.mockReturnValueOnce('test')
-        globalFetch.mockRejectedValueOnce(new Response(null, { status: 404 }))
+        fetchAbsolute.mockRejectedValueOnce(new Response(null, { status: 404 }))
 
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenNthCalledWith(
-                2,
-                'http://localhost:3000/api/carts',
-                {
-                    method: 'POST',
-                }
-            )
+            expect(fetchAbsolute).toHaveBeenNthCalledWith(2, '/carts', {
+                method: 'POST',
+            })
         })
     })
 })

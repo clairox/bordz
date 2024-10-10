@@ -4,7 +4,7 @@ import '@/styles/globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { cn } from '@/utils/helpers'
-import Providers from '@/providers'
+import Providers from '@/context/providers'
 
 const publicSans = Public_Sans({
     subsets: ['latin'],

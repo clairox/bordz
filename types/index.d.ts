@@ -18,6 +18,7 @@ type Product = {
     productType: 'BOARD' | 'OTHER'
     title: string
     updatedAt: Date
+    compareAtPrice?: number
     featuredImage?: Image
 }
 
@@ -25,6 +26,7 @@ type CartLine = {
     id: string
     cartId: string
     product: Product
+    productId: string
     quantity: number
     subtotal: number
     total: number

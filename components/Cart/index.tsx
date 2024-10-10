@@ -1,9 +1,9 @@
 'use client'
 import { useCartQuery, useDeleteCartLineMutation } from '@/hooks'
-import { toPriceRepr } from '@/utils/helpers'
 import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import PriceRepr from '../PriceRepr'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
@@ -40,7 +40,9 @@ const Cart: React.FC = () => {
                     <div className="flex flex-col">
                         <div className="flex justify-between">
                             <div>Subtotal:</div>
-                            <div>{toPriceRepr(cart.subtotal)}</div>
+                            <div>
+                                <PriceRepr value={cart.subtotal} />
+                            </div>
                         </div>
                     </div>
                     <div className="flex justify-end">
@@ -143,7 +145,9 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
                         </Link>
                     </div>
                     <div>
-                        <p>{toPriceRepr(cartLine.subtotal)}</p>
+                        <p>
+                            <PriceRepr value={cartLine.subtotal} />
+                        </p>
                     </div>
                 </div>
             </div>

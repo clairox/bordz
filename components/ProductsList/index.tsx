@@ -1,9 +1,10 @@
 'use client'
 import { useAddCartLineMutation, useCartQuery } from '@/hooks'
-import { toPriceRepr } from '@/utils/helpers'
+import fetchAbsolute from '@/lib/fetchAbsolute'
 import { ArrowClockwise } from '@phosphor-icons/react'
 import { QueryStatus, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo } from 'react'
+import PriceRepr from '../PriceRepr'
 
 const ProductsList: React.FC = () => {
     const {
@@ -14,7 +15,7 @@ const ProductsList: React.FC = () => {
         queryKey: ['products'],
         queryFn: async () => {
             try {
-                const res = await fetch('http://localhost:3000/api/products')
+                const res = await fetchAbsolute('/products')
 
                 if (!res.ok) {
                     throw res
@@ -135,7 +136,9 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
     return (
         <article>
             <h3>{product.title}</h3>
-            <p>{toPriceRepr(product.price)}</p>
+            <p>
+                <PriceRepr value={product.price} />
+            </p>
             {addToCartButton}
         </article>
     )
