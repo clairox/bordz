@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { CartContext, CartProvider } from '.'
 
 const useAuth = vi.hoisted(() => vi.fn())
-vi.mock('@/providers/Auth', () => ({
+vi.mock('@/context/authContext', () => ({
     useAuth: useAuth.mockReturnValue({ user: null, status: 'success' }),
 }))
 
