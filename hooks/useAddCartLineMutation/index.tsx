@@ -5,14 +5,14 @@ import { useCallback } from 'react'
 const useAddCartLineMutation = () => {
     const queryClient = useQueryClient()
 
-    type AddCartLineVariables = { cartId: string; productId: string }
+    type AddCartLineVariables = { productId: string }
 
     const addCartLine = useCallback(
-        async ({ cartId, productId }: AddCartLineVariables): Promise<Cart> => {
+        async ({ productId }: AddCartLineVariables): Promise<Cart> => {
             try {
-                const res = await fetchAbsolute(`/carts/${cartId}/lines`, {
+                const res = await fetchAbsolute(`/cart/lines`, {
                     method: 'POST',
-                    body: JSON.stringify({ productId }),
+                    body: JSON.stringify({ productId, quantity: 1 }),
                 })
 
                 return await res.json()
@@ -25,7 +25,15 @@ const useAddCartLineMutation = () => {
 
     return useMutation({
         mutationFn: addCartLine,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
+        onSuccess: cart => {
+            queryClient.invalidateQueries({ queryKey: ['cart'] })
+
+            if (cart.checkout) {
+                queryClient.invalidateQueries({
+                    queryKey: ['checkout', cart.checkout.id],
+                })
+            }
+        },
     })
 }
 

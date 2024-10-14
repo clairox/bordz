@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 
 type PriceReprProps = {
     value: number
@@ -9,7 +9,7 @@ const PriceRepr: React.FC<PriceReprProps> = ({
     value,
     isPreSalePrice = false,
 }) => {
-    const price = useMemo(() => '$' + (value * 0.01).toFixed(2), [value])
+    const price = '$' + (value * 0.01).toFixed(2)
 
     if (isPreSalePrice) {
         return (

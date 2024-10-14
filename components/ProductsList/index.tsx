@@ -1,10 +1,11 @@
 'use client'
-import { useAddCartLineMutation, useCartQuery } from '@/hooks'
+import { useAddCartLineMutation } from '@/hooks'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { ArrowClockwise } from '@phosphor-icons/react'
 import { QueryStatus, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo } from 'react'
 import PriceRepr from '../PriceRepr'
+import { useCartQuery } from '@/context/cartContext'
 
 const ProductsList: React.FC = () => {
     const {
@@ -56,7 +57,7 @@ const ProductsList: React.FC = () => {
                         cartStatus={cartStatus}
                         isInCart={
                             cart?.lines
-                                ?.map(line => line.productId)
+                                .map(line => line.productId)
                                 .includes(product.id) || false
                         }
                         key={product.id}
@@ -95,7 +96,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
                 return
             }
 
-            addCartLine({ cartId, productId })
+            addCartLine({ productId })
         },
         [cartId, addCartLine]
     )

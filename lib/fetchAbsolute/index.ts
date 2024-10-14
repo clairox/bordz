@@ -9,9 +9,7 @@ const fetchAbsolute = (
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL
         if (baseUrl == undefined) {
-            throw new Error(
-                'Missing environment variable "NEXT_PUBLIC_BASE_API_URL"'
-            )
+            throw new Error('NEXT_PUBLIC_BASE_API_URL is not defined')
         }
 
         info = baseUrl + info

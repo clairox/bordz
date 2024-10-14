@@ -37,7 +37,7 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetchAbsolute).toHaveBeenCalledWith('/carts', {
+            expect(fetchAbsolute).toHaveBeenCalledWith('/cart', {
                 method: 'POST',
             })
         })
@@ -49,7 +49,7 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetchAbsolute).toHaveBeenCalledWith('/carts/testLocal')
+            expect(fetchAbsolute).toHaveBeenCalledWith('/cart/testLocal')
         })
     })
 
@@ -62,7 +62,7 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetchAbsolute).toHaveBeenCalledWith('/carts/testUser')
+            expect(fetchAbsolute).toHaveBeenCalledWith('/cart/testUser')
         })
     })
 
@@ -73,7 +73,7 @@ describe('CartProvider', () => {
         renderHook(() => useContext(CartContext), { wrapper })
 
         await waitFor(() => {
-            expect(fetchAbsolute).toHaveBeenNthCalledWith(2, '/carts', {
+            expect(fetchAbsolute).toHaveBeenNthCalledWith(2, '/cart', {
                 method: 'POST',
             })
         })

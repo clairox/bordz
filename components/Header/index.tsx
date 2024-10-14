@@ -2,13 +2,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
-import { useCartQuery } from '@/hooks'
-import { CartProvider } from '@/context/cartContext'
+import { useCartQuery } from '@/context/cartContext'
 
 const Header: React.FC = () => {
     return (
-        <header className="flex justify-between w-full">
-            <div>
+        <header className="flex justify-between px-2 w-full">
+            <div className="flex gap-4">
                 <Link href="/">
                     <Image
                         src="/bordz-brand-black.svg"
@@ -17,8 +16,9 @@ const Header: React.FC = () => {
                         height="42"
                     />
                 </Link>
+                <Link href="/browse">Browse</Link>
             </div>
-            <div className="flex">
+            <div className="flex gap-4">
                 <HeaderButton
                     onClick={() => {}}
                     icon={<User size={28} weight="light" />}
@@ -27,9 +27,7 @@ const Header: React.FC = () => {
                     onClick={() => {}}
                     icon={<HeartStraight size={28} weight="light" />}
                 />
-                <CartProvider>
-                    <CartHeaderButton />
-                </CartProvider>
+                <CartHeaderButton />
             </div>
         </header>
     )

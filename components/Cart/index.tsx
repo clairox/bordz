@@ -1,17 +1,16 @@
 'use client'
-import { useCartQuery, useDeleteCartLineMutation } from '@/hooks'
+import { useDeleteCartLineMutation } from '@/hooks'
+import { useCartQuery } from '@/context/cartContext'
 import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import PriceRepr from '../PriceRepr'
+import { useRouter } from 'next/navigation'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
 
-    // TODO: Initiate checkout
-    const handleCheckoutButtonClick = () => {
-        console.log('handleCheckoutButtonClick()')
-    }
+    const router = useRouter()
 
     if (status === 'error') {
         return (
@@ -38,15 +37,26 @@ const Cart: React.FC = () => {
                 </div>
                 <div className="flex flex-col w-1/4">
                     <div className="flex flex-col">
-                        <div className="flex justify-between">
-                            <div>Subtotal:</div>
-                            <div>
-                                <PriceRepr value={cart.subtotal} />
+                        <div className="flex flex-col">
+                            <div className="flex justify-between">
+                                <div>Subtotal:</div>
+                                <div>
+                                    <PriceRepr value={cart.subtotal} />
+                                </div>
+                            </div>
+                            <div className="flex justify-between">
+                                <div>Estimated total:</div>
+                                <div>
+                                    <PriceRepr value={cart.total} />
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className="flex justify-end">
-                        <button onClick={handleCheckoutButtonClick}>
+                        <button
+                            disabled={!cart.lines || cart.lines.length === 0}
+                            onClick={() => router.push('/checkout')}
+                        >
                             Checkout
                         </button>
                     </div>
@@ -82,13 +92,7 @@ const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
 
 type CartLinesListItemProps = {
     cartLine: CartLine
-    deleteCartLine: ({
-        cartId,
-        lineId,
-    }: {
-        cartId: string
-        lineId: string
-    }) => void
+    deleteCartLine: ({ lineId }: { lineId: string }) => void
 }
 
 const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
@@ -98,8 +102,8 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     const { product } = cartLine
 
     const handleDeleteButtonClick = () => {
-        const { id, cartId } = cartLine
-        deleteCartLine({ cartId, lineId: id })
+        const { id } = cartLine
+        deleteCartLine({ lineId: id })
     }
 
     // TODO: Move cart item to wishlist
@@ -138,6 +142,7 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
                     </div>
                 </div>
                 <div className="flex justify-between">
+                    <p>Qty: {cartLine.quantity}</p>
                     <div>
                         {/* TODO: Link to builder */}
                         <Link href="#" className="hover:underline">

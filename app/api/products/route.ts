@@ -20,6 +20,6 @@ export const GET = async (request: NextRequest) => {
 
         return NextResponse.json(products)
     } catch (error) {
-        handleError(error as Error)
+        handleError(error)
     }
 }

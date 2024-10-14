@@ -1,12 +1,7 @@
 import Cart from '@/components/Cart'
-import { CartProvider } from '@/context/cartContext'
 
 const CartPage: React.FC = () => {
-    return (
-        <CartProvider>
-            <Cart />
-        </CartProvider>
-    )
+    return <Cart />
 }
 
 export default CartPage

@@ -1,5 +1,5 @@
 {
-  "id": "ce9d919e-972f-4415-8db2-b4ac66141e29",
+  "id": "6f3cd9d6-d7af-4686-9521-e5fc0aae8d16",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,37 +10,25 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
+        "full_name": {
+          "name": "full_name",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         },
-        "address_1": {
-          "name": "address_1",
+        "line_1": {
+          "name": "line_1",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "address_2": {
-          "name": "address_2",
+        "line_2": {
+          "name": "line_2",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -51,21 +39,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "province": {
-          "name": "province",
+        "state": {
+          "name": "state",
           "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "province_code": {
-          "name": "province_code",
-          "type": "varchar(3)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "country": {
-          "name": "country",
-          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         },
@@ -75,8 +51,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "zip": {
-          "name": "zip",
+        "postal_code": {
+          "name": "postal_code",
           "type": "varchar(12)",
           "primaryKey": false,
           "notNull": true
@@ -85,7 +61,7 @@
           "name": "phone",
           "type": "varchar(16)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "formatted": {
           "name": "formatted",
@@ -95,9 +71,9 @@
         },
         "owner_id": {
           "name": "owner_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -126,7 +102,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -139,50 +115,50 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
         "product_id": {
           "name": "product_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "deck_id": {
           "name": "deck_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "trucks_id": {
           "name": "trucks_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "wheels_id": {
           "name": "wheels_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "bearings_id": {
           "name": "bearings_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "hardware_id": {
           "name": "hardware_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "griptape_id": {
           "name": "griptape_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
@@ -304,7 +280,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -328,17 +304,17 @@
           "type": "smallint",
           "primaryKey": false,
           "notNull": true,
-          "default": 0
+          "default": 1
         },
         "product_id": {
           "name": "product_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "cart_id": {
           "name": "cart_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
@@ -395,7 +371,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -423,7 +399,7 @@
         },
         "owner_id": {
           "name": "owner_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
@@ -461,13 +437,251 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.checkout_line_items": {
+      "name": "checkout_line_items",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "total": {
+          "name": "total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "checkout_id": {
+          "name": "checkout_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checkout_line_items_product_id_products_id_fk": {
+          "name": "checkout_line_items_product_id_products_id_fk",
+          "tableFrom": "checkout_line_items",
+          "tableTo": "products",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "checkout_line_items_checkout_id_checkouts_id_fk": {
+          "name": "checkout_line_items_checkout_id_checkouts_id_fk",
+          "tableFrom": "checkout_line_items",
+          "tableTo": "checkouts",
+          "columnsFrom": [
+            "checkout_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.checkouts": {
+      "name": "checkouts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total": {
+          "name": "total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total_shipping": {
+          "name": "total_shipping",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total_tax": {
+          "name": "total_tax",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_intent_id": {
+          "name": "payment_intent_id",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cart_id": {
+          "name": "cart_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shipping_address_id": {
+          "name": "shipping_address_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checkouts_cart_id_carts_id_fk": {
+          "name": "checkouts_cart_id_carts_id_fk",
+          "tableFrom": "checkouts",
+          "tableTo": "carts",
+          "columnsFrom": [
+            "cart_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "checkouts_customer_id_customers_id_fk": {
+          "name": "checkouts_customer_id_customers_id_fk",
+          "tableFrom": "checkouts",
+          "tableTo": "customers",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "checkouts_shipping_address_id_addresses_id_fk": {
+          "name": "checkouts_shipping_address_id_addresses_id_fk",
+          "tableFrom": "checkouts",
+          "tableTo": "addresses",
+          "columnsFrom": [
+            "shipping_address_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "checkouts_order_id_orders_id_fk": {
+          "name": "checkouts_order_id_orders_id_fk",
+          "tableFrom": "checkouts",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.categories": {
       "name": "categories",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -490,7 +704,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -519,38 +733,38 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
         "component_id": {
           "name": "component_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "category_id": {
           "name": "category_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "vendor_id": {
           "name": "vendor_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
         "size_id": {
           "name": "size_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "color_id": {
           "name": "color_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
@@ -646,7 +860,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -729,7 +943,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -752,7 +966,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -775,10 +989,16 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
         },
         "total": {
           "name": "total",
@@ -792,17 +1012,17 @@
           "type": "smallint",
           "primaryKey": false,
           "notNull": true,
-          "default": 0
+          "default": 1
         },
         "product_id": {
           "name": "product_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
         "order_id": {
           "name": "order_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
@@ -859,16 +1079,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
-        },
-        "code": {
-          "name": "code",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true
         },
         "email": {
           "name": "email",
@@ -912,19 +1126,13 @@
         },
         "customer_id": {
           "name": "customer_id",
-          "type": "varchar(34)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "billing_address_id": {
-          "name": "billing_address_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
         "shipping_address_id": {
           "name": "shipping_address_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
@@ -958,19 +1166,6 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "orders_billing_address_id_addresses_id_fk": {
-          "name": "orders_billing_address_id_addresses_id_fk",
-          "tableFrom": "orders",
-          "tableTo": "addresses",
-          "columnsFrom": [
-            "billing_address_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
         "orders_shipping_address_id_addresses_id_fk": {
           "name": "orders_shipping_address_id_addresses_id_fk",
           "tableFrom": "orders",
@@ -986,15 +1181,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "orders_code_unique": {
-          "name": "orders_code_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "code"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "public.products": {
       "name": "products",
@@ -1002,7 +1189,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -1067,7 +1254,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -1105,13 +1292,13 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "default_address_id": {
           "name": "default_address_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1155,7 +1342,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -1208,20 +1395,20 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
         "product_id": {
           "name": "product_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
         "wishlist_id": {
           "name": "wishlist_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1278,7 +1465,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": true,
           "notNull": true,
           "default": "uuid_generate_v4()"
@@ -1292,7 +1479,7 @@
         },
         "owner_id": {
           "name": "owner_id",
-          "type": "varchar(34)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false
         },
