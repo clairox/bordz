@@ -1,6 +1,6 @@
-import { db } from '@/db'
+import { db } from '@/drizzle/db'
 import handleError from '@/lib/errorHandling'
-import { OrderTable } from '@/schema/order'
+import { OrderTable } from '@/drizzle/schema/order'
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import { createNotFoundError } from '@/app/api/shared'

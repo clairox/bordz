@@ -1,5 +1,5 @@
-import { db } from '@/db'
-import { CartTable } from '@/schema/cart'
+import { db } from '@/drizzle/db'
+import { CartTable } from '@/drizzle/schema/cart'
 import { eq } from 'drizzle-orm'
 
 const getCart = async (id: string) => {

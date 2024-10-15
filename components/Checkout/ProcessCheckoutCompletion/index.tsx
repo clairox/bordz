@@ -8,7 +8,6 @@ const ProcessCheckoutCompletion = () => {
     const router = useRouter()
 
     const [status, setStatus] = useState<ProcessingStatus>('idle')
-    const [orderId, setOrderId] = useState<string | null>(null)
 
     useEffect(() => {
         const completeCheckout = async () => {
@@ -17,25 +16,20 @@ const ProcessCheckoutCompletion = () => {
             const res = await fetchAbsolute('/checkout/complete', {
                 method: 'POST',
             })
+            router.replace('gay')
 
             if (!res.ok) {
                 setStatus('error')
             } else {
-                const data = await res.json()
-                setOrderId(data.orderId)
+                const { orderId } = await res.json()
+                router.replace(`/order/confirmation?order=${orderId}`)
                 setStatus('success')
             }
         }
         if (status === 'idle') {
             completeCheckout()
         }
-    }, [status])
-
-    useEffect(() => {
-        if (orderId) {
-            router.replace(`/order/confirmation?order=${orderId}`)
-        }
-    }, [status, router, orderId])
+    }, [status, router])
 
     useEffect(() => {
         if (status === 'error') {

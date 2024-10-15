@@ -5,12 +5,12 @@ import {
     getCheckout,
 } from '../../shared'
 import handleError from '@/lib/errorHandling'
-import { db } from '@/db'
-import { CartTable } from '@/schema/cart'
+import { db } from '@/drizzle/db'
+import { CartTable } from '@/drizzle/schema/cart'
 import { eq } from 'drizzle-orm'
 import { serialize, SerializeOptions } from 'cookie'
-import { CheckoutTable } from '@/schema/checkout'
-import { OrderLineItemTable, OrderTable } from '@/schema/order'
+import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
 
 const completeCheckout = async (id: string) => {
     const completedCheckout = await db

@@ -1,6 +1,6 @@
 import handleError from '@/lib/errorHandling'
-import { db } from '@/db'
-import { CartLineItemTable, CartTable } from '@/schema/cart'
+import { db } from '@/drizzle/db'
+import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import { and, eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 import {
@@ -10,7 +10,7 @@ import {
     getCart,
     updateCheckout,
 } from '@/app/api/shared'
-import { CheckoutLineItemTable } from '@/schema/checkout'
+import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
 import { CartLineRecord } from '@/types/records'
 
 const deleteCartLine = async (id: string) => {

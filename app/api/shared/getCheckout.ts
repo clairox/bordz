@@ -1,5 +1,5 @@
-import { db } from '@/db'
-import { CheckoutTable } from '@/schema/checkout'
+import { db } from '@/drizzle/db'
+import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { eq } from 'drizzle-orm'
 
 const getCheckout = async (id: string) => {

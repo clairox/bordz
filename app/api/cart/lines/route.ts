@@ -8,11 +8,11 @@ import {
     getCart,
     updateCheckout,
 } from '@/app/api/shared'
-import { db } from '@/db'
+import { db } from '@/drizzle/db'
 import handleError from '@/lib/errorHandling'
-import { CartLineItemTable, CartTable } from '@/schema/cart'
-import { ProductTable } from '@/schema/product'
-import { CheckoutLineItemTable } from '@/schema/checkout'
+import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
+import { ProductTable } from '@/drizzle/schema/product'
+import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
 import { CartLineRecord, ProductRecord } from '@/types/records'
 
 const getProduct = async (id: string) => {

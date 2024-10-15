@@ -1,6 +1,6 @@
 import handleError from '@/lib/errorHandling'
-import { db } from '@/db'
-import { ProductTable } from '@/schema/product'
+import { db } from '@/drizzle/db'
+import { ProductTable } from '@/drizzle/schema/product'
 import { NextRequest, NextResponse } from 'next/server'
 
 const defaultLimit = 40

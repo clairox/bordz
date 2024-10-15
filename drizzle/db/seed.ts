@@ -1,5 +1,5 @@
 import { db } from '.'
-import { ProductTable } from '@/schema/product'
+import { ProductTable } from '@/drizzle/schema/product'
 
 const seed = async () => {
     type ProductType = 'OTHER' | 'BOARD'

@@ -1,6 +1,6 @@
-import { db } from '@/db'
+import { db } from '@/drizzle/db'
 import handleError from '@/lib/errorHandling'
-import { CheckoutLineItemTable, CheckoutTable } from '@/schema/checkout'
+import { CheckoutLineItemTable, CheckoutTable } from '@/drizzle/schema/checkout'
 import { NextRequest, NextResponse } from 'next/server'
 import {
     calculateTaxManually,

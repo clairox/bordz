@@ -1,6 +1,6 @@
-import { CartLineItemTable, CartTable } from '@/schema/cart'
-import { CheckoutTable } from '@/schema/checkout'
-import { ProductTable } from '@/schema/product'
+import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
+import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { ProductTable } from '@/drizzle/schema/product'
 
 type ProductRecord = typeof ProductTable.$inferSelect
 type CartRecord = typeof CartTable.$inferSelect

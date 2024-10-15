@@ -3,8 +3,9 @@ const fetchAbsolute = (
     init?: RequestInit
 ): Promise<Response> => {
     if (typeof info === 'string') {
-        if (!info.startsWith('/')) {
-            throw new Error('Invalid fetch url')
+        const isPathname = info.startsWith('/')
+        if (!isPathname && !URL.canParse(info)) {
+            throw new Error('Invalid URL')
         }
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL
@@ -12,7 +13,7 @@ const fetchAbsolute = (
             throw new Error('NEXT_PUBLIC_BASE_API_URL is not defined')
         }
 
-        info = baseUrl + info
+        info = isPathname ? baseUrl + info : info
     }
 
     return fetch(info, init)

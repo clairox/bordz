@@ -1,6 +1,6 @@
-import { CheckoutTable } from '@/schema/checkout'
+import { CheckoutTable } from '@/drizzle/schema/checkout'
 import calculateTaxManually from './calculateTaxManually'
-import { db } from '@/db'
+import { db } from '@/drizzle/db'
 import getCheckout from './getCheckout'
 import { eq } from 'drizzle-orm'
 import createInternalServerError from './createInternalServerError'

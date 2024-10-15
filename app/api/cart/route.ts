@@ -6,8 +6,8 @@ import {
     createNotFoundError,
     getCart,
 } from '../shared'
-import { db } from '@/db'
-import { CartTable } from '@/schema/cart'
+import { db } from '@/drizzle/db'
+import { CartTable } from '@/drizzle/schema/cart'
 import { eq } from 'drizzle-orm'
 import { serialize } from 'cookie'
 
