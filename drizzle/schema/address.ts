@@ -1,7 +1,8 @@
 import { varchar } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+
 import { pgTableWithAutoFields, shortUuid } from './shared'
 import { CustomerTable } from './user'
-import { relations } from 'drizzle-orm'
 
 export const AddressTable = pgTableWithAutoFields('addresses', {
     fullName: varchar('full_name', { length: 100 }).notNull(),

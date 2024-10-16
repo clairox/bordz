@@ -1,6 +1,7 @@
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 type ProcessingStatus = 'idle' | 'loading' | 'error' | 'success'
 

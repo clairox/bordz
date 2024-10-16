@@ -1,16 +1,16 @@
-import { db } from '@/drizzle/db'
-import handleError from '@/lib/errorHandling'
-import { OrderTable } from '@/drizzle/schema/order'
-import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
-import { createNotFoundError } from '@/app/api/shared'
+import { eq } from 'drizzle-orm'
+
+import { db } from '@/drizzle/db'
+import { OrderTable } from '@/drizzle/schema/order'
+import { createNotFoundError, handleError } from '@/lib/errors'
 
 export const GET = async (
     _: NextRequest,
     context: { params: { orderId: string } }
 ) => {
     const { orderId } = context.params
-    if (orderId == undefined) {
+    if (!orderId) {
         throw createNotFoundError('Order')
     }
 

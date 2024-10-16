@@ -1,5 +1,7 @@
 'use client'
+
 import { QueryClientProvider } from '@tanstack/react-query'
+
 import { AuthProvider } from './authContext'
 import { getQueryClient } from '../lib/queryClient'
 import { CartProvider } from './cartContext'

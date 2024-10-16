@@ -1,15 +1,17 @@
-import handleError from '@/lib/errorHandling'
 import { NextRequest, NextResponse } from 'next/server'
+import { eq } from 'drizzle-orm'
+import { serialize } from 'cookie'
+
+import { getCart } from '../shared'
+import { db } from '@/drizzle/db'
+import { CartTable } from '@/drizzle/schema/cart'
 import {
     createBadRequestError,
     createInternalServerError,
     createNotFoundError,
-    getCart,
-} from '../shared'
-import { db } from '@/drizzle/db'
-import { CartTable } from '@/drizzle/schema/cart'
-import { eq } from 'drizzle-orm'
-import { serialize } from 'cookie'
+    handleError,
+} from '@/lib/errors'
+import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
 
 const createCart = async () => {
     const newCart = await db
@@ -35,11 +37,8 @@ export const GET = async (request: NextRequest) => {
             const newCart = await createCart()
 
             const cookie = serialize('cartId', newCart.id, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV !== 'development',
+                ...DEFAULT_COOKIE_CONFIG,
                 maxAge: 60 * 60 * 24 * 14,
-                sameSite: 'strict',
-                path: '/',
             })
 
             const response = NextResponse.json(newCart)
@@ -69,11 +68,8 @@ export const DELETE = async (request: NextRequest) => {
         }
 
         const cookie = serialize('cartId', '', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV !== 'development',
+            ...DEFAULT_COOKIE_CONFIG,
             maxAge: -1,
-            sameSite: 'strict',
-            path: '/',
         })
 
         const response = new NextResponse(null, { status: 204 })

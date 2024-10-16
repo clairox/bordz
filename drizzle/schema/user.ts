@@ -1,9 +1,10 @@
 import { pgEnum, smallint, varchar } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+
 import { pgTableWithAutoFields, shortUuid } from './shared'
 import { AddressTable } from './address'
 import { OrderTable } from './order'
 import { CartTable } from './cart'
-import { relations } from 'drizzle-orm'
 import { WishlistTable } from './wishlist'
 
 export const UserRole = pgEnum('user_role', ['ADMIN', 'CUSTOMER'])

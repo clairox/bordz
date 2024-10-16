@@ -1,10 +1,11 @@
-import { CheckoutTable } from '@/drizzle/schema/checkout'
-import calculateTaxManually from './calculateTaxManually'
-import { db } from '@/drizzle/db'
-import getCheckout from './getCheckout'
 import { eq } from 'drizzle-orm'
-import createInternalServerError from './createInternalServerError'
+
+import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { db } from '@/drizzle/db'
 import { CartRecord } from '@/types/records'
+import { calculateTaxManually } from '@/utils/helpers'
+import { createInternalServerError } from '@/lib/errors'
+import getCheckout from './getCheckout'
 
 const updateCheckout = async (id: string, updatedCart: CartRecord) => {
     const totalTax = calculateTaxManually(updatedCart.total)

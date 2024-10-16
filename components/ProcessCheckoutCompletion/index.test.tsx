@@ -1,4 +1,5 @@
 import { render, waitFor } from '@testing-library/react'
+
 import ProcessCheckoutCompletion from '.'
 
 const replace = vi.hoisted(() => vi.fn())

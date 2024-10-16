@@ -1,10 +1,15 @@
 'use client'
+
 import React from 'react'
 
-class ErrorBoundary extends React.Component {
+type ErrorBoundaryProps = React.PropsWithChildren<{
+    fallback: React.ReactNode
+}>
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
     state = { hasError: false }
 
-    static getDerivedStateFromError(error: Error) {
+    static getDerivedStateFromError() {
         return { hasError: true }
     }
 

@@ -1,5 +1,6 @@
-import APIError from '@/app/api/shared/APIError'
 import { NextResponse } from 'next/server'
+
+import APIError from '@/lib/APIError'
 
 const handleError = (error: unknown) => {
     console.log(error)

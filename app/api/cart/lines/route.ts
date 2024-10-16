@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
-import {
-    createBadRequestError,
-    createInternalServerError,
-    createNotFoundError,
-    getCart,
-    updateCheckout,
-} from '@/app/api/shared'
+import { getCart, updateCheckout } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
-import handleError from '@/lib/errorHandling'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import { ProductTable } from '@/drizzle/schema/product'
 import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
 import { CartLineRecord, ProductRecord } from '@/types/records'
+import {
+    createBadRequestError,
+    createInternalServerError,
+    createNotFoundError,
+    handleError,
+} from '@/lib/errors'
 
 const getProduct = async (id: string) => {
     return await db.query.ProductTable.findFirst({

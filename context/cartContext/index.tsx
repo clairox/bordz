@@ -1,6 +1,8 @@
 'use client'
+
 import { createContext, useCallback, useContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
+
 import fetchAbsolute from '@/lib/fetchAbsolute'
 
 type CartContextValue = UseQueryResult<Cart, Error>

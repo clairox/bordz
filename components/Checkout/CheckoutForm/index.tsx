@@ -1,17 +1,18 @@
+import { useMemo, useState } from 'react'
+import { z } from 'zod'
+import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
     AddressElement,
     PaymentElement,
     useElements,
     useStripe,
 } from '@stripe/react-stripe-js'
-import { useMemo, useState } from 'react'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form'
-import CheckoutFormSchema from './schema'
-import { cn } from '@/utils/helpers'
+
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { cn } from '@/utils/helpers'
 import { useUpdateCheckout } from '@/hooks'
+import CheckoutFormSchema from './schema'
 
 type FormData = z.infer<typeof CheckoutFormSchema>
 
@@ -86,7 +87,7 @@ const CheckoutForm = () => {
                     shippingAddressId: shippingAddress.id,
                 })
             } catch {
-                // TODO: toast('As error has occurred while processing your payment. You have not been charged.')
+                // TODO: toast('An error has occurred while processing your payment. You have not been charged.')
                 setSubmitting(false)
                 return
             }

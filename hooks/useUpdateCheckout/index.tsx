@@ -1,5 +1,6 @@
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const useUpdateCheckout = () => {
     const queryClient = useQueryClient()

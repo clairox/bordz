@@ -9,8 +9,8 @@ const fetchAbsolute = (
         }
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL
-        if (baseUrl == undefined) {
-            throw new Error('NEXT_PUBLIC_BASE_API_URL is not defined')
+        if (!baseUrl) {
+            throw new Error('NEXT_PUBLIC_BASE_API_URL is not defined.')
         }
 
         info = isPathname ? baseUrl + info : info

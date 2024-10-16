@@ -1,7 +1,9 @@
 'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
+
 import { useCartQuery } from '@/context/cartContext'
 
 const Header: React.FC = () => {

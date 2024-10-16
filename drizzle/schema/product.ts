@@ -1,6 +1,7 @@
 import { boolean, integer, pgEnum, varchar } from 'drizzle-orm/pg-core'
-import { pgTableWithAutoFields } from './shared'
 import { relations } from 'drizzle-orm'
+
+import { pgTableWithAutoFields } from './shared'
 import { BoardSetupTable } from './boardSetup'
 
 export const ProductType = pgEnum('product_type', ['BOARD', 'OTHER'])

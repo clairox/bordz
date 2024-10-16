@@ -1,6 +1,7 @@
+import { eq } from 'drizzle-orm'
+
 import { db } from '@/drizzle/db'
 import { CartTable } from '@/drizzle/schema/cart'
-import { eq } from 'drizzle-orm'
 
 const getCart = async (id: string) => {
     return await db.query.CartTable.findFirst({

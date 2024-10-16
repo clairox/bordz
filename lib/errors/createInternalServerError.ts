@@ -1,4 +1,4 @@
-import APIError from './APIError'
+import APIError from '../APIError'
 
 const createInternalServerError = (message?: string) => {
     return new APIError(

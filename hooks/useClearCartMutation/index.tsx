@@ -1,24 +1,22 @@
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
+
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const useClearCartMutation = () => {
     const queryClient = useQueryClient()
 
-    const clearCart = useCallback(async (): Promise<Cart> => {
-        try {
-            const res = await fetchAbsolute(`/cart/lines`, {
-                method: 'DELETE',
-            })
-
-            return await res.json()
-        } catch (error) {
-            throw error
-        }
-    }, [])
-
     return useMutation({
-        mutationFn: clearCart,
+        mutationFn: async (): Promise<Cart> => {
+            try {
+                const res = await fetchAbsolute(`/cart/lines`, {
+                    method: 'DELETE',
+                })
+
+                return await res.json()
+            } catch (error) {
+                throw error
+            }
+        },
         onSuccess: cart => {
             queryClient.invalidateQueries({ queryKey: ['cart'] })
 

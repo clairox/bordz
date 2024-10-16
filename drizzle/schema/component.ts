@@ -6,8 +6,9 @@ import {
     text,
     varchar,
 } from 'drizzle-orm/pg-core'
-import { generatePK, pgTableWithAutoFields, shortUuid } from './shared'
 import { relations } from 'drizzle-orm'
+
+import { generatePK, pgTableWithAutoFields, shortUuid } from './shared'
 import { BoardSetupTable } from './boardSetup'
 
 export const ComponentTable = pgTableWithAutoFields('components', {

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react'
+
 import RedirectIf from '.'
 
 const redirect = vi.hoisted(() => vi.fn())

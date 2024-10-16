@@ -1,11 +1,13 @@
 'use client'
-import { useDeleteCartLineMutation } from '@/hooks'
-import { useCartQuery } from '@/context/cartContext'
-import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
+
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
+
+import { useDeleteCartLineMutation } from '@/hooks'
+import { useCartQuery } from '@/context/cartContext'
 import PriceRepr from '../PriceRepr'
-import { useRouter } from 'next/navigation'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
@@ -24,7 +26,7 @@ const Cart: React.FC = () => {
         )
     }
 
-    if (status === 'pending' || cart == undefined) {
+    if (status === 'pending' || !cart) {
         return <div>Loading...</div>
     }
 

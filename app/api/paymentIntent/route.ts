@@ -1,9 +1,8 @@
-import handleError from '@/lib/errorHandling'
-import stripe from '@/lib/stripe/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { uuid } from 'short-uuid'
-// import Stripe from 'stripe'
-import { createBadRequestError } from '@/app/api/shared'
+
+import stripe from '@/lib/stripe/server'
+import { createBadRequestError, handleError } from '@/lib/errors'
 
 // type Item = {
 //     amount: number

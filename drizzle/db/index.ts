@@ -1,6 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import { config } from 'dotenv'
+
 import schema from '@/drizzle/schema'
 
 config({ path: '.env.local' })

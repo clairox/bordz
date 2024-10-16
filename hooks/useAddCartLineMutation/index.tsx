@@ -1,14 +1,16 @@
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
+
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const useAddCartLineMutation = () => {
     const queryClient = useQueryClient()
 
     type AddCartLineVariables = { productId: string }
 
-    const addCartLine = useCallback(
-        async ({ productId }: AddCartLineVariables): Promise<Cart> => {
+    return useMutation({
+        mutationFn: async ({
+            productId,
+        }: AddCartLineVariables): Promise<Cart> => {
             try {
                 const res = await fetchAbsolute(`/cart/lines`, {
                     method: 'POST',
@@ -20,11 +22,6 @@ const useAddCartLineMutation = () => {
                 throw error
             }
         },
-        []
-    )
-
-    return useMutation({
-        mutationFn: addCartLine,
         onSuccess: cart => {
             queryClient.invalidateQueries({ queryKey: ['cart'] })
 

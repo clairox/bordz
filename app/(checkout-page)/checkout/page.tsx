@@ -1,10 +1,12 @@
 'use client'
+
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+
 import Checkout from '@/components/Checkout'
 import { useCartQuery } from '@/context/cartContext'
-import { useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import ProcessCheckoutCompletion from '@/components/ProcessCheckoutCompletion'
 import RedirectIf from '@/components/RedirectIf'
-import ProcessCheckoutCompletion from '@/components/Checkout/ProcessCheckoutCompletion'
 
 const CheckoutPage = () => {
     const searchParams = useSearchParams()

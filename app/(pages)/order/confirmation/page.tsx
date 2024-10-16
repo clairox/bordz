@@ -1,7 +1,8 @@
+import { redirect } from 'next/navigation'
+
 import PriceRepr from '@/components/PriceRepr'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { getQueryClient } from '@/lib/queryClient'
-import { redirect } from 'next/navigation'
 
 const queryClient = getQueryClient()
 

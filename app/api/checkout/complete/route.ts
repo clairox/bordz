@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { serialize, SerializeOptions } from 'cookie'
+import { eq } from 'drizzle-orm'
+
+import { getCheckout } from '@/app/api/shared'
+import { db } from '@/drizzle/db'
+import { CartTable } from '@/drizzle/schema/cart'
+import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
 import {
     createBadRequestError,
     createInternalServerError,
-    getCheckout,
-} from '../../shared'
-import handleError from '@/lib/errorHandling'
-import { db } from '@/drizzle/db'
-import { CartTable } from '@/drizzle/schema/cart'
-import { eq } from 'drizzle-orm'
-import { serialize, SerializeOptions } from 'cookie'
-import { CheckoutTable } from '@/drizzle/schema/checkout'
-import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
+    handleError,
+} from '@/lib/errors'
+import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
 
 const completeCheckout = async (id: string) => {
     const completedCheckout = await db
@@ -106,20 +108,14 @@ export const POST = async (request: NextRequest) => {
 
         await db.delete(CartTable).where(eq(CartTable.id, cartId))
 
-        const cookieDeletionConfig = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV !== 'development',
+        const cartIdCookie = serialize('cartId', '', {
+            ...DEFAULT_COOKIE_CONFIG,
             maxAge: -1,
-            sameSite: 'strict' as SerializeOptions['sameSite'],
-            path: '/',
-        }
-
-        const cartIdCookie = serialize('cartId', '', cookieDeletionConfig)
-        const checkoutIdCookie = serialize(
-            'checkoutId',
-            '',
-            cookieDeletionConfig
-        )
+        })
+        const checkoutIdCookie = serialize('checkoutId', '', {
+            ...DEFAULT_COOKIE_CONFIG,
+            maxAge: -1,
+        })
 
         const response = NextResponse.json(
             { orderId: order.id },

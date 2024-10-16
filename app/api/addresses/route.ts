@@ -1,7 +1,8 @@
-import { db } from '@/drizzle/db'
-import handleError from '@/lib/errorHandling'
-import { AddressTable } from '@/drizzle/schema/address'
 import { NextRequest, NextResponse } from 'next/server'
+
+import { db } from '@/drizzle/db'
+import { AddressTable } from '@/drizzle/schema/address'
+import { handleError } from '@/lib/errors'
 
 export const POST = async (request: NextRequest) => {
     const { fullName, line1, line2, city, state, postalCode } =

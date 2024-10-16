@@ -1,6 +1,7 @@
-import handleError from '@/lib/errorHandling'
-import stripe from '@/lib/stripe/server'
 import { NextRequest, NextResponse } from 'next/server'
+
+import stripe from '@/lib/stripe/server'
+import { handleError } from '@/lib/errors'
 
 export const GET = async (
     _: NextRequest,

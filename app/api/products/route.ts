@@ -1,7 +1,8 @@
-import handleError from '@/lib/errorHandling'
+import { NextRequest, NextResponse } from 'next/server'
+
 import { db } from '@/drizzle/db'
 import { ProductTable } from '@/drizzle/schema/product'
-import { NextRequest, NextResponse } from 'next/server'
+import { handleError } from '@/lib/errors'
 
 const defaultLimit = 40
 const defaultOffset = 0

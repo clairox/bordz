@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react'
+
 import CheckoutPage from './page'
 
 vi.mock('@/components/Checkout/ProcessCheckoutCompletion', () => ({

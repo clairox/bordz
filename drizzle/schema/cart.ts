@@ -1,8 +1,9 @@
 import { integer, smallint } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+
 import { pgTableWithAutoFields, shortUuid } from './shared'
 import { CustomerTable } from './user'
 import { ProductTable } from './product'
-import { relations } from 'drizzle-orm'
 import { CheckoutTable } from './checkout'
 
 export const CartTable = pgTableWithAutoFields('carts', {

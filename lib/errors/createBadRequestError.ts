@@ -1,4 +1,4 @@
-import APIError from './APIError'
+import APIError from '../APIError'
 
 const createBadRequestError = (message?: string) => {
     return new APIError(

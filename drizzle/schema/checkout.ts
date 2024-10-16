@@ -1,10 +1,11 @@
 import { integer, smallint, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+
 import { pgTableWithAutoFields, shortUuid } from './shared'
 import { CustomerTable } from './user'
 import { OrderTable } from './order'
 import { AddressTable } from './address'
 import { ProductTable } from './product'
-import { relations } from 'drizzle-orm'
 import { CartTable } from './cart'
 
 export const CheckoutTable = pgTableWithAutoFields('checkouts', {

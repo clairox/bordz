@@ -1,7 +1,8 @@
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { useCallback } from 'react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import Stripe from 'stripe'
+
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const usePaymentIntentQuery = (checkout: Checkout) => {
     const createPaymentIntent = useCallback(async () => {

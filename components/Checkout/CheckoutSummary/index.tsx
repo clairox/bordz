@@ -1,5 +1,6 @@
-import PriceRepr from '@/components/PriceRepr'
 import Link from 'next/link'
+
+import PriceRepr from '@/components/PriceRepr'
 
 type CheckoutSummaryProps = {
     checkout: Checkout

@@ -1,17 +1,17 @@
-import handleError from '@/lib/errorHandling'
+import { NextRequest, NextResponse } from 'next/server'
+import { and, eq } from 'drizzle-orm'
+
+import { getCart, updateCheckout } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
-import { and, eq } from 'drizzle-orm'
-import { NextRequest, NextResponse } from 'next/server'
+import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
+import { CartLineRecord } from '@/types/records'
 import {
     createBadRequestError,
     createInternalServerError,
     createNotFoundError,
-    getCart,
-    updateCheckout,
-} from '@/app/api/shared'
-import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
-import { CartLineRecord } from '@/types/records'
+    handleError,
+} from '@/lib/errors'
 
 const deleteCartLine = async (id: string) => {
     const deletedCartLine = await db

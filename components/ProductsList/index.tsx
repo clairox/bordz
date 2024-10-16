@@ -1,11 +1,13 @@
 'use client'
+
+import { useCallback, useEffect, useMemo } from 'react'
+import { QueryStatus, useQuery } from '@tanstack/react-query'
+import { ArrowClockwise } from '@phosphor-icons/react'
+
+import { useCartQuery } from '@/context/cartContext'
 import { useAddCartLineMutation } from '@/hooks'
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { ArrowClockwise } from '@phosphor-icons/react'
-import { QueryStatus, useQuery } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo } from 'react'
 import PriceRepr from '../PriceRepr'
-import { useCartQuery } from '@/context/cartContext'
 
 const ProductsList: React.FC = () => {
     const {
@@ -43,7 +45,7 @@ const ProductsList: React.FC = () => {
         )
     }
 
-    if (productsStatus === 'pending' || products == undefined) {
+    if (productsStatus === 'pending' || !products) {
         return <div>Loading...</div>
     }
 
@@ -86,13 +88,13 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 
     useEffect(() => {
         if (addToCartStatus === 'error') {
-            //TODO: toast('There was an issue loading the cart. Please try again later')
+            //TODO: toast('There was an issue loading the cart. Please try again later.')
         }
     }, [addToCartStatus])
 
     const addToCart = useCallback(
         (productId: string) => {
-            if (cartId == undefined) {
+            if (!cartId) {
                 return
             }
 

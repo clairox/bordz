@@ -1,8 +1,9 @@
 import { smallint } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+
 import { pgTableWithAutoFields, shortUuid } from './shared'
 import { CustomerTable } from './user'
 import { ProductTable } from './product'
-import { relations } from 'drizzle-orm'
 
 export const WishlistTable = pgTableWithAutoFields('wishlists', {
     quantity: smallint('quantity').default(0).notNull(),

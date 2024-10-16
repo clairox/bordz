@@ -1,18 +1,18 @@
-import { db } from '@/drizzle/db'
-import handleError from '@/lib/errorHandling'
-import { CheckoutLineItemTable, CheckoutTable } from '@/drizzle/schema/checkout'
 import { NextRequest, NextResponse } from 'next/server'
+import { serialize } from 'cookie'
+import { eq } from 'drizzle-orm'
+
+import { getCart, getCheckout } from '@/app/api/shared'
+import { calculateTaxManually } from '@/utils/helpers'
+import { db } from '@/drizzle/db'
+import { CheckoutLineItemTable, CheckoutTable } from '@/drizzle/schema/checkout'
 import {
-    calculateTaxManually,
     createBadRequestError,
     createInternalServerError,
     createNotFoundError,
-    getCart,
-    getCheckout,
-} from '@/app/api/shared'
-import { SHIPPING_COST } from '@/utils/constants'
-import { serialize } from 'cookie'
-import { eq } from 'drizzle-orm'
+    handleError,
+} from '@/lib/errors'
+import { DEFAULT_COOKIE_CONFIG, SHIPPING_COST } from '@/utils/constants'
 
 const createCheckout = async (cart: Cart) => {
     const totalTax = calculateTaxManually(cart.total)
@@ -79,11 +79,8 @@ export const GET = async (request: NextRequest) => {
             const newCheckout = await createCheckout(cart)
 
             const cookie = serialize('checkoutId', newCheckout.id, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV !== 'development',
+                ...DEFAULT_COOKIE_CONFIG,
                 maxAge: 60 * 60 * 24,
-                sameSite: 'strict',
-                path: '/',
             })
 
             const response = NextResponse.json(newCheckout)

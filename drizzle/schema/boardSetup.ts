@@ -1,6 +1,7 @@
+import { relations } from 'drizzle-orm'
+
 import { pgTableWithAutoFields, shortUuid } from './shared'
 import { ProductTable } from './product'
-import { relations } from 'drizzle-orm'
 import { ComponentTable } from './component'
 
 export const BoardSetupTable = pgTableWithAutoFields('board_setups', {
