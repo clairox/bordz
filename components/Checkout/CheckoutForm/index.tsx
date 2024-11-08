@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
-import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
     AddressElement,
@@ -10,9 +10,9 @@ import {
 } from '@stripe/react-stripe-js'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { cn } from '@/utils/helpers'
 import { useUpdateCheckout } from '@/hooks'
 import CheckoutFormSchema from './schema'
+import FormInput from '@/components/FormInput'
 
 type FormData = z.infer<typeof CheckoutFormSchema>
 
@@ -153,48 +153,6 @@ const CheckoutForm = () => {
                     {submitting ? 'Submitting...' : 'Place order'}
                 </button>
             </form>
-        </div>
-    )
-}
-
-type FormInputProps = {
-    name: keyof FormData
-    label: string
-    form: UseFormReturn<FormData>
-    autoFocus?: boolean
-}
-
-const FormInput: React.FC<FormInputProps> = ({
-    name,
-    label,
-    form,
-    autoFocus = false,
-}) => {
-    const errors = useMemo(() => form.formState.errors, [form.formState.errors])
-
-    return (
-        <div className="flex flex-col gap-2 w-full">
-            <label
-                htmlFor={name}
-                className={errors[name] ? 'text-red-500' : 'text-black'}
-            >
-                {label}
-            </label>
-            <input
-                type="text"
-                id={name}
-                {...form.register(name)}
-                className={cn(
-                    'border focus:outline-none focus:ring-2',
-                    errors[name]
-                        ? 'border-red-500 focus:ring-red-300'
-                        : 'border-black'
-                )}
-                autoFocus={autoFocus}
-            />
-            {errors[name] && (
-                <p className="text-red-500">{errors[name].message}</p>
-            )}
         </div>
     )
 }

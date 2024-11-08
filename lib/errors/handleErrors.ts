@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import APIError from '@/lib/APIError'
 
 const handleError = (error: unknown) => {
-    console.log(error)
+    console.error(error)
     if (error instanceof APIError) {
         return NextResponse.json(error, { status: error.status })
     } else if (error instanceof Error) {

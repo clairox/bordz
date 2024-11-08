@@ -6,6 +6,8 @@
 -   [x] TEST Redirect component redirects when condition is true
 -   [x] TEST PriceRepr component
 -   [x] Move /schema and /db to /drizzle
+-   [x] Do a bit of refactoring
+-   [ ] Create form password input component
 
 ### Cart
 
@@ -26,7 +28,7 @@
 -   [ ] Abandon checkout after certain interval
 -   [ ] Make routes/components for other paymentIntent statuses
     -   [ ] List each of them here
--   [ ] Do a bit of refactoring
+-   [ ] Checkout preview page
 
 ### Authentication
 

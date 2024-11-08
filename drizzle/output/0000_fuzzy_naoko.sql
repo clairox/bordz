@@ -4,12 +4,6 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."user_role" AS ENUM('ADMIN', 'CUSTOMER');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "addresses" (
 	"id" varchar(36) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
 	"full_name" varchar(100) NOT NULL,
@@ -182,15 +176,6 @@ CREATE TABLE IF NOT EXISTS "customers" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "users" (
-	"id" varchar(36) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
-	"email" varchar(320) NOT NULL,
-	"role" "user_role" DEFAULT 'CUSTOMER' NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "users_email_unique" UNIQUE("email")
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "wishlist_line_items" (
 	"id" varchar(36) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
 	"product_id" varchar(36) NOT NULL,
@@ -359,12 +344,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "orders" ADD CONSTRAINT "orders_shipping_address_id_addresses_id_fk" FOREIGN KEY ("shipping_address_id") REFERENCES "public"."addresses"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "customers" ADD CONSTRAINT "customers_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

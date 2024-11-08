@@ -1,24 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { updateSession } from './lib/supabase/middleware'
+import { withCors } from './lib/middleware/withCors'
 
-export const middleware = (request: NextRequest) => {
-    const allowedOrigins = [
-        'http://localhost:3000',
-        'https://bordz.vercel.app',
-        'https://bordz-clairox-clairoxs-projects.vercel.app',
-    ]
-
-    const withCors = (response: NextResponse) => {
-        const origin = request.headers.get('origin')
-        if (origin && allowedOrigins.includes(origin)) {
-            response.headers.append('Access-Control-Allow-Origin', origin)
-        }
-        response.headers.append(
-            'Access-Control-Allow-Methods',
-            'GET, POST, PATCH, DELETE, OPTIONS'
-        )
-        response.headers.append('Access-Control-Allow-Headers', 'content-type')
-        return response
-    }
+export const middleware = async (request: NextRequest) => {
+    const supabaseResponse = await updateSession(request)
 
     if (
         request.nextUrl.pathname === '/checkout' &&
@@ -35,5 +20,11 @@ export const middleware = (request: NextRequest) => {
         }
     }
 
-    return withCors(NextResponse.next())
+    if (request.nextUrl.pathname === '/account') {
+        const url = request.nextUrl.origin + '/account/settings'
+        return NextResponse.redirect(url)
+    }
+
+    const response = withCors(request, supabaseResponse)
+    return response
 }

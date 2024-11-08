@@ -8,7 +8,7 @@ type ErrorProps = {
 
 const ErrorBoundary = ({ error }: ErrorProps) => {
     useEffect(() => {
-        console.log(error)
+        console.error(error)
     }, [error])
 
     return <h1>Something went wrong!</h1>

@@ -30,6 +30,7 @@ const createCart = async () => {
 export const GET = async (request: NextRequest) => {
     const cartId = request.cookies.get('cartId')?.value
 
+    // TODO: check session user and get cart from user if session exists
     try {
         const cart = cartId ? await getCart(cartId) : undefined
 
