@@ -70,17 +70,21 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
 const AccountHeaderButton: React.FC = () => {
     const {
         auth: { data: auth, status: authStatus },
+        customer: { data: customer },
     } = useAuthQuery()
 
     return (
         <HeaderButton
             href={auth ? '/account' : '/login'}
             icon={
-                <User
-                    size={28}
-                    weight="light"
-                    color={authStatus === 'pending' ? '#999' : '#000'}
-                />
+                <div className="flex gap-2">
+                    <User
+                        size={28}
+                        weight="light"
+                        color={authStatus === 'pending' ? '#999' : '#000'}
+                    />
+                    {customer && <span>{customer.firstName}</span>}
+                </div>
             }
             disabled={authStatus === 'pending'}
         />
