@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { serialize } from 'cookie'
-import jwt, { JwtPayload } from 'jsonwebtoken'
 
 import { createBadRequestError, handleError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
+import { decodeSessionToken } from '../shared'
 
 export const POST = async (request: NextRequest) => {
-    const { token } = await request.json()
+    const { token } = (await request.json()) as { token: string }
     if (!token) {
         return handleError(createBadRequestError('Token is missing.'))
     }
@@ -14,25 +14,27 @@ export const POST = async (request: NextRequest) => {
     try {
         const existingSessionCookie = request.cookies.get('session')?.value
         if (existingSessionCookie === token) {
-            return NextResponse.json({ success: true })
+            const {
+                user_metadata: { sub, email },
+            } = decodeSessionToken(existingSessionCookie)
+
+            return NextResponse.json({
+                id: sub,
+                email,
+            })
         }
 
-        const { exp } = jwt.verify(
-            token,
-            process.env.SUPABASE_JWT_SECRET || ''
-        ) as JwtPayload
-
-        if (!exp) {
-            // TODO: createUnauthorized error or something like that
-            throw new Error('Invalid token')
-        }
+        const { exp, user_metadata } = decodeSessionToken(token)
 
         const cookie = serialize('session', token, {
             ...DEFAULT_COOKIE_CONFIG,
             maxAge: exp - Math.floor(Date.now() * 0.001),
         })
 
-        const response = NextResponse.json({ success: true })
+        const response = NextResponse.json({
+            id: user_metadata.sub,
+            email: user_metadata.email,
+        })
         response.headers.append('Set-Cookie', cookie)
 
         return response
@@ -41,15 +43,26 @@ export const POST = async (request: NextRequest) => {
     }
 }
 
-export const DELETE = async () => {
+export const DELETE = async (request: NextRequest) => {
+    const session = request.cookies.get('session')?.value
+    if (!session) {
+        return new NextResponse(null, { status: 204 })
+    }
+
     try {
-        const cookie = serialize('session', '', {
+        const sessionCookie = serialize('session', '', {
+            ...DEFAULT_COOKIE_CONFIG,
+            maxAge: -1,
+        })
+
+        const cartIdCookie = serialize('cartId', '', {
             ...DEFAULT_COOKIE_CONFIG,
             maxAge: -1,
         })
 
         const response = new NextResponse(null, { status: 204 })
-        response.headers.append('Set-Cookie', cookie)
+        response.headers.append('Set-Cookie', sessionCookie)
+        response.headers.append('Set-Cookie', cartIdCookie)
 
         return response
     } catch (error) {

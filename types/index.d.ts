@@ -36,7 +36,15 @@ type CartLine = {
 
 type Customer = {
     id: string
-    cartId: string
+    userId: string
+    defaultAddressId?: string
+    displayName: string
+    firstName: string
+    lastName: string
+    numberOfOrders: number
+    phone?: string
+    createdAt: Date
+    updatedAt: Date
 }
 
 type Cart = {

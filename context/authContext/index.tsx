@@ -1,13 +1,45 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect } from 'react'
-import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
-import { User } from '@supabase/supabase-js'
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from 'react'
+import {
+    useMutation,
+    UseMutationResult,
+    useQuery,
+    useQueryClient,
+    UseQueryResult,
+} from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useSupabase } from '../supabaseContext'
 
-type AuthContextValue = UseQueryResult<User | null, Error>
+type Auth = {
+    id: string
+    email: string
+} | null
+
+type CreateCustomerMutationVars = {
+    userId: string
+    firstName: string
+    lastName: string
+    birthDate: Date
+    phone?: string
+}
+
+type AuthContextValue = {
+    auth: UseQueryResult<Auth, Error>
+    customer: UseQueryResult<Customer, Error>
+    createCustomerMutation: UseMutationResult<
+        Customer,
+        Error,
+        CreateCustomerMutationVars
+    >
+}
 
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue)
 
@@ -16,6 +48,8 @@ const useAuthQuery = () => useContext(AuthContext)
 const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const supabase = useSupabase()
     const queryClient = useQueryClient()
+
+    const [isNewAccount, setIsNewAccount] = useState(true)
 
     const createSession = useCallback(async (token: string) => {
         try {
@@ -29,6 +63,8 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
             if (!res.ok) {
                 throw res
             }
+
+            return await res.json()
         } catch (error) {
             throw error
         }
@@ -43,6 +79,8 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
             if (!res.ok) {
                 throw res
             }
+
+            return null
         } catch (error) {
             throw error
         }
@@ -59,46 +97,83 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         }
 
         if (!session) {
-            return { success: false }
-        }
-
-        createSession(session.access_token)
-        return { success: true }
-    }, [createSession, supabase.auth])
-
-    const getSessionUser = useCallback(async () => {
-        const {
-            data: { user },
-            error,
-        } = await supabase.auth.getUser()
-
-        if (error) {
-            supabase.auth.signOut()
-            killSession()
-            throw error
-        }
-
-        if (!user) {
-            supabase.auth.signOut()
-            killSession()
             return null
         }
 
-        return user
-    }, [killSession, supabase.auth])
+        return await createSession(session.access_token)
+    }, [createSession, supabase.auth])
 
-    const authQuery = useQuery<User | null>({
+    // Set session cookie in backend
+    const authQuery = useQuery<Auth>({
         queryKey: ['auth'],
         queryFn: async () => {
             try {
-                const { success } = await initializeSession()
-                if (!success) {
+                const data = await initializeSession()
+                if (!data) {
                     return null
                 }
 
-                return await getSessionUser()
+                return data
             } catch (error) {
                 console.error(error)
+                throw error
+            }
+        },
+    })
+
+    const customerQuery = useQuery<Customer>({
+        queryKey: ['customer'],
+        queryFn: async () => {
+            try {
+                if (!authQuery.data) {
+                    throw new Error(
+                        'customerQuery enabled without successful authQuery.'
+                    )
+                }
+
+                const res = await fetchAbsolute(
+                    `/customers?userId=${authQuery.data.id}`
+                )
+
+                if (!res.ok) {
+                    throw res
+                }
+
+                queryClient.invalidateQueries({ queryKey: ['cart'] })
+                return await res.json()
+            } catch (error) {
+                throw error
+            }
+        },
+        enabled: authQuery.data != null && !isNewAccount,
+    })
+
+    const createCustomerMutation = useMutation<
+        Customer,
+        Error,
+        CreateCustomerMutationVars
+    >({
+        mutationFn: async ({ userId, firstName, lastName, phone }) => {
+            try {
+                const res = await fetchAbsolute('/customers', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        userId,
+                        firstName,
+                        lastName,
+                        phone,
+                    }),
+                })
+
+                if (!res.ok) {
+                    throw res
+                }
+
+                setIsNewAccount(false)
+                const customer = await res.json()
+                queryClient.setQueryData(['customer'], customer)
+                return customer
+            } catch (error) {
                 throw error
             }
         },
@@ -107,15 +182,51 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     useEffect(() => {
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange(() => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] })
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'INITIAL_SESSION') {
+                if (session && session.user.confirmed_at != null) {
+                    setIsNewAccount(false)
+                }
+            }
+
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                if (!session) {
+                    throw new Error('Session is missing')
+                }
+
+                const auth = await createSession(session?.access_token)
+
+                queryClient.setQueryData(['auth'], auth)
+
+                if (session.user.confirmed_at != null) {
+                    setIsNewAccount(false)
+                    queryClient.invalidateQueries({ queryKey: ['customer'] })
+                }
+            }
+
+            if (event === 'SIGNED_OUT') {
+                queryClient.setQueryData(['customer'], null)
+
+                setIsNewAccount(true)
+
+                await killSession()
+
+                queryClient.invalidateQueries({ queryKey: ['auth'] })
+                queryClient.invalidateQueries({ queryKey: ['cart'] })
+            }
         })
 
         return () => subscription.unsubscribe()
-    }, [supabase.auth, queryClient])
+    }, [supabase.auth, queryClient, createSession, killSession])
 
     return (
-        <AuthContext.Provider value={authQuery}>
+        <AuthContext.Provider
+            value={{
+                auth: authQuery,
+                customer: customerQuery,
+                createCustomerMutation,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     )

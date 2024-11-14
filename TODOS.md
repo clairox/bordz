@@ -8,6 +8,7 @@
 -   [x] Move /schema and /db to /drizzle
 -   [x] Do a bit of refactoring
 -   [ ] Create form password input component
+-   [ ] Add updatedAt: new Date() to all resource updates
 
 ### Cart
 
@@ -32,4 +33,4 @@
 
 ### Authentication
 
--   [ ] When Auth is implemented, requests to /api/cart should get cartId from user if cartId cookie does not exist
+-   [x] When Auth is implemented, requests to /api/cart should get cartId from user if cartId cookie does not exist

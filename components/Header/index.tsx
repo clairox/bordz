@@ -68,7 +68,9 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
 }
 
 const AccountHeaderButton: React.FC = () => {
-    const { data: auth, status: authStatus } = useAuthQuery()
+    const {
+        auth: { data: auth, status: authStatus },
+    } = useAuthQuery()
 
     return (
         <HeaderButton

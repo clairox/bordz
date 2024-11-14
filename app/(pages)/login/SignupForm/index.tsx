@@ -7,25 +7,17 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
+import { User } from '@supabase/supabase-js'
 
 import { useSupabase } from '@/context/supabaseContext'
 import FormInput from '@/components/FormInput'
 import ButtonAsync from '@/components/ButtonAsync'
 import { CURRENT_YEAR, MIN_ALLOWED_CUSTOMER_AGE } from '@/utils/constants'
 import FormDateSelect from '@/components/FormDateSelect'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import SignupFormSchema from './schema'
-import { User } from '@supabase/supabase-js'
+import { useAuthQuery } from '@/context/authContext'
 
 type FormData = z.infer<typeof SignupFormSchema>
-
-// type UseSignupVariables = {
-//     firstName: string
-//     lastName: string
-//     email: string
-//     password: string
-//     birthDate: Date
-// }
 
 const SignupForm = () => {
     const form = useForm<FormData>({
@@ -34,6 +26,13 @@ const SignupForm = () => {
 
     const router = useRouter()
     const { auth } = useSupabase()
+    const {
+        createCustomerMutation: {
+            mutateAsync: createCustomer,
+            isPending: createCustomerIsPending,
+            isSuccess: createCustomerIsSuccess,
+        },
+    } = useAuthQuery()
 
     const {
         mutateAsync: signup,
@@ -67,43 +66,6 @@ const SignupForm = () => {
 
                 return user
             } catch (error) {
-                throw error
-            }
-        },
-    })
-
-    const {
-        mutateAsync: createCustomer,
-        isPending: createCustomerIsPending,
-        isSuccess: createCustomerIsSuccess,
-    } = useMutation<
-        void,
-        Error,
-        {
-            firstName: string
-            lastName: string
-            birthDate: Date
-            userId: string
-        }
-    >({
-        mutationFn: async ({ firstName, lastName, birthDate, userId }) => {
-            try {
-                const res = await fetchAbsolute('/customers', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        firstName,
-                        lastName,
-                        userId,
-                    }),
-                })
-
-                if (!res.ok) {
-                    throw res
-                }
-
-                return await res.json()
-            } catch (error) {
-                auth.signOut()
                 throw error
             }
         },
