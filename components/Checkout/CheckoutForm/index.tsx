@@ -1,7 +1,4 @@
-import { useState } from 'react'
-import { z } from 'zod'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { FormEvent, useEffect, useState } from 'react'
 import {
     AddressElement,
     PaymentElement,
@@ -11,21 +8,23 @@ import {
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useUpdateCheckout } from '@/hooks'
-import CheckoutFormSchema from './schema'
-import FormInput from '@/components/FormInput'
-
-type FormData = z.infer<typeof CheckoutFormSchema>
+import { useRouter } from 'next/navigation'
+import { useAuthQuery } from '@/context/authContext'
 
 const CheckoutForm = () => {
-    const form = useForm<FormData>({
-        resolver: zodResolver(CheckoutFormSchema),
-    })
-
     const stripe = useStripe()
     const elements = useElements()
 
+    const router = useRouter()
+
     const [message, setMessage] = useState<string | null>(null)
     const [submitting, setSubmitting] = useState(false)
+    const [email, setEmail] = useState('')
+
+    const {
+        auth: { data: auth },
+        customer: { status: customerStatus },
+    } = useAuthQuery()
 
     const { mutateAsync: updateCheckout } = useUpdateCheckout()
 
@@ -56,7 +55,30 @@ const CheckoutForm = () => {
         }
     }
 
-    const handleSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+    useEffect(() => {
+        if (email || (auth && customerStatus === 'pending')) {
+            return
+        }
+
+        if (auth) {
+            setEmail(auth.email)
+        } else {
+            const emailRegex =
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+            const sessionEmail = sessionStorage.getItem('email')
+            if (!sessionEmail || !emailRegex.test(sessionEmail)) {
+                sessionStorage.removeItem('email')
+                router.push('/start-checkout')
+            } else {
+                sessionStorage.removeItem('email')
+                setEmail(sessionEmail)
+            }
+        }
+    }, [router, email, auth, customerStatus])
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
         if (!stripe || !elements) {
             return
         }
@@ -83,7 +105,7 @@ const CheckoutForm = () => {
                 })
 
                 await updateCheckout({
-                    email: data.email,
+                    email,
                     shippingAddressId: shippingAddress.id,
                 })
             } catch {
@@ -111,26 +133,13 @@ const CheckoutForm = () => {
         }
     }
 
-    // TODO: Move email collection to signup/continue as guest page
     return (
         <div>
             <form
-                onSubmit={form.handleSubmit(handleSubmit)}
+                onSubmit={handleSubmit}
                 className="flex flex-col gap-8"
                 noValidate
             >
-                <div className="flex flex-col gap-2">
-                    <h2 className="font-semibold text-2xl">Contact</h2>
-                    {/* TODO: Only show email if customer is logged out */}
-                    <div className="flex flex-col gap-2">
-                        <FormInput
-                            name="email"
-                            label="Email"
-                            form={form}
-                            autoFocus
-                        />
-                    </div>
-                </div>
                 <div className="flex flex-col gap-2">
                     <h2 className="font-semibold text-2xl">Address</h2>
                     <AddressElement

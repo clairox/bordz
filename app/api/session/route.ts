@@ -60,9 +60,15 @@ export const DELETE = async (request: NextRequest) => {
             maxAge: -1,
         })
 
+        const checkoutIdCookie = serialize('checkoutId', '', {
+            ...DEFAULT_COOKIE_CONFIG,
+            maxAge: -1,
+        })
+
         const response = new NextResponse(null, { status: 204 })
         response.headers.append('Set-Cookie', sessionCookie)
         response.headers.append('Set-Cookie', cartIdCookie)
+        response.headers.append('Set-Cookie', checkoutIdCookie)
 
         return response
     } catch (error) {

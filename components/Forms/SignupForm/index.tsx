@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -19,12 +19,17 @@ import { useAuthQuery } from '@/context/authContext'
 
 type FormData = z.infer<typeof SignupFormSchema>
 
-const SignupForm = () => {
+type SignupFormProps = {
+    redirectTo?: string
+}
+
+const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
     const form = useForm<FormData>({
         resolver: zodResolver(SignupFormSchema),
     })
 
     const router = useRouter()
+    const pathname = usePathname()
     const { auth } = useSupabase()
     const {
         createCustomerMutation: {
@@ -86,7 +91,7 @@ const SignupForm = () => {
                 userId: newUser.id,
             })
 
-            router.push('/')
+            router.push(redirectTo)
         } catch (error) {
             if (!(error instanceof Error)) {
                 setMessage('An unexpected error has occurred.')
@@ -99,6 +104,7 @@ const SignupForm = () => {
 
     return (
         <Fragment>
+            <h2>Sign up</h2>
             {message && <p>{message}</p>}
             <form
                 onSubmit={form.handleSubmit(handleSubmit)}
@@ -133,7 +139,7 @@ const SignupForm = () => {
                 </ButtonAsync>
                 <p>
                     {'Already have an account? '}
-                    <Link href="/login">Log in</Link>
+                    <Link href={pathname}>Log in</Link>
                 </p>
             </form>
         </Fragment>

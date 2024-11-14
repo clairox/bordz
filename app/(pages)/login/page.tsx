@@ -1,5 +1,5 @@
-import LoginForm from './LoginForm'
-import SignupForm from './SignupForm'
+import LoginForm from '@/components/Forms/LoginForm'
+import SignupForm from '@/components/Forms/SignupForm'
 
 type LoginPageProps = {
     searchParams: { register?: string }

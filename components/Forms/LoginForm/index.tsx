@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -20,12 +20,17 @@ type UseLoginVariables = {
     password: string
 }
 
-const LoginForm = () => {
+type LoginFormProps = {
+    redirectTo?: string
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
     const form = useForm<FormData>({
         resolver: zodResolver(LoginFormSchema),
     })
 
     const router = useRouter()
+    const pathname = usePathname()
     const { auth } = useSupabase()
 
     const {
@@ -56,7 +61,7 @@ const LoginForm = () => {
 
         try {
             await login(data)
-            router.push('/')
+            router.push(redirectTo)
         } catch {
             setMessage('An error has occurred.')
         }
@@ -64,6 +69,7 @@ const LoginForm = () => {
 
     return (
         <Fragment>
+            <h2>Log in</h2>
             {message && <p>{message}</p>}
             <form
                 onSubmit={form.handleSubmit(handleSubmit)}
@@ -82,7 +88,7 @@ const LoginForm = () => {
                 </ButtonAsync>
                 <p>
                     {"Don't have an account? "}
-                    <Link href={'/login?register=true'}>Sign up</Link>
+                    <Link href={pathname + '?register=true'}>Sign up</Link>
                 </p>
             </form>
         </Fragment>

@@ -29,7 +29,6 @@
 -   [ ] Abandon checkout after certain interval
 -   [ ] Make routes/components for other paymentIntent statuses
     -   [ ] List each of them here
--   [ ] Checkout preview page
 
 ### Authentication
 

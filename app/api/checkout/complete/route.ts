@@ -104,7 +104,9 @@ export const POST = async (request: NextRequest) => {
         // @ts-expect-error type shit
         const order = await createOrder(checkout)
 
-        await db.update(CheckoutTable).set({ orderId: order.id })
+        await db
+            .update(CheckoutTable)
+            .set({ orderId: order.id, updatedAt: new Date() })
 
         await db.delete(CartTable).where(eq(CartTable.id, cartId))
 

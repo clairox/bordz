@@ -8,9 +8,13 @@ import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
 import { useDeleteCartLineMutation } from '@/hooks'
 import { useCartQuery } from '@/context/cartContext'
 import PriceRepr from '../PriceRepr'
+import { useAuthQuery } from '@/context/authContext'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
+    const {
+        customer: { data: customer },
+    } = useAuthQuery()
 
     const router = useRouter()
 
@@ -57,7 +61,11 @@ const Cart: React.FC = () => {
                     <div className="flex justify-end">
                         <button
                             disabled={!cart.lines || cart.lines.length === 0}
-                            onClick={() => router.push('/checkout')}
+                            onClick={() =>
+                                router.push(
+                                    customer ? '/checkout' : '/start-checkout'
+                                )
+                            }
                         >
                             Checkout
                         </button>
