@@ -4,9 +4,10 @@ import { serialize } from 'cookie'
 
 import { getCart, createCart, getCartByOwnerId } from '../shared'
 import { db } from '@/drizzle/db'
-import { CartTable } from '@/drizzle/schema/cart'
+import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import {
     createBadRequestError,
+    createInternalServerError,
     createNotFoundError,
     handleError,
 } from '@/lib/errors'
@@ -14,6 +15,7 @@ import {
     CART_ID_COOKIE_MAX_AGE,
     DEFAULT_COOKIE_CONFIG,
 } from '@/utils/constants'
+import { CartLineRecord, CartRecord } from '@/types/records'
 
 export const POST = async (request: NextRequest) => {
     const { customerId } = await request.json()
@@ -32,6 +34,43 @@ export const POST = async (request: NextRequest) => {
             return response
         }
 
+        const mergeCarts = async (
+            targetCart: CartRecord & { lines: CartLineRecord[] },
+            sourceCart: CartRecord & { lines: CartLineRecord[] }
+        ) => {
+            await db
+                .insert(CartLineItemTable)
+                .values(
+                    sourceCart.lines.map(line => {
+                        return {
+                            subtotal: line.subtotal,
+                            total: line.total,
+                            quantity: line.quantity,
+                            productId: line.productId,
+                            cartId: targetCart.id,
+                        }
+                    })
+                )
+                .returning()
+
+            await db.delete(CartTable).where(eq(CartTable.id, sourceCart.id))
+
+            return await db
+                .update(CartTable)
+                .set({
+                    subtotal: targetCart.subtotal + sourceCart.subtotal,
+                    total: targetCart.total + sourceCart.total,
+                    totalQuantity:
+                        targetCart.totalQuantity + sourceCart.totalQuantity,
+                    updatedAt: new Date(),
+                })
+                .returning()
+                .then(async rows => {
+                    const id = rows[0].id
+                    return await getCart(id)
+                })
+        }
+
         if (customerId) {
             console.log('customerId exists')
             let customerCart = await getCartByOwnerId(customerId)
@@ -40,19 +79,46 @@ export const POST = async (request: NextRequest) => {
                 console.log('no customerCart found')
                 customerCart = await createCart(customerId)
 
+                const cartId = request.cookies.get('cartId')?.value
+                const guestCart = cartId ? await getCart(cartId) : null
+
+                if (guestCart) {
+                    customerCart = await mergeCarts(customerCart, guestCart)
+                }
+
+                if (!customerCart) {
+                    throw createInternalServerError()
+                }
+
                 const response = NextResponse.json(customerCart)
                 return addCartIdCookieToResponse(customerCart.id, response)
             } else {
                 console.log('customerCart found')
                 const cartId = request.cookies.get('cartId')?.value
 
-                const response = NextResponse.json(customerCart)
-                if (cartId === customerCart.id) {
-                    console.log('customerCart id cookie already set')
-                    return response
-                } else {
+                if (!cartId) {
                     console.log('customerCart id cookie not set')
+                    const response = NextResponse.json(customerCart)
                     return addCartIdCookieToResponse(customerCart.id, response)
+                } else if (cartId !== customerCart.id) {
+                    console.log('cartId cookie is not customerCart')
+
+                    const guestCart = await getCart(cartId)
+                    if (guestCart) {
+                        customerCart = await mergeCarts(customerCart, guestCart)
+                    }
+
+                    if (!customerCart) {
+                        throw createInternalServerError()
+                    }
+
+                    console.log(customerCart)
+                    const response = NextResponse.json(customerCart)
+                    return addCartIdCookieToResponse(customerCart.id, response)
+                } else {
+                    console.log('customerCart id cookie already set')
+                    const response = NextResponse.json(customerCart)
+                    return response
                 }
             }
         } else {

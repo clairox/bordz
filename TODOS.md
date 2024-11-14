@@ -7,8 +7,8 @@
 -   [x] TEST PriceRepr component
 -   [x] Move /schema and /db to /drizzle
 -   [x] Do a bit of refactoring
+-   [x] Add updatedAt: new Date() to all resource updates
 -   [ ] Create form password input component
--   [ ] Add updatedAt: new Date() to all resource updates
 
 ### Cart
 
