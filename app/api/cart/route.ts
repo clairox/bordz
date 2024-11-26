@@ -38,6 +38,10 @@ export const POST = async (request: NextRequest) => {
             targetCart: CartRecord & { lines: CartLineRecord[] },
             sourceCart: CartRecord & { lines: CartLineRecord[] }
         ) => {
+            if (sourceCart.lines.length === 0) {
+                return await getCart(targetCart.id)
+            }
+
             await db
                 .insert(CartLineItemTable)
                 .values(

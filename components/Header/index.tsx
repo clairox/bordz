@@ -20,6 +20,7 @@ const Header: React.FC = () => {
                         height="42"
                     />
                 </Link>
+                <Link href="/lab">Skate Lab</Link>
                 <Link href="/browse">Browse</Link>
             </div>
             <div className="flex gap-4">

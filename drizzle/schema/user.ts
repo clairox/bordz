@@ -1,4 +1,4 @@
-import { pgEnum, smallint, varchar } from 'drizzle-orm/pg-core'
+import { smallint, varchar } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
@@ -15,7 +15,7 @@ export const CustomerTable = pgTableWithAutoFields('customers', {
     displayName: varchar('display_name', { length: 100 }).notNull(),
     numberOfOrders: smallint('number_of_orders').default(0).notNull(),
     phone: varchar('phone', { length: 16 }),
-    userId: shortUuid('user_id').unique().notNull(), // TODO: make unique
+    userId: shortUuid('user_id').unique().notNull(),
     defaultAddressId: shortUuid('default_address_id'),
 })
 

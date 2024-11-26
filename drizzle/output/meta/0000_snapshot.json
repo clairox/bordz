@@ -1,5 +1,5 @@
 {
-  "id": "f0869f31-8c86-440d-9e5b-516cacad3d12",
+  "id": "60b32cb9-b742-4844-a018-7634b18b804a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -869,6 +869,12 @@
           "name": "title",
           "type": "varchar(100)",
           "primaryKey": false,
+          "notNull": true
+        },
+        "featured_image": {
+          "name": "featured_image",
+          "type": "varchar(100)",
+          "primaryKey": false,
           "notNull": false
         },
         "images": {
@@ -1320,7 +1326,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "customers_user_id_unique": {
+          "name": "customers_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        }
+      }
     },
     "public.wishlist_line_items": {
       "name": "wishlist_line_items",

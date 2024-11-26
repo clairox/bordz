@@ -30,7 +30,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
 
     const router = useRouter()
     const pathname = usePathname()
-    const { auth } = useSupabase()
+    const supabase = useSupabase()
     const {
         createCustomerMutation: {
             mutateAsync: createCustomer,
@@ -56,7 +56,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
                 const {
                     data: { user },
                     error,
-                } = await auth.signUp({
+                } = await supabase.auth.signUp({
                     email,
                     password,
                 })
@@ -90,6 +90,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
                 birthDate,
                 userId: newUser.id,
             })
+            await supabase
+                .from('profiles')
+                .update({ is_new: false })
+                .eq('id', newUser.id)
 
             router.push(redirectTo)
         } catch (error) {

@@ -183,9 +183,18 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log(event)
             if (event === 'INITIAL_SESSION') {
-                if (session && session.user.confirmed_at != null) {
-                    setIsNewAccount(false)
+                if (session) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .maybeSingle()
+
+                    if (profile && !profile.is_new) {
+                        setIsNewAccount(false)
+                    }
                 }
             }
 
@@ -198,7 +207,13 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
                 queryClient.setQueryData(['auth'], auth)
 
-                if (session.user.confirmed_at != null) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .maybeSingle()
+
+                if (profile && !profile.is_new) {
                     setIsNewAccount(false)
                     queryClient.invalidateQueries({ queryKey: ['customer'] })
                 }
@@ -217,7 +232,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         })
 
         return () => subscription.unsubscribe()
-    }, [supabase.auth, queryClient, createSession, killSession])
+    }, [supabase, queryClient, createSession, killSession])
 
     return (
         <AuthContext.Provider

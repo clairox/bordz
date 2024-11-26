@@ -13,7 +13,7 @@ import { BoardSetupTable } from './boardSetup'
 
 export const ComponentTable = pgTableWithAutoFields('components', {
     title: varchar('title', { length: 100 }).notNull(),
-    featuredImage: varchar('title', { length: 100 }),
+    featuredImage: varchar('featured_image', { length: 100 }),
     images: varchar('images').array().default([]).notNull(),
     compareAtPrice: integer('compare_at_price'),
     price: integer('price').default(0).notNull(),

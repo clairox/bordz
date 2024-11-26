@@ -114,3 +114,11 @@ type Order = {
     createdAt: Date
     updatedAt: Date
 }
+
+type ComponentName =
+    | 'deck'
+    | 'trucks'
+    | 'wheels'
+    | 'bearings'
+    | 'hardware'
+    | 'griptape'

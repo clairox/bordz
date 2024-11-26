@@ -105,7 +105,8 @@ CREATE TABLE IF NOT EXISTS "component_attributes" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "components" (
 	"id" varchar(36) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
-	"title" varchar(100),
+	"title" varchar(100) NOT NULL,
+	"featured_image" varchar(100),
 	"images" varchar[] DEFAULT '{}' NOT NULL,
 	"compare_at_price" integer,
 	"price" integer DEFAULT 0 NOT NULL,
@@ -173,7 +174,8 @@ CREATE TABLE IF NOT EXISTS "customers" (
 	"user_id" varchar(36) NOT NULL,
 	"default_address_id" varchar(36),
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "customers_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "wishlist_line_items" (

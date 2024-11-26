@@ -11,47 +11,89 @@ type Size = {
 
 type Vendor = {
     id: string
-    label: string
+    name: string
 }
 
-type PartType = {
-    id: string
-    label: string
+type ComponentType =
+    | 'deck'
+    | 'trucks'
+    | 'wheels'
+    | 'bearings'
+    | 'hardware'
+    | 'griptape'
+
+type ComponentTypeOrNone = ComponentType | 'none'
+
+type ComponentTypeAsCategory = {
+    deck: 'Decks'
+    trucks: 'Trucks'
+    wheels: 'Wheels'
+    bearings: 'Bearings'
+    hardware: 'Hardware'
+    griptape: 'Griptape'
 }
 
-type BearingsType = PartType & { label: 'bearings' }
-type DeckType = PartType & { label: 'deck' }
-type GriptapeType = PartType & { label: 'griptape' }
-type HardwareType = PartType & { label: 'hardware' }
-type TrucksType = PartType & { label: 'trucks' }
-type WheelsType = PartType & { label: 'wheels' }
-
-type Part = {
-    details: string[]
-    color: Color
-    description: string
+type Category = {
     id: string
-    images: Image[]
+    label: ComponentTypeAsCategory[ComponentType]
+}
+
+type BearingsCategory = Category & { label: 'Bearings' }
+type DeckCategory = Category & { label: 'Decks' }
+type GriptapeCategory = Category & { label: 'Griptape' }
+type HardwareCategory = Category & { label: 'Hardware' }
+type TrucksCategory = Category & { label: 'Trucks' }
+type WheelsCategory = Category & { label: 'Wheels' }
+
+type ComponentAttributes = {
+    category: Category
     size: Size
-    title: string
-    type: PartType
-    vender: Vendor
+    color: Color
+    vendor: Vendor
 }
 
-type Bearings = Part & { type: BearingsType }
-type Deck = Part & { type: DeckType }
-type Griptape = Part & { type: GriptapeType }
-type Hardware = Part & { type: HardwareType }
-type Trucks = Part & { type: TrucksType }
-type Wheels = Part & { type: WheelsType }
+type Component = {
+    id: string
+    title: string
+    featuredImage?: Image
+    images: Image[]
+    compareAtPrice?: number
+    price: number
+    description?: string
+    specifictations?: string[]
+    availableForSale: boolean
+    totalInventory: number
+    componentAttributes: ComponentAttributes
+    createdAt: Date
+    updatedAt: Date
+}
+
+type Bearings = Component & {
+    componentAttributes: ComponentAttributes & { category: BearingsCategory }
+}
+type Deck = Component & {
+    componentAttributes: ComponentAttributes & { category: DeckCategory }
+}
+type Griptape = Component & {
+    componentAttributes: ComponentAttributes & { category: GriptapeCategory }
+}
+type Hardware = Component & {
+    componentAttributes: ComponentAttributes & { category: HardwareCategory }
+}
+type Trucks = Component & {
+    componentAttributes: ComponentAttributes & { category: TrucksCategory }
+}
+type Wheels = Component & {
+    componentAttributes: ComponentAttributes & { category: WheelsCategory }
+}
 
 type BoardSetup = {
-    bearings: Bearings
-    deck: Deck
-    extras: Part[]
-    griptape: Griptape
-    hardware: Hardware
     id: string
+    productId: string
+    deck: Deck
     trucks: Trucks
     wheels: Wheels
+    bearings: Bearings
+    hardware: Hardware
+    griptape: Griptape
 }
