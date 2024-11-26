@@ -50,6 +50,37 @@ const CheckoutCompletePage: React.FC<CheckoutCompletePageProps> = async ({
                             <h3>
                                 {line.quantity} x {line.title}
                             </h3>
+                            {line.product?.boardSetup && (
+                                <ul className="text-sm">
+                                    <li className="line-clamp-1">
+                                        {line.product.boardSetup?.deck.title}
+                                    </li>
+                                    <li className="line-clamp-1">
+                                        {line.product.boardSetup?.trucks.title}
+                                    </li>
+                                    <li className="line-clamp-1">
+                                        {line.product.boardSetup?.wheels.title}
+                                    </li>
+                                    <li className="line-clamp-1">
+                                        {
+                                            line.product.boardSetup?.bearings
+                                                .title
+                                        }
+                                    </li>
+                                    <li className="line-clamp-1">
+                                        {
+                                            line.product.boardSetup?.hardware
+                                                .title
+                                        }
+                                    </li>
+                                    <li className="line-clamp-1">
+                                        {
+                                            line.product.boardSetup?.griptape
+                                                .title
+                                        }
+                                    </li>
+                                </ul>
+                            )}
                             <p>
                                 <PriceRepr value={line.total} />
                             </p>

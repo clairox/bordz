@@ -12,6 +12,7 @@ type Image = {
 
 type Product = {
     availableForSale: boolean
+    boardSetup?: BoardSetup
     createdAt: Date
     id: string
     price: number

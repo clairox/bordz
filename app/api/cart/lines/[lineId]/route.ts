@@ -70,6 +70,34 @@ const deleteCheckoutLine = async (checkoutId: string, productId: string) => {
         )
 }
 
+export const GET = async (
+    _: NextRequest,
+    context: { params: { lineId: string } }
+) => {
+    const { lineId } = context.params
+
+    try {
+        const cartLine = await db.query.CartLineItemTable.findFirst({
+            where: eq(CartLineItemTable.id, lineId),
+            with: {
+                product: {
+                    with: {
+                        boardSetup: true,
+                    },
+                },
+            },
+        })
+
+        if (!cartLine) {
+            throw createNotFoundError('Cart line')
+        }
+
+        return NextResponse.json(cartLine)
+    } catch (error) {
+        return handleError(error as Error)
+    }
+}
+
 export const DELETE = async (
     request: NextRequest,
     context: { params: { lineId: string } }

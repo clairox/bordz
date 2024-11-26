@@ -1,49 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
-
 import { db } from '@/drizzle/db'
-import { ProductTable } from '@/drizzle/schema/product'
 import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
 import { ComponentTable } from '@/drizzle/schema/component'
+import { ProductTable } from '@/drizzle/schema/product'
 import {
     createBadRequestError,
     createNotFoundError,
     handleError,
 } from '@/lib/errors'
+import { eq } from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
 
-const defaultLimit = 40
-const defaultOffset = 0
-
-export const GET = async (request: NextRequest) => {
-    const searchParams = request.nextUrl.searchParams
-    const limit = Number(searchParams.get('limit') || defaultLimit)
-    const offset = Number(searchParams.get('offset') || defaultOffset)
+export const GET = async (
+    _: NextRequest,
+    context: { params: { productId: string } }
+) => {
+    const { productId } = context.params
 
     try {
-        const products = await db.query.ProductTable.findMany({
-            limit,
-            offset,
+        const product = await db.query.ProductTable.findFirst({
+            where: eq(ProductTable.id, productId),
             with: {
-                boardSetup: {
-                    with: {
-                        deck: true,
-                        trucks: true,
-                        wheels: true,
-                        bearings: true,
-                        hardware: true,
-                        griptape: true,
-                    },
-                },
+                boardSetup: true,
             },
         })
 
-        return NextResponse.json(products)
+        if (!product) {
+            throw createNotFoundError('Product')
+        }
+
+        return NextResponse.json(product)
     } catch (error) {
-        handleError(error)
+        return handleError(error as Error)
     }
 }
 
-export const POST = async (request: NextRequest) => {
+export const PATCH = async (
+    request: NextRequest,
+    context: { params: { productId: string } }
+) => {
+    const { productId } = context.params
     const {
         isBoard,
         deckId,
@@ -114,28 +109,31 @@ export const POST = async (request: NextRequest) => {
             0
         )
 
-        const newProduct = await db
-            .insert(ProductTable)
-            .values({
-                title: 'Complete Skateboard',
+        await db
+            .update(ProductTable)
+            .set({
                 price: productPrice,
                 availableForSale,
-                productType: 'BOARD',
+                updatedAt: new Date(),
             })
+            .where(eq(ProductTable.id, productId))
+
+        const updatedBoardSetup = await db
+            .update(BoardSetupTable)
+            .set({
+                deckId,
+                trucksId,
+                wheelsId,
+                bearingsId,
+                hardwareId,
+                griptapeId,
+                updatedAt: new Date(),
+            })
+            .where(eq(BoardSetupTable.productId, productId))
             .returning()
             .then(rows => rows[0])
 
-        await db.insert(BoardSetupTable).values({
-            productId: newProduct.id,
-            deckId,
-            trucksId,
-            wheelsId,
-            bearingsId,
-            hardwareId,
-            griptapeId,
-        })
-
-        return NextResponse.json(newProduct)
+        return NextResponse.json(updatedBoardSetup)
     } catch (error) {
         return handleError(error as Error)
     }

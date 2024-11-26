@@ -17,10 +17,36 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({ checkout }) => {
                     </Link>
                 </div>
                 {checkout.lines.map(line => (
-                    <p key={line.id} className="text-lg">
-                        {line.quantity} x {line.product?.title}:{' '}
-                        <PriceRepr value={line.unitPrice * line.quantity} />
-                    </p>
+                    <div key={line.id}>
+                        <div className="text-lg">
+                            <span>
+                                {line.quantity} x {line.product?.title}:{' '}
+                            </span>
+                            <PriceRepr value={line.unitPrice * line.quantity} />
+                        </div>
+                        {line.product?.boardSetup && (
+                            <ul className="text-base">
+                                <li className="line-clamp-1">
+                                    {line.product.boardSetup.deck.title}
+                                </li>
+                                <li className="line-clamp-1">
+                                    {line.product.boardSetup.trucks.title}
+                                </li>
+                                <li className="line-clamp-1">
+                                    {line.product.boardSetup.wheels.title}
+                                </li>
+                                <li className="line-clamp-1">
+                                    {line.product.boardSetup.bearings.title}
+                                </li>
+                                <li className="line-clamp-1">
+                                    {line.product.boardSetup.hardware.title}
+                                </li>
+                                <li className="line-clamp-1">
+                                    {line.product.boardSetup.griptape.title}
+                                </li>
+                            </ul>
+                        )}
+                    </div>
                 ))}
                 <p>
                     Sales tax: <PriceRepr value={checkout.totalTax} />

@@ -4,10 +4,12 @@ import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useAddCartLineMutation } from '@/hooks'
 import SkateLabComponentSelector from '../SkateLabComponentSelector'
 import { SkateLabComponentSelectorContext } from '../SkateLabComponentSelector/ComponentSelectorContext'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 type SkateLabInterfaceProps = {
+    mode: string | null
+    productId: string | undefined
     selectedComponents: Record<ComponentType, string | undefined>
-    isComplete: boolean
     updateSelectedComponents: (
         componentType: ComponentType,
         componentId: string
@@ -18,13 +20,19 @@ type SkateLabInterfaceProps = {
 }
 
 const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
+    mode,
+    productId,
     selectedComponents,
-    isComplete,
     updateSelectedComponents,
     activeComponentType,
     setActiveComponentType,
     reset,
 }) => {
+    const queryClient = useQueryClient()
+
+    const isComplete = !Object.values(selectedComponents).includes(undefined)
+    console.log(selectedComponents)
+
     const createProductFromSelectedComponents = async (): Promise<Product> => {
         const { deck, trucks, wheels, bearings, hardware, griptape } =
             selectedComponents
@@ -51,9 +59,59 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
 
     const { mutate: addCartLine } = useAddCartLineMutation()
 
-    const handleAddToCartButtonClick = async () => {
-        const product = await createProductFromSelectedComponents()
-        addCartLine({ productId: product.id })
+    const { mutateAsync: updateBoardSetup } = useMutation({
+        mutationFn: async ({
+            id,
+            components,
+        }: {
+            id: string
+            components: Record<ComponentType, string>
+        }) => {
+            try {
+                const res = await fetchAbsolute(`/products/${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        isBoard: true,
+                        deckId: components.deck,
+                        trucksId: components.trucks,
+                        wheelsId: components.wheels,
+                        bearingsId: components.bearings,
+                        hardwareId: components.hardware,
+                        griptapeId: components.griptape,
+                    }),
+                })
+
+                if (!res.ok) {
+                    throw res
+                }
+
+                return await res.json()
+            } catch (error) {
+                throw error
+            }
+        },
+    })
+
+    const onFinish = async () => {
+        if (!isComplete) {
+            return
+        }
+
+        if (mode === 'edit') {
+            if (!productId) {
+                return
+            }
+
+            await updateBoardSetup({
+                id: productId,
+                components: selectedComponents as Record<ComponentType, string>,
+            })
+
+            queryClient.invalidateQueries({ queryKey: ['cart'] })
+        } else {
+            const product = await createProductFromSelectedComponents()
+            addCartLine({ productId: product.id })
+        }
     }
 
     return (
@@ -73,10 +131,10 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
                 <div className="fixed right-10 flex flex-col gap-4">
                     <button
                         disabled={!isComplete}
-                        onClick={handleAddToCartButtonClick}
+                        onClick={onFinish}
                         className="flex justify-center items-center w-28 h-10 border border-black bg-white pointer-events-auto"
                     >
-                        Add to cart
+                        {mode === 'edit' ? 'Done' : 'Add to cart'}
                     </button>
                     <button
                         onClick={reset}

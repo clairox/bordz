@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { QueryStatus, useQuery } from '@tanstack/react-query'
 import { ArrowClockwise } from '@phosphor-icons/react'
 
@@ -8,6 +8,7 @@ import { useCartQuery } from '@/context/cartContext'
 import { useAddCartLineMutation } from '@/hooks'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import PriceRepr from '../PriceRepr'
+import Link from 'next/link'
 
 const ProductsList: React.FC = () => {
     const {
@@ -137,8 +138,38 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
     }, [cartStatus, addToCartStatus, addToCart, isInCart, product])
 
     return (
-        <article>
+        <article className="flex flex-col gap-2">
             <h3>{product.title}</h3>
+            {product.boardSetup != undefined && (
+                <Fragment>
+                    <ul className="text-sm">
+                        <li className="line-clamp-1">
+                            {product.boardSetup?.deck.title}
+                        </li>
+                        <li className="line-clamp-1">
+                            {product.boardSetup?.trucks.title}
+                        </li>
+                        <li className="line-clamp-1">
+                            {product.boardSetup?.wheels.title}
+                        </li>
+                        <li className="line-clamp-1">
+                            {product.boardSetup?.bearings.title}
+                        </li>
+                        <li className="line-clamp-1">
+                            {product.boardSetup?.hardware.title}
+                        </li>
+                        <li className="line-clamp-1">
+                            {product.boardSetup?.griptape.title}
+                        </li>
+                    </ul>
+                    <Link
+                        href={`/lab?mode=customize&id=${product.id}`}
+                        className="hover:underline"
+                    >
+                        Customize
+                    </Link>
+                </Fragment>
+            )}
             <p>
                 <PriceRepr value={product.price} />
             </p>

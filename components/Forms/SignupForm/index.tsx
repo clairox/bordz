@@ -102,7 +102,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
                 return
             }
 
-            setMessage(error.message + '.')
+            const message = error.message
+            setMessage(message + message.endsWith('.') ? '' : '.')
         }
     }
 

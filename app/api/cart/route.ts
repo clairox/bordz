@@ -121,6 +121,7 @@ export const POST = async (request: NextRequest) => {
                     return addCartIdCookieToResponse(customerCart.id, response)
                 } else {
                     console.log('customerCart id cookie already set')
+                    console.log(customerCart.product)
                     const response = NextResponse.json(customerCart)
                     return response
                 }

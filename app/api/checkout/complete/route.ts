@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serialize, SerializeOptions } from 'cookie'
+import { serialize } from 'cookie'
 import { eq } from 'drizzle-orm'
 
 import { getCheckout } from '@/app/api/shared'

@@ -110,6 +110,7 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     deleteCartLine,
 }) => {
     const { product } = cartLine
+    const { boardSetup } = product
 
     const handleDeleteButtonClick = () => {
         const { id } = cartLine
@@ -131,17 +132,10 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
                     height={product.featuredImage.height}
                 />
             )}
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-4">
                 <div className="flex justify-between">
                     <h1>{product.title}</h1>
-                    {/* <ul className="line-clamp-1"> */}
-                    {/*     <li>{product.parts.deck.title}</li> */}
-                    {/*     <li>{product.parts.trucks.title}</li> */}
-                    {/*     <li>{product.parts.wheels.title}</li> */}
-                    {/*     <li>{product.parts.bearings.title}</li> */}
-                    {/*     <li>{product.parts.hardware.title}</li> */}
-                    {/*     <li>{product.parts.griptape.title}</li> */}
-                    {/* </ul> */}
+
                     <div>
                         <button onClick={handleDeleteButtonClick}>
                             <Trash size={28} weight="light" />
@@ -151,11 +145,27 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
                         </button>
                     </div>
                 </div>
+                <ul className="text-sm">
+                    <li className="line-clamp-1">{boardSetup?.deck.title}</li>
+                    <li className="line-clamp-1">{boardSetup?.trucks.title}</li>
+                    <li className="line-clamp-1">{boardSetup?.wheels.title}</li>
+                    <li className="line-clamp-1">
+                        {boardSetup?.bearings.title}
+                    </li>
+                    <li className="line-clamp-1">
+                        {boardSetup?.hardware.title}
+                    </li>
+                    <li className="line-clamp-1">
+                        {boardSetup?.griptape.title}
+                    </li>
+                </ul>
                 <div className="flex justify-between">
                     <p>Qty: {cartLine.quantity}</p>
                     <div>
-                        {/* TODO: Link to builder */}
-                        <Link href="#" className="hover:underline">
+                        <Link
+                            href={`/lab?mode=edit&id=${cartLine.id}`}
+                            className="hover:underline"
+                        >
                             Edit
                         </Link>
                     </div>

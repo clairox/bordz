@@ -9,7 +9,20 @@ const getCartByOwnerId = async (ownerId: string) => {
         with: {
             lines: {
                 with: {
-                    product: true,
+                    product: {
+                        with: {
+                            boardSetup: {
+                                with: {
+                                    deck: true,
+                                    trucks: true,
+                                    wheels: true,
+                                    bearings: true,
+                                    hardware: true,
+                                    griptape: true,
+                                },
+                            },
+                        },
+                    },
                 },
             },
             checkout: true,

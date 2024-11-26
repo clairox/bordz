@@ -4,16 +4,86 @@ import { useState } from 'react'
 
 import SkateLabInterface from './SkateLabInterface'
 import SkateLabView from './SkateLabView'
+import { useSearchParams } from 'next/navigation'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import fetchAbsolute from '@/lib/fetchAbsolute'
+import { BoardSetupRecord } from '@/types/records'
+
+type BoardSetup = Record<'productId' | ComponentType, string | undefined>
 
 const SkateLabContainer = () => {
-    const defaultBoardSetup: Record<ComponentType, string | undefined> = {
-        deck: undefined,
-        trucks: undefined,
-        wheels: undefined,
-        bearings: undefined,
-        hardware: undefined,
-        griptape: undefined,
-    }
+    const searchParams = useSearchParams()
+    const mode = searchParams.get('mode')
+
+    const {
+        data: { productId, ...defaultBoardSetup },
+    } = useSuspenseQuery<BoardSetup>({
+        queryKey: ['boardSetup'],
+        queryFn: async () => {
+            if (mode !== 'edit' && mode !== 'customize') {
+                return {
+                    productId: undefined,
+                    deck: undefined,
+                    trucks: undefined,
+                    wheels: undefined,
+                    bearings: undefined,
+                    hardware: undefined,
+                    griptape: undefined,
+                }
+            }
+
+            const convertDBSetupToLocalSetup = (
+                setup: BoardSetupRecord
+            ): BoardSetup => {
+                const {
+                    productId,
+                    deckId,
+                    trucksId,
+                    wheelsId,
+                    bearingsId,
+                    hardwareId,
+                    griptapeId,
+                } = setup
+
+                return {
+                    productId,
+                    deck: deckId,
+                    trucks: trucksId,
+                    wheels: wheelsId,
+                    bearings: bearingsId,
+                    hardware: hardwareId,
+                    griptape: griptapeId,
+                }
+            }
+
+            try {
+                if (mode === 'edit') {
+                    const cartLineId = searchParams.get('id')
+                    const res = await fetchAbsolute(`/cart/lines/${cartLineId}`)
+
+                    if (!res.ok) {
+                        throw res
+                    }
+                    const cartLine = await res.json()
+                    return convertDBSetupToLocalSetup(
+                        cartLine.product.boardSetup
+                    )
+                } else {
+                    const productId = searchParams.get('id')
+                    const res = await fetchAbsolute(`/products/${productId}`)
+
+                    if (!res.ok) {
+                        throw res
+                    }
+
+                    const product = await res.json()
+                    return convertDBSetupToLocalSetup(product.boardSetup)
+                }
+            } catch (error) {
+                throw error
+            }
+        },
+    })
 
     const [selectedComponents, setSelectedComponents] =
         useState(defaultBoardSetup)
@@ -29,13 +99,12 @@ const SkateLabContainer = () => {
         })
     }
 
-    const isComplete = !Object.values(selectedComponents).includes(undefined)
-
     return (
         <div className="relative w-full h-[800px]">
             <SkateLabInterface
+                mode={mode}
+                productId={productId}
                 selectedComponents={selectedComponents}
-                isComplete={isComplete}
                 activeComponentType={activeComponentType}
                 updateSelectedComponents={updateSelectedComponents}
                 setActiveComponentType={setActiveComponentType}
