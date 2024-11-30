@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { ProductTable } from '@/drizzle/schema/product'
 import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
-import { ComponentTable } from '@/drizzle/schema/component'
 import {
     createBadRequestError,
     createNotFoundError,
     handleError,
 } from '@/lib/errors'
+import {
+    getComponents,
+    getComponentsOverallAvailability,
+    getComponentsTotalPrice,
+} from '../shared'
+import { ComponentRecord } from '@/types/records'
 
 const defaultLimit = 40
 const defaultOffset = 0
@@ -43,100 +47,121 @@ export const GET = async (request: NextRequest) => {
     }
 }
 
+const createProduct = async (
+    title: string,
+    price: number,
+    type: 'BOARD' | 'OTHER',
+    availableForSale: boolean = true,
+    featuredImage?: string
+) => {
+    return await db
+        .insert(ProductTable)
+        .values({
+            title: title,
+            price: price,
+            productType: type,
+            availableForSale: availableForSale,
+            featuredImage: featuredImage,
+        })
+        .returning()
+        .then(rows => rows[0])
+}
+
 export const POST = async (request: NextRequest) => {
-    const {
-        isBoard,
-        deckId,
-        trucksId,
-        wheelsId,
-        bearingsId,
-        hardwareId,
-        griptapeId,
-    } = await request.json()
+    const requestBody = await request.json()
 
-    if (
-        isBoard &&
-        (!deckId ||
-            !trucksId ||
-            !wheelsId ||
-            !bearingsId ||
-            !hardwareId ||
-            !griptapeId)
-    ) {
-        return handleError(createBadRequestError())
-    }
+    const { type } = requestBody
 
-    try {
-        const components: Record<string, any> = {
-            deck: null,
-            trucks: null,
-            wheels: null,
-            bearings: null,
-            hardware: null,
-            griptape: null,
-        }
-
-        components['deck'] = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, deckId),
-        })
-        components['trucks'] = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, trucksId),
-        })
-        components['wheels'] = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, wheelsId),
-        })
-        components['bearings'] = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, bearingsId),
-        })
-        components['hardware'] = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, hardwareId),
-        })
-        components['griptape'] = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, griptapeId),
-        })
-
-        if (Object.values(components).find(component => component == null)) {
-            throw createNotFoundError('Component')
-        }
-
-        let availableForSale = true
-
-        if (
-            Object.values(components).find(
-                component => !component.availableForSale
-            )
-        ) {
-            availableForSale = false
-        }
-
-        const productPrice = Object.values(components).reduce(
-            (price, component) => price + component.price,
-            0
-        )
-
-        const newProduct = await db
-            .insert(ProductTable)
-            .values({
-                title: 'Complete Skateboard',
-                price: productPrice,
-                availableForSale,
-                productType: 'BOARD',
-            })
-            .returning()
-            .then(rows => rows[0])
-
-        await db.insert(BoardSetupTable).values({
-            productId: newProduct.id,
+    if (type === 'board') {
+        const {
             deckId,
             trucksId,
             wheelsId,
             bearingsId,
             hardwareId,
             griptapeId,
-        })
+        } = requestBody
 
-        return NextResponse.json(newProduct)
-    } catch (error) {
-        return handleError(error as Error)
+        if (
+            !(
+                deckId &&
+                trucksId &&
+                wheelsId &&
+                bearingsId &&
+                hardwareId &&
+                griptapeId
+            )
+        ) {
+            return handleError(createBadRequestError('Missing component.'))
+        }
+
+        try {
+            const components = await getComponents({
+                deckId,
+                trucksId,
+                wheelsId,
+                bearingsId,
+                hardwareId,
+                griptapeId,
+            })
+
+            if (
+                Object.values(components).some(component => component == null)
+            ) {
+                throw createNotFoundError('Component')
+            }
+
+            const validComponents = components as Record<
+                string,
+                ComponentRecord
+            >
+
+            const totalPrice = getComponentsTotalPrice(validComponents)
+            const availability =
+                getComponentsOverallAvailability(validComponents)
+
+            const newProduct = await createProduct(
+                'Complete Skateboard',
+                totalPrice,
+                'BOARD',
+                availability
+            )
+
+            const { deck, trucks, wheels, bearings, hardware, griptape } =
+                validComponents
+
+            await db.insert(BoardSetupTable).values({
+                productId: newProduct.id,
+                deckId: deck.id,
+                trucksId: trucks.id,
+                wheelsId: wheels.id,
+                bearingsId: bearings.id,
+                hardwareId: hardware.id,
+                griptapeId: griptape.id,
+            })
+
+            return NextResponse.json(newProduct)
+        } catch (error) {
+            return handleError(error as Error)
+        }
+    } else {
+        const { title, price, featuredImage, availableForSale } = requestBody
+
+        if (!title || !price) {
+            return handleError(createBadRequestError())
+        }
+
+        try {
+            const newProduct = await createProduct(
+                title,
+                price,
+                availableForSale,
+                featuredImage
+            )
+
+            return NextResponse.json(newProduct)
+        } catch (error) {
+            return handleError(error as Error)
+        }
     }
 }

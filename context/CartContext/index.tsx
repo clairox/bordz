@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { useAuthQuery } from '../authContext'
+import { useAuthQuery } from '../AuthContext'
 
 type CartContextValue = UseQueryResult<Cart, Error>
 

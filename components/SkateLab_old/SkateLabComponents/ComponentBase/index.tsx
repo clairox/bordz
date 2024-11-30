@@ -7,6 +7,7 @@ import { useComponentModelPropsQuery } from '@/hooks'
 type ComponentContextValue = {
     id: string | undefined
     onClick: () => void
+    setIsLoading: (value: boolean) => void
 }
 
 const ComponentContext = createContext<ComponentContextValue>(
@@ -14,10 +15,12 @@ const ComponentContext = createContext<ComponentContextValue>(
 )
 
 const useComponent = () => {
-    const { id, onClick } = useContext(ComponentContext)
+    const { id, onClick, setIsLoading } = useContext(ComponentContext)
 
-    const { data: propData } = useComponentModelPropsQuery(id)
+    const { data: propData, status: propStatus } =
+        useComponentModelPropsQuery(id)
 
+    const [firstLoad, setFirstLoad] = useState(true)
     const [properties, setProperties] = useState(propData)
 
     useEffect(() => {
@@ -28,7 +31,20 @@ const useComponent = () => {
 
             return propData
         })
-    }, [propData])
+    }, [propData, id])
+
+    useEffect(() => {
+        if (propStatus === 'pending') {
+            setIsLoading(true)
+        } else if (propStatus === 'success' && firstLoad) {
+            console.log('First load')
+            setFirstLoad(false)
+            setIsLoading(false)
+        } else if (propStatus === 'success' && !firstLoad && id != undefined) {
+            console.log('Not first load')
+            setIsLoading(false)
+        }
+    }, [propData, propStatus, firstLoad, setIsLoading, id])
 
     const handleMeshClick = () => {
         onClick()

@@ -1,122 +1,19 @@
-'use client'
+import SkateLab3DViewport from './SkateLab3DViewport'
+import { SkateLabProvider } from './SkateLabContext'
+import SkateLabUI from './SkateLabUI'
 
-import { useState } from 'react'
-
-import SkateLabInterface from './SkateLabInterface'
-import SkateLabView from './SkateLabView'
-import { useSearchParams } from 'next/navigation'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { BoardSetupRecord } from '@/types/records'
-
-type BoardSetup = Record<'productId' | ComponentType, string | undefined>
-
-const SkateLabContainer = () => {
-    const searchParams = useSearchParams()
-    const mode = searchParams.get('mode')
-
-    const {
-        data: { productId, ...defaultBoardSetup },
-    } = useSuspenseQuery<BoardSetup>({
-        queryKey: ['boardSetup'],
-        queryFn: async () => {
-            if (mode !== 'edit' && mode !== 'customize') {
-                return {
-                    productId: undefined,
-                    deck: undefined,
-                    trucks: undefined,
-                    wheels: undefined,
-                    bearings: undefined,
-                    hardware: undefined,
-                    griptape: undefined,
-                }
-            }
-
-            const convertDBSetupToLocalSetup = (
-                setup: BoardSetupRecord
-            ): BoardSetup => {
-                const {
-                    productId,
-                    deckId,
-                    trucksId,
-                    wheelsId,
-                    bearingsId,
-                    hardwareId,
-                    griptapeId,
-                } = setup
-
-                return {
-                    productId,
-                    deck: deckId,
-                    trucks: trucksId,
-                    wheels: wheelsId,
-                    bearings: bearingsId,
-                    hardware: hardwareId,
-                    griptape: griptapeId,
-                }
-            }
-
-            try {
-                if (mode === 'edit') {
-                    const cartLineId = searchParams.get('id')
-                    const res = await fetchAbsolute(`/cart/lines/${cartLineId}`)
-
-                    if (!res.ok) {
-                        throw res
-                    }
-                    const cartLine = await res.json()
-                    return convertDBSetupToLocalSetup(
-                        cartLine.product.boardSetup
-                    )
-                } else {
-                    const productId = searchParams.get('id')
-                    const res = await fetchAbsolute(`/products/${productId}`)
-
-                    if (!res.ok) {
-                        throw res
-                    }
-
-                    const product = await res.json()
-                    return convertDBSetupToLocalSetup(product.boardSetup)
-                }
-            } catch (error) {
-                throw error
-            }
-        },
-    })
-
-    const [selectedComponents, setSelectedComponents] =
-        useState(defaultBoardSetup)
-    const [activeComponentType, setActiveComponentType] =
-        useState<ComponentTypeOrNone>('none')
-
-    const updateSelectedComponents = (component: ComponentType, id: string) => {
-        setSelectedComponents(prev => {
-            const updatedSetup = { ...prev }
-            updatedSetup[component] = id
-
-            return updatedSetup
-        })
-    }
-
+// TODO: Consider just putting this stuff directly into the SkateLabPage component if 'use client' can be avoided
+const SkateLab: React.FC = () => {
     return (
-        <div className="relative w-full h-[800px]">
-            <SkateLabInterface
-                mode={mode}
-                productId={productId}
-                selectedComponents={selectedComponents}
-                activeComponentType={activeComponentType}
-                updateSelectedComponents={updateSelectedComponents}
-                setActiveComponentType={setActiveComponentType}
-                reset={() => setSelectedComponents(defaultBoardSetup)}
-            />
-            <SkateLabView
-                selectedComponents={selectedComponents}
-                componentToFocus={activeComponentType}
-                setComponentToFocus={setActiveComponentType}
-            />
-        </div>
+        <SkateLabProvider>
+            <div className="relative">
+                <div className="z-10 absolute w-full h-full">
+                    <SkateLabUI />
+                </div>
+                <SkateLab3DViewport />
+            </div>
+        </SkateLabProvider>
     )
 }
 
-export default SkateLabContainer
+export default SkateLab

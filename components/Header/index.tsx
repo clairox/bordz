@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { Url } from 'next/dist/shared/lib/router/router'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
 
-import { useCartQuery } from '@/context/cartContext'
-import { useAuthQuery } from '@/context/authContext'
+import { useCartQuery } from '@/context/CartContext'
+import { useAuthQuery } from '@/context/AuthContext'
 
 const Header: React.FC = () => {
     return (

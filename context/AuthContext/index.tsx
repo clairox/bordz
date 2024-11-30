@@ -16,7 +16,7 @@ import {
 } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { useSupabase } from '../supabaseContext'
+import { useSupabase } from '../SupabaseContext'
 
 type Auth = {
     id: string

@@ -21,12 +21,14 @@ type SkateLabViewProps = {
     selectedComponents: Record<ComponentType, string | undefined>
     componentToFocus: ComponentTypeOrNone
     setComponentToFocus: (component: ComponentTypeOrNone) => void
+    setIsLoading: (value: boolean) => void
 }
 
 const SkateLabView: React.FC<SkateLabViewProps> = ({
     selectedComponents,
     componentToFocus,
     setComponentToFocus,
+    setIsLoading,
 }) => {
     const [focusTarget, setFocusTarget] = useState(Vector3(0))
     const [boardRotation, setBoardRotation] = useState(
@@ -142,36 +144,42 @@ const SkateLabView: React.FC<SkateLabViewProps> = ({
                 <ComponentBase
                     id={selectedComponents.deck}
                     onClick={() => setComponentToFocus('deck')}
+                    setIsLoading={setIsLoading}
                 >
                     <Deck ref={deckFocusRef} />
                 </ComponentBase>
                 <ComponentBase
                     id={selectedComponents.trucks}
                     onClick={() => setComponentToFocus('trucks')}
+                    setIsLoading={setIsLoading}
                 >
                     <Trucks ref={trucksFocusRef} />
                 </ComponentBase>
                 <ComponentBase
                     id={selectedComponents.wheels}
                     onClick={() => setComponentToFocus('wheels')}
+                    setIsLoading={setIsLoading}
                 >
                     <Wheels ref={wheelsFocusRef} />
                 </ComponentBase>
                 <ComponentBase
                     id={selectedComponents.bearings}
                     onClick={() => setComponentToFocus('bearings')}
+                    setIsLoading={setIsLoading}
                 >
                     <Bearings ref={bearingsFocusRef} />
                 </ComponentBase>
                 <ComponentBase
                     id={selectedComponents.hardware}
                     onClick={() => setComponentToFocus('hardware')}
+                    setIsLoading={setIsLoading}
                 >
                     <Hardware ref={hardwareFocusRef} />
                 </ComponentBase>
                 <ComponentBase
                     id={selectedComponents.griptape}
                     onClick={() => setComponentToFocus('griptape')}
+                    setIsLoading={setIsLoading}
                 >
                     <Griptape ref={griptapeFocusRef} />
                 </ComponentBase>

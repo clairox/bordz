@@ -1,10 +1,11 @@
 'use client'
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useAddCartLineMutation } from '@/hooks'
 import SkateLabComponentSelector from '../SkateLabComponentSelector'
 import { SkateLabComponentSelectorContext } from '../SkateLabComponentSelector/ComponentSelectorContext'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 type SkateLabInterfaceProps = {
     mode: string | null
@@ -17,6 +18,7 @@ type SkateLabInterfaceProps = {
     activeComponentType: ComponentTypeOrNone
     setActiveComponentType: (componentType: ComponentTypeOrNone) => void
     reset: () => void
+    setIsLoading: (value: boolean) => void
 }
 
 const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
@@ -27,11 +29,11 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
     activeComponentType,
     setActiveComponentType,
     reset,
+    setIsLoading,
 }) => {
     const queryClient = useQueryClient()
 
     const isComplete = !Object.values(selectedComponents).includes(undefined)
-    console.log(selectedComponents)
 
     const createProductFromSelectedComponents = async (): Promise<Product> => {
         const { deck, trucks, wheels, bearings, hardware, griptape } =
@@ -40,7 +42,7 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
         const res = await fetchAbsolute('/products', {
             method: 'POST',
             body: JSON.stringify({
-                isBoard: true,
+                type: 'board',
                 deckId: deck,
                 trucksId: trucks,
                 wheelsId: wheels,
@@ -57,7 +59,7 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
         return await res.json()
     }
 
-    const { mutate: addCartLine } = useAddCartLineMutation()
+    const { mutateAsync: addCartLine } = useAddCartLineMutation()
 
     const { mutateAsync: updateBoardSetup } = useMutation({
         mutationFn: async ({
@@ -71,7 +73,7 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
                 const res = await fetchAbsolute(`/products/${id}`, {
                     method: 'PATCH',
                     body: JSON.stringify({
-                        isBoard: true,
+                        type: 'board',
                         deckId: components.deck,
                         trucksId: components.trucks,
                         wheelsId: components.wheels,
@@ -97,8 +99,11 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
             return
         }
 
+        setIsLoading(true)
+
         if (mode === 'edit') {
             if (!productId) {
+                setIsLoading(false)
                 return
             }
 
@@ -110,8 +115,10 @@ const SkateLabInterface: React.FC<SkateLabInterfaceProps> = ({
             queryClient.invalidateQueries({ queryKey: ['cart'] })
         } else {
             const product = await createProductFromSelectedComponents()
-            addCartLine({ productId: product.id })
+            await addCartLine({ productId: product.id })
         }
+
+        setIsLoading(false)
     }
 
     return (
