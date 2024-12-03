@@ -1,3 +1,4 @@
+import { createUrlHandle } from '@/utils/helpers'
 import { db } from '.'
 import {
     CategoryTable,
@@ -96,6 +97,7 @@ const seed = async () => {
         },
     ]
 
+    console.log('Clearing categories...')
     await db.delete(CategoryTable)
     const categories = await db
         .insert(CategoryTable)
@@ -109,6 +111,7 @@ const seed = async () => {
         ])
         .returning()
 
+    console.log('Clearing vendors...')
     await db.delete(VendorTable)
     const vendors = await db
         .insert(VendorTable)
@@ -129,6 +132,7 @@ const seed = async () => {
         ])
         .returning()
 
+    console.log('Clearing sizes...')
     await db.delete(SizeTable)
     const sizes = await db
         .insert(SizeTable)
@@ -142,6 +146,7 @@ const seed = async () => {
         ])
         .returning()
 
+    console.log('Clearing colors...')
     await db.delete(ColorTable)
     const colors = await db
         .insert(ColorTable)
@@ -156,14 +161,20 @@ const seed = async () => {
         ])
         .returning()
 
+    console.log('Clearing components...')
     await db.delete(ComponentTable)
+    console.log('Done!')
+
     for (let i = 0; i < components.length; i++) {
         const component = components[i]
+        console.log(`Creating '${component.title}'...`)
 
-        console.log(component)
         const newComponent = await db
             .insert(ComponentTable)
-            .values(component)
+            .values({
+                ...component,
+                handle: createUrlHandle(component.title),
+            })
             .returning()
             .then(rows => rows[0])
 
@@ -381,7 +392,10 @@ const seed = async () => {
         }
 
         await createComponentAttributesTable(newComponent)
+        console.log('Done!')
     }
+
+    console.log('Seed complete')
 }
 
 seed()

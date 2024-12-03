@@ -1,6 +1,6 @@
 {
-  "id": "fbda259e-439f-4340-986d-9c2e6a199b75",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "89d193db-4ce4-498a-9bd6-8b3cf3ac0180",
+  "prevId": "fbda259e-439f-4340-986d-9c2e6a199b75",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -867,6 +867,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "handle": {
+          "name": "handle",
           "type": "varchar(150)",
           "primaryKey": false,
           "notNull": true

@@ -105,9 +105,10 @@ CREATE TABLE IF NOT EXISTS "component_attributes" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "components" (
 	"id" varchar(36) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
-	"title" varchar(100) NOT NULL,
+	"title" varchar(150) NOT NULL,
 	"featured_image" varchar(100),
 	"images" varchar[] DEFAULT '{}' NOT NULL,
+	"model" varchar(300),
 	"compare_at_price" integer,
 	"price" integer DEFAULT 0 NOT NULL,
 	"description" text,

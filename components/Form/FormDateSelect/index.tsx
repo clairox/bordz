@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form'
 
-import DateSelect from '../DateSelect'
+import DateSelect from '../../DateSelect'
 
 type FormDateSelectProps<T extends FieldValues> = {
     name: Path<T>

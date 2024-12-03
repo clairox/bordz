@@ -125,10 +125,3 @@ type ComponentName =
     | 'griptape'
 
 type SkateLabMode = 'edit' | 'customize' | 'default'
-
-// TODO: Change this to contain actual assets
-type ComponentAssets = {
-    id: string
-    componentId: string
-    model: object
-}

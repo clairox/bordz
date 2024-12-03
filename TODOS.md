@@ -8,7 +8,11 @@
 -   [x] Move /schema and /db to /drizzle
 -   [x] Do a bit of refactoring
 -   [x] Add updatedAt: new Date() to all resource updates
+-   [x] Add 'model' field to component schema
 -   [ ] Create form password input component
+-   [ ] Move all fetches to /lib/api
+-   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
+-   [ ] Add 'add' button with text input to select
 
 ### Cart
 

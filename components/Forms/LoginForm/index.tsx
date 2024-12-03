@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 
 import { useSupabase } from '@/context/SupabaseContext'
-import FormInput from '@/components/FormInput'
+import FormInput from '@/components/Form/FormInput'
 import ButtonAsync from '@/components/ButtonAsync'
 import LoginFormSchema from './schema'
 
