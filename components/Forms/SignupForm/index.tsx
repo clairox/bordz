@@ -9,13 +9,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { User } from '@supabase/supabase-js'
 
-import { useSupabase } from '@/context/supabaseContext'
-import FormInput from '@/components/FormInput'
+import { useSupabase } from '@/context/SupabaseContext'
+import FormInput from '@/components/Form/FormInput'
 import ButtonAsync from '@/components/ButtonAsync'
 import { CURRENT_YEAR, MIN_ALLOWED_CUSTOMER_AGE } from '@/utils/constants'
-import FormDateSelect from '@/components/FormDateSelect'
+import FormDateSelect from '@/components/Form/FormDateSelect'
 import SignupFormSchema from './schema'
-import { useAuthQuery } from '@/context/authContext'
+import { useAuthQuery } from '@/context/AuthContext'
 
 type FormData = z.infer<typeof SignupFormSchema>
 

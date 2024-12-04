@@ -10,11 +10,13 @@ import { relations } from 'drizzle-orm'
 
 import { generatePK, pgTableWithAutoFields, shortUuid } from './shared'
 import { BoardSetupTable } from './boardSetup'
+import { MAX_HANDLE_LENGTH } from '@/utils/constants'
 
 export const ComponentTable = pgTableWithAutoFields('components', {
     title: varchar('title', { length: 100 }).notNull(),
-    featuredImage: varchar('featured_image', { length: 100 }),
-    images: varchar('images').array().default([]).notNull(),
+    handle: varchar('handle', { length: MAX_HANDLE_LENGTH }).notNull(),
+    image: varchar('image', { length: 100 }),
+    model: varchar('model', { length: 300 }),
     compareAtPrice: integer('compare_at_price'),
     price: integer('price').default(0).notNull(),
     description: text('description'),

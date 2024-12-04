@@ -26,7 +26,7 @@ const RootLayout: React.FC<Readonly<React.PropsWithChildren>> = ({
             <html lang="en">
                 <body className={cn('font-light', publicSans.className)}>
                     <Header />
-                    <main>{children}</main>
+                    <main className="pt-14">{children}</main>
                     <Footer />
                 </body>
             </html>

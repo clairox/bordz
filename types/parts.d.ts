@@ -55,8 +55,8 @@ type ComponentAttributes = {
 type Component = {
     id: string
     title: string
-    featuredImage?: Image
-    images: Image[]
+    image?: string
+    model: string
     compareAtPrice?: number
     price: number
     description?: string

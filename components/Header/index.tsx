@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { Url } from 'next/dist/shared/lib/router/router'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
 
-import { useCartQuery } from '@/context/cartContext'
-import { useAuthQuery } from '@/context/authContext'
+import { useCartQuery } from '@/context/CartContext'
+import { useAuthQuery } from '@/context/AuthContext'
 
 const Header: React.FC = () => {
     return (
-        <header className="flex justify-between px-2 w-full">
+        <header className="z-50 fixed top-0 left-0 flex justify-between px-2 w-full h-14 border-b border-black bg-white">
             <div className="flex gap-4">
                 <Link href="/">
                     <Image

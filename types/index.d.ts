@@ -123,3 +123,5 @@ type ComponentName =
     | 'bearings'
     | 'hardware'
     | 'griptape'
+
+type SkateLabMode = 'edit' | 'customize' | 'default'

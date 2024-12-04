@@ -9,7 +9,7 @@ import {
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useUpdateCheckout } from '@/hooks'
 import { useRouter } from 'next/navigation'
-import { useAuthQuery } from '@/context/authContext'
+import { useAuthQuery } from '@/context/AuthContext'
 
 const CheckoutForm = () => {
     const stripe = useStripe()

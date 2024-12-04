@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import FormInput from '@/components/FormInput'
+import FormInput from '@/components/Form/FormInput'
 import ContinueAsGuestFormSchema from './schema'
 
 type FormData = z.infer<typeof ContinueAsGuestFormSchema>

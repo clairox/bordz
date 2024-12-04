@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import Checkout from '@/components/Checkout'
-import { useCartQuery } from '@/context/cartContext'
+import { useCartQuery } from '@/context/CartContext'
 import ProcessCheckoutCompletion from '@/components/ProcessCheckoutCompletion'
 import RedirectIf from '@/components/RedirectIf'
 

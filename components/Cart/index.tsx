@@ -6,9 +6,9 @@ import Link from 'next/link'
 import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
 
 import { useDeleteCartLineMutation } from '@/hooks'
-import { useCartQuery } from '@/context/cartContext'
+import { useCartQuery } from '@/context/CartContext'
 import PriceRepr from '../PriceRepr'
-import { useAuthQuery } from '@/context/authContext'
+import { useAuthQuery } from '@/context/AuthContext'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()

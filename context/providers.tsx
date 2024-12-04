@@ -2,10 +2,10 @@
 
 import { QueryClientProvider } from '@tanstack/react-query'
 
-import { AuthProvider } from './authContext'
+import { AuthProvider } from './AuthContext'
 import { getQueryClient } from '../lib/queryClient'
-import { CartProvider } from './cartContext'
-import { SupabaseProvider } from './supabaseContext'
+import { CartProvider } from './CartContext'
+import { SupabaseProvider } from './SupabaseContext'
 
 const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
     const queryClient = getQueryClient()

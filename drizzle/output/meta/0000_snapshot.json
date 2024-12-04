@@ -1,5 +1,5 @@
 {
-  "id": "60b32cb9-b742-4844-a018-7634b18b804a",
+  "id": "a5b6c680-2933-4be9-809a-aca0eb91fa5b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -871,6 +871,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "handle": {
+          "name": "handle",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "featured_image": {
           "name": "featured_image",
           "type": "varchar(100)",
@@ -883,6 +889,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'{}'"
+        },
+        "model": {
+          "name": "model",
+          "type": "varchar(300)",
+          "primaryKey": false,
+          "notNull": false
         },
         "compare_at_price": {
           "name": "compare_at_price",

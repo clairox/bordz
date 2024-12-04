@@ -16,7 +16,7 @@ const CheckoutLayout: React.FC<Readonly<React.PropsWithChildren>> = ({
         <html lang="en">
             <body>
                 <Providers>
-                    <main>{children}</main>
+                    <main className="pt-14">{children}</main>
                 </Providers>
             </body>
         </html>

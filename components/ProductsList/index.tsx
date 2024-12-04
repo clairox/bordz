@@ -4,7 +4,7 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { QueryStatus, useQuery } from '@tanstack/react-query'
 import { ArrowClockwise } from '@phosphor-icons/react'
 
-import { useCartQuery } from '@/context/cartContext'
+import { useCartQuery } from '@/context/CartContext'
 import { useAddCartLineMutation } from '@/hooks'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import PriceRepr from '../PriceRepr'

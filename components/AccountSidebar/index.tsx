@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-import { useSupabase } from '@/context/supabaseContext'
+import { useSupabase } from '@/context/SupabaseContext'
 
 const AccountSidebar = () => {
     const { auth } = useSupabase()
