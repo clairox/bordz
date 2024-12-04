@@ -10,7 +10,7 @@ import { useAuthQuery } from '@/context/AuthContext'
 
 const Header: React.FC = () => {
     return (
-        <header className="flex justify-between px-2 w-full">
+        <header className="z-50 fixed top-0 left-0 flex justify-between px-2 w-full h-14 border-b border-black bg-white">
             <div className="flex gap-4">
                 <Link href="/">
                     <Image

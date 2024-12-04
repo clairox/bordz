@@ -42,8 +42,8 @@ const SkateLabUIMenuNav: React.FC<SkateLabUIMenuNavProps> = ({
     }
 
     return (
-        <div className="flex justify-between border-b border-black">
-            <h2>{currentSection}</h2>
+        <div className="z-10 fixed px-2 flex justify-between items-center w-[inherit] h-12 border-b border-black">
+            <h2 className="text-2xl">{currentSection}</h2>
             <div className="flex items-center gap-2 text-2xl">
                 <button
                     disabled={isFirstSection}

@@ -2,10 +2,8 @@
 
 import { createContext, useContext, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 
 import { useLoadSelectedComponents } from '../hooks'
-import { useSupabase } from '@/context/SupabaseContext'
 import { useAddCartLineMutation } from '@/hooks'
 import { useMutation } from '@tanstack/react-query'
 import fetchAbsolute from '@/lib/fetchAbsolute'
@@ -37,8 +35,6 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     const mode = (searchParams.get('mode') ?? 'default') as SkateLabMode
     const id = searchParams.get('id') ?? undefined
 
-    const supabase = useSupabase()
-
     const {
         data: { productId: associatedProductId, ...boardSetup },
     } = useLoadSelectedComponents(mode, id)
@@ -55,54 +51,12 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         component => component == undefined
     )
 
-    const selectComponentAndLoadModel = async (
-        type: ComponentType,
-        component: Component
-    ) => {
-        const {
-            data: { publicUrl },
-        } = supabase.storage.from('models').getPublicUrl(component.model)
-
-        if (!publicUrl) {
-            throw new Error('Component model not found')
-        }
-
-        console.log(publicUrl)
-        const fbxLoader = new FBXLoader()
-        fbxLoader.load(
-            publicUrl,
-            fbx => {
-                if (!fbx) {
-                    setLoading(false)
-                    throw new Error(
-                        'An error has occurred while loading component model'
-                    )
-                }
-
-                setSelectedComponents(prev => {
-                    const updatedSelectedComponents = { ...prev }
-                    updatedSelectedComponents[type] = {
-                        ...component,
-                        model: fbx,
-                    }
-
-                    return updatedSelectedComponents
-                })
-
-                setLoading(false)
-            },
-            () => {},
-            error => {
-                setLoading(false)
-                throw new Error((error as Error).message)
-            }
-        )
-    }
-
     const selectComponent = (type: ComponentType, component: Component) => {
-        setLoading(true)
-
-        selectComponentAndLoadModel(type, component)
+        setSelectedComponents(prev => {
+            const updatedSelectedComponents = { ...prev }
+            updatedSelectedComponents[type] = component
+            return updatedSelectedComponents
+        })
     }
 
     const createProductFromSelectedComponents = async (): Promise<Product> => {
@@ -113,19 +67,17 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
             method: 'POST',
             body: JSON.stringify({
                 type: 'board',
-                deckId: deck,
-                trucksId: trucks,
-                wheelsId: wheels,
-                bearingsId: bearings,
-                hardwareId: hardware,
-                griptapeId: griptape,
+                deckId: deck?.id,
+                trucksId: trucks?.id,
+                wheelsId: wheels?.id,
+                bearingsId: bearings?.id,
+                hardwareId: hardware?.id,
+                griptapeId: griptape?.id,
             }),
         })
-
         if (!res.ok) {
             throw res
         }
-
         return await res.json()
     }
 
@@ -139,28 +91,22 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
             id: string
             components: Record<ComponentType, string>
         }) => {
-            try {
-                const res = await fetchAbsolute(`/products/${id}`, {
-                    method: 'PATCH',
-                    body: JSON.stringify({
-                        type: 'board',
-                        deckId: components.deck,
-                        trucksId: components.trucks,
-                        wheelsId: components.wheels,
-                        bearingsId: components.bearings,
-                        hardwareId: components.hardware,
-                        griptapeId: components.griptape,
-                    }),
-                })
-
-                if (!res.ok) {
-                    throw res
-                }
-
-                return await res.json()
-            } catch (error) {
-                throw error
+            const res = await fetchAbsolute(`/products/${id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    type: 'board',
+                    deckId: components.deck,
+                    trucksId: components.trucks,
+                    wheelsId: components.wheels,
+                    bearingsId: components.bearings,
+                    hardwareId: components.hardware,
+                    griptapeId: components.griptape,
+                }),
+            })
+            if (!res.ok) {
+                throw res
             }
+            return await res.json()
         },
     })
 

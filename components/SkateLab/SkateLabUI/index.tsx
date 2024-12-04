@@ -9,11 +9,9 @@ const SkateLabUI: React.FC = () => {
         useSkateLabContext()
 
     return (
-        <div className="pointer-events-none">
-            <div className="fixed left-10 w-60 h-full border-r border-black">
-                <SkateLabUIMenu />
-            </div>
-            <div className="fixed right-10 flex flex-col gap-4">
+        <div className="z-10 absolute w-full h-full pointer-events-none">
+            <SkateLabUIMenu />
+            <div className="fixed top-24 right-10 flex flex-col gap-4">
                 <SkateLabUIButton
                     disabled={!isComplete}
                     onClick={handleSetupCompletion}

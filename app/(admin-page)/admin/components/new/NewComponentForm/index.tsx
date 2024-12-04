@@ -73,7 +73,6 @@ const NewComponentForm: React.FC = () => {
             ...data,
             price: parseFloat(data.price),
             totalInventory: parseFloat(data.totalInventory),
-            images: data.image ? [data.image] : undefined,
         })
     }
 

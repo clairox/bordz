@@ -1,6 +1,7 @@
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useSuspenseQuery } from '@tanstack/react-query'
+
 import SkateLabUIMenuList from '../SkateLabUIMenuList'
-import { useEffect } from 'react'
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 type SkateLabUIMenuSectionProps = {
     section: Category['label']
@@ -9,23 +10,30 @@ type SkateLabUIMenuSectionProps = {
 const SkateLabUIMenuSection: React.FC<SkateLabUIMenuSectionProps> = ({
     section,
 }) => {
-    const queryClient = useQueryClient()
-
+    // TODO: Use infinite query
     const { data: components } = useSuspenseQuery<Component[]>({
         queryKey: ['components', section],
         queryFn: async () => {
-            return []
+            const response = await fetchAbsolute(
+                `/components?category=${section}`
+            )
+            if (!response.ok) {
+                throw response
+            }
+            return await response.json()
         },
     })
 
-    // TODO: See if this is even necessary
-    useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ['components'] })
-    }, [section, queryClient])
-
     return (
-        <div>
-            <SkateLabUIMenuList components={components} />
+        <div className="relative pt-12 h-full">
+            <div className="flex flex-col w-full h-full overflow-auto">
+                <SkateLabUIMenuList components={components} />
+                <div className="h-full border-t border-black">
+                    <p className="py-2 text-center text-gray-700">
+                        Showing {components.length} of {components.length}
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }

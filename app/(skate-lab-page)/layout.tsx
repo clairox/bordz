@@ -14,10 +14,12 @@ const RootLayout: React.FC<Readonly<React.PropsWithChildren>> = ({
 }) => {
     return (
         <html lang="en">
-            <body>
+            <body className="relative h-screen">
                 <Providers>
                     <Header />
-                    <main>{children}</main>
+                    <main className="pt-14 h-full overflow-hidden">
+                        {children}
+                    </main>
                 </Providers>
             </body>
         </html>

@@ -82,7 +82,7 @@ export const POST = async (request: NextRequest) => {
     const {
         title,
         price,
-        images,
+        image,
         model,
         description,
         specifications,
@@ -112,8 +112,7 @@ export const POST = async (request: NextRequest) => {
                 title,
                 handle: createUrlHandle(title),
                 price: parseInt(price),
-                featuredImage: images?.[0] || undefined,
-                images: images || [],
+                image: image,
                 model,
                 description,
                 specifications,

@@ -6,7 +6,7 @@ const NewComponentFormSchema = z.object({
         .min(1, 'Please enter a title.')
         .max(100, 'Title must not exceed 50 characters.'),
     price: z.string().min(1, 'Please enter a price.'),
-    image: z.string().optional(), // TODO: make this an array
+    image: z.string().optional(),
     model: z.string().optional(),
     description: z.string().optional(),
     specifications: z.array(z.string()).optional(),

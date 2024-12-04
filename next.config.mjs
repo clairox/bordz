@@ -2,6 +2,16 @@
 const nextConfig = {
     reactStrictMode: false,
     transpilePackages: ['three'],
+    images: {
+        remotePatterns: [
+            {
+                protocol: process.env.NEXT_PUBLIC_SUPABASE_PROTOCOL,
+                hostname: process.env.NEXT_PUBLIC_SUPABASE_HOSTNAME,
+                port: '',
+                pathname: '/storage/v1/object/public/images/**',
+            },
+        ],
+    },
 }
 
 export default nextConfig
