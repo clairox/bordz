@@ -6,8 +6,8 @@ import SkateLabUI from './SkateLabUI'
 const SkateLab: React.FC = () => {
     return (
         <SkateLabProvider>
-            <div className="relative">
-                <div className="z-10 absolute w-full h-full">
+            <div className="relative w-full h-screen">
+                <div className="z-10 absolute w-full h-full pointer-events-none">
                     <SkateLabUI />
                 </div>
                 <SkateLab3DViewport />

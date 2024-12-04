@@ -1,3 +1,5 @@
+'use client'
+
 import { useSkateLabContext } from '../SkateLabContext'
 import SkateLabUIButton from './SkateLabUIButton'
 import SkateLabUIMenu from './SkateLabUIMenu'

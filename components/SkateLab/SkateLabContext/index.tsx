@@ -18,7 +18,7 @@ type SkateLabContextValue = {
     isComplete: boolean
     isTouched: boolean
     loading: boolean
-    selectComponent: (type: ComponentType, component: Component) => void // TODO: Change component to id
+    selectComponent: (type: ComponentType, component: Component) => void
     setActiveComponentType: (type: ComponentTypeOrNone) => void
     handleSetupCompletion: () => Promise<void>
     reset: () => void
@@ -61,12 +61,13 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     ) => {
         const {
             data: { publicUrl },
-        } = supabase.storage.from('models').getPublicUrl(`${type}/${id}`)
+        } = supabase.storage.from('models').getPublicUrl(component.model)
 
         if (!publicUrl) {
             throw new Error('Component model not found')
         }
 
+        console.log(publicUrl)
         const fbxLoader = new FBXLoader()
         fbxLoader.load(
             publicUrl,

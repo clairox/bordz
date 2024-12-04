@@ -1,7 +1,7 @@
-import SkateLabContainer from '@/components/SkateLab_old'
+import SkateLab from '@/components/SkateLab'
 
 const SkateLabPage = () => {
-    return <SkateLabContainer />
+    return <SkateLab />
 }
 
 export default SkateLabPage

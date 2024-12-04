@@ -1,3 +1,5 @@
+'use client'
+
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Group, Mesh, Euler, Vector3, Matrix4, Object3D } from 'three'
 import { Canvas } from '@react-three/fiber'
@@ -14,8 +16,8 @@ const SkateLab3DViewport: React.FC = () => {
         new Euler(Math.PI / -5, 0, 0)
     )
     const [cameraProps, setCameraProps] = useState({
-        position: new Vector3(5, 4, 4),
-        zoom: 50,
+        position: new Vector3(50, 40, 40),
+        zoom: 10,
     })
 
     const boardFocusRef = useRef<Group>(null)
@@ -39,44 +41,44 @@ const SkateLab3DViewport: React.FC = () => {
                 none: {
                     focusRef: boardFocusRef,
                     boardRotation: new Euler(Math.PI / -5, 0, 0),
-                    cameraOffset: new Vector3(5, 4, 4),
-                    cameraZoom: 50,
+                    cameraOffset: new Vector3(50, 40, 40),
+                    cameraZoom: 10,
                 },
                 deck: {
                     focusRef: deckFocusRef,
                     boardRotation: new Euler(0),
-                    cameraOffset: new Vector3(0, 0, 10),
-                    cameraZoom: 50,
+                    cameraOffset: new Vector3(0, 0, 100),
+                    cameraZoom: 10,
                 },
                 trucks: {
                     focusRef: trucksFocusRef,
                     boardRotation: new Euler(Math.PI / 2, Math.PI, 0),
-                    cameraOffset: new Vector3(0, 0, 10),
-                    cameraZoom: 100,
+                    cameraOffset: new Vector3(0, 0, 100),
+                    cameraZoom: 20,
                 },
                 wheels: {
                     focusRef: wheelsFocusRef,
                     boardRotation: new Euler(Math.PI / -5, 0, 0),
-                    cameraOffset: new Vector3(10, 0, 5),
-                    cameraZoom: 200,
+                    cameraOffset: new Vector3(100, 0, 50),
+                    cameraZoom: 40,
                 },
                 bearings: {
                     focusRef: bearingsFocusRef,
                     boardRotation: new Euler(Math.PI / -5, 0, 0),
-                    cameraOffset: new Vector3(10, 0, 0),
-                    cameraZoom: 450,
+                    cameraOffset: new Vector3(100, 0, 0),
+                    cameraZoom: 90,
                 },
                 hardware: {
                     focusRef: hardwareFocusRef,
                     boardRotation: new Euler(0),
-                    cameraOffset: new Vector3(4, 0, -10),
-                    cameraZoom: 100,
+                    cameraOffset: new Vector3(40, 0, -100),
+                    cameraZoom: 20,
                 },
                 griptape: {
                     focusRef: griptapeFocusRef,
                     boardRotation: new Euler(0),
-                    cameraOffset: new Vector3(0, 0, -10),
-                    cameraZoom: 50,
+                    cameraOffset: new Vector3(0, 0, -100),
+                    cameraZoom: 10,
                 },
             }
         }, [])
@@ -118,7 +120,18 @@ const SkateLab3DViewport: React.FC = () => {
 
     return (
         <Canvas onPointerMissed={() => setActiveComponentType('none')}>
-            <OrthographicCamera makeDefault {...cameraProps} />
+            <OrthographicCamera
+                makeDefault
+                {...cameraProps}
+                near={0.1}
+                far={1000}
+                args={[
+                    -window.innerWidth / 200,
+                    window.innerWidth / 200,
+                    window.innerHeight / 200,
+                    -window.innerHeight / 200,
+                ]}
+            />
             <group ref={boardFocusRef} rotation={boardRotation}>
                 <SkateLab3DComponent ref={deckFocusRef} type={'deck'} />
                 <SkateLab3DComponent ref={trucksFocusRef} type={'trucks'} />

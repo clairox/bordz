@@ -57,6 +57,7 @@ type Component = {
     title: string
     featuredImage?: Image
     images: Image[]
+    model: string
     compareAtPrice?: number
     price: number
     description?: string

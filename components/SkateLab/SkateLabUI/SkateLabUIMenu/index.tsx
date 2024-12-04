@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 import { useSkateLabContext } from '../../SkateLabContext'
 import SkateLabUIMenuNav from './SkateLabUIMenuNav'
