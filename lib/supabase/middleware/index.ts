@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import * as jose from 'jose'
 
 const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -30,6 +31,39 @@ const updateSession = async (request: NextRequest) => {
     const {
         data: { user },
     } = await supabase.auth.getUser()
+
+    const {
+        data: { session },
+    } = await supabase.auth.getSession()
+
+    if (session) {
+        const { user_role: userRole } = jose.decodeJwt(session.access_token)
+
+        if (userRole === 'admin') {
+            if (
+                (!request.nextUrl.pathname.startsWith('/admin') &&
+                    !request.nextUrl.pathname.startsWith('/_next') &&
+                    !request.nextUrl.pathname.startsWith('/api')) ||
+                request.nextUrl.pathname.startsWith('/admin/login')
+            ) {
+                const url = request.nextUrl.clone()
+                url.pathname = '/admin'
+                return NextResponse.redirect(url)
+            }
+        } else if (request.nextUrl.pathname.startsWith('/admin')) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/'
+            return NextResponse.redirect(url)
+        }
+    } else if (
+        !session &&
+        request.nextUrl.pathname.startsWith('/admin') &&
+        !request.nextUrl.pathname.startsWith('/admin/login')
+    ) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/admin/login'
+        return NextResponse.redirect(url)
+    }
 
     if (!user && request.nextUrl.pathname.startsWith('/account')) {
         const url = request.nextUrl.clone()

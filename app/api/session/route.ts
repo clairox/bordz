@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { serialize } from 'cookie'
+import * as jose from 'jose'
 
 import { createBadRequestError, handleError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
@@ -49,26 +50,32 @@ export const DELETE = async (request: NextRequest) => {
         return new NextResponse(null, { status: 204 })
     }
 
+    const jwt = jose.decodeJwt(session)
+    const userRole = jwt.user_role
+
     try {
         const sessionCookie = serialize('session', '', {
             ...DEFAULT_COOKIE_CONFIG,
             maxAge: -1,
         })
 
-        const cartIdCookie = serialize('cartId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
-
-        const checkoutIdCookie = serialize('checkoutId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
-
         const response = new NextResponse(null, { status: 204 })
         response.headers.append('Set-Cookie', sessionCookie)
-        response.headers.append('Set-Cookie', cartIdCookie)
-        response.headers.append('Set-Cookie', checkoutIdCookie)
+
+        if (userRole === 'customer') {
+            const cartIdCookie = serialize('cartId', '', {
+                ...DEFAULT_COOKIE_CONFIG,
+                maxAge: -1,
+            })
+
+            const checkoutIdCookie = serialize('checkoutId', '', {
+                ...DEFAULT_COOKIE_CONFIG,
+                maxAge: -1,
+            })
+
+            response.headers.append('Set-Cookie', cartIdCookie)
+            response.headers.append('Set-Cookie', checkoutIdCookie)
+        }
 
         return response
     } catch (error) {

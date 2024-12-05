@@ -14,6 +14,7 @@ import {
     useQueryClient,
     UseQueryResult,
 } from '@tanstack/react-query'
+import * as jose from 'jose'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useSupabase } from '../SupabaseContext'
@@ -183,9 +184,14 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log(event)
             if (event === 'INITIAL_SESSION') {
                 if (session) {
+                    const jwt = jose.decodeJwt(session.access_token)
+                    const userRole = jwt.user_role
+                    if (userRole === 'admin') {
+                        return
+                    }
+
                     const { data: profile } = await supabase
                         .from('profiles')
                         .select('*')
@@ -207,6 +213,12 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
                 queryClient.setQueryData(['auth'], auth)
 
+                const jwt = jose.decodeJwt(session.access_token)
+                const userRole = jwt.user_role
+                if (userRole === 'admin') {
+                    return
+                }
+
                 const { data: profile } = await supabase
                     .from('profiles')
                     .select('*')
@@ -220,6 +232,8 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
             }
 
             if (event === 'SIGNED_OUT') {
+                const wasCustomer =
+                    queryClient.getQueryData(['customer']) != undefined
                 queryClient.setQueryData(['customer'], null)
 
                 setIsNewAccount(true)
@@ -227,7 +241,9 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
                 await killSession()
 
                 queryClient.invalidateQueries({ queryKey: ['auth'] })
-                queryClient.invalidateQueries({ queryKey: ['cart'] })
+                if (wasCustomer) {
+                    queryClient.invalidateQueries({ queryKey: ['cart'] })
+                }
             }
         })
 

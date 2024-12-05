@@ -4,7 +4,7 @@ import { Check } from '@phosphor-icons/react'
 import { ButtonHTMLAttributes, useMemo } from 'react'
 
 type ButtonAsyncProps = React.PropsWithChildren<{
-    type: ButtonHTMLAttributes<HTMLButtonElement>['type']
+    type?: ButtonHTMLAttributes<HTMLButtonElement>['type']
     loading: boolean
     success: boolean
 }>

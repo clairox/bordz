@@ -1,30 +1,24 @@
 'use client'
 
 import { Fragment, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import FormInput from '@/components/Form/FormInput'
+import AdminLoginFormSchema from './schema'
+import { FormInput } from '@/components/Form'
 import ButtonAsync from '@/components/ButtonAsync'
-import LoginFormSchema from './schema'
 import { useLogin } from '@/hooks'
 
-type FormData = z.infer<typeof LoginFormSchema>
+type FormData = z.infer<typeof AdminLoginFormSchema>
 
-type LoginFormProps = {
-    redirectTo?: string
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
+const AdminLoginForm: React.FC = () => {
     const form = useForm<FormData>({
-        resolver: zodResolver(LoginFormSchema),
+        resolver: zodResolver(AdminLoginFormSchema),
     })
 
     const router = useRouter()
-    const pathname = usePathname()
 
     const { mutateAsync: login, isPending, isSuccess } = useLogin()
 
@@ -35,7 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
 
         try {
             await login(data)
-            router.push(redirectTo)
+            router.push('/admin')
         } catch {
             setMessage('An error has occurred.')
         }
@@ -60,13 +54,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
                 <ButtonAsync loading={isPending} success={isSuccess}>
                     Login
                 </ButtonAsync>
-                <p>
-                    {"Don't have an account? "}
-                    <Link href={pathname + '?register=true'}>Sign up</Link>
-                </p>
             </form>
         </Fragment>
     )
 }
 
-export default LoginForm
+export default AdminLoginForm
