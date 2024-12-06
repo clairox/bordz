@@ -18,7 +18,8 @@ type SkateLabContextValue = {
     loading: boolean
     selectComponent: (type: ComponentType, component: Component) => void
     setActiveComponentType: (type: ComponentTypeOrNone) => void
-    handleSetupCompletion: () => Promise<void>
+    finishEditing: () => Promise<void>
+    addBoardSetupToCart: (publish?: boolean) => Promise<void>
     reset: () => void
 }
 
@@ -59,7 +60,9 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         })
     }
 
-    const createProductFromSelectedComponents = async (): Promise<Product> => {
+    const createProductFromSelectedComponents = async (
+        publish?: boolean
+    ): Promise<Product> => {
         const { deck, trucks, wheels, bearings, hardware, griptape } =
             selectedComponents
 
@@ -67,6 +70,7 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
             method: 'POST',
             body: JSON.stringify({
                 type: 'board',
+                isPublic: publish,
                 deckId: deck?.id,
                 trucksId: trucks?.id,
                 wheelsId: wheels?.id,
@@ -110,30 +114,39 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         },
     })
 
-    const handleSetupCompletion = async () => {
+    const finishEditing = async () => {
         if (!isComplete) {
             return
         }
 
         setLoading(true)
 
-        // TODO: Implement edit mode logic
-        if (mode === 'edit') {
-            // if (!productId) {
-            //     setLoading(false)
-            //     return
-            // }
-            //
-            // await updateBoardSetup({
-            //     id: productId,
-            //     components: selectedComponents as Record<ComponentType, string>,
-            // })
-            //
-            // queryClient.invalidateQueries({ queryKey: ['cart'] })
-        } else {
-            const product = await createProductFromSelectedComponents()
-            await addCartLine({ productId: product.id })
+        // TODO: implement edit mode logic
+
+        // if (!productId) {
+        //     setLoading(false)
+        //     return
+        // }
+        //
+        // await updateBoardSetup({
+        //     id: productId,
+        //     components: selectedComponents as Record<ComponentType, string>,
+        // })
+        //
+        // queryClient.invalidateQueries({ queryKey: ['cart'] })
+
+        setLoading(false)
+    }
+
+    const addBoardSetupToCart = async (publish?: boolean) => {
+        if (!isComplete) {
+            return
         }
+
+        setLoading(true)
+
+        const product = await createProductFromSelectedComponents(publish)
+        await addCartLine({ productId: product.id })
 
         setLoading(false)
     }
@@ -161,7 +174,8 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
                 loading,
                 selectComponent,
                 setActiveComponentType,
-                handleSetupCompletion,
+                finishEditing,
+                addBoardSetupToCart,
                 reset,
             }}
         >

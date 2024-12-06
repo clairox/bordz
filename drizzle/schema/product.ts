@@ -12,6 +12,7 @@ export const ProductTable = pgTableWithAutoFields('products', {
     price: integer('price').default(0).notNull(),
     availableForSale: boolean('available_for_sale').default(false).notNull(),
     productType: ProductType('product_type').default('BOARD').notNull(),
+    isPublic: boolean('is_public').default(false).notNull(),
 })
 
 export const ProductRelations = relations(ProductTable, ({ one }) => ({

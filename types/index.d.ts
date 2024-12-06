@@ -21,6 +21,7 @@ type Product = {
     updatedAt: Date
     compareAtPrice?: number
     featuredImage?: string | null
+    isPublic: boolean
 }
 
 type CartLine = {

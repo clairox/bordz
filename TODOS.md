@@ -37,3 +37,8 @@
 ### Authentication
 
 -   [x] When Auth is implemented, requests to /api/cart should get cartId from user if cartId cookie does not exist
+
+### Skate Lab
+
+-   [x] Add like post build confirmation modal where you can choose to add to cart or wishlist and make build public
+-   [ ] Component filter/sort

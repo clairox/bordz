@@ -19,7 +19,7 @@ const ProductsList: React.FC = () => {
         queryKey: ['products'],
         queryFn: async () => {
             try {
-                const res = await fetchAbsolute('/products')
+                const res = await fetchAbsolute('/products?publicOnly=true')
 
                 if (!res.ok) {
                     throw res

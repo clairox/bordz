@@ -14,6 +14,7 @@ import {
     getComponentsTotalPrice,
 } from '../shared'
 import { ComponentRecord } from '@/types/records'
+import { eq } from 'drizzle-orm'
 
 const defaultLimit = 40
 const defaultOffset = 0
@@ -22,9 +23,11 @@ export const GET = async (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams
     const limit = Number(searchParams.get('limit') || defaultLimit)
     const offset = Number(searchParams.get('offset') || defaultOffset)
+    const publicOnly = searchParams.get('publicOnly') === 'true' ? true : false
 
     try {
         const products = await db.query.ProductTable.findMany({
+            where: publicOnly ? eq(ProductTable.isPublic, true) : undefined,
             limit,
             offset,
             with: {
@@ -52,7 +55,8 @@ const createProduct = async (
     price: number,
     type: 'BOARD' | 'OTHER',
     availableForSale: boolean = true,
-    featuredImage?: string
+    featuredImage?: string,
+    isPublic?: boolean
 ) => {
     return await db
         .insert(ProductTable)
@@ -62,6 +66,7 @@ const createProduct = async (
             productType: type,
             availableForSale: availableForSale,
             featuredImage: featuredImage,
+            isPublic: isPublic,
         })
         .returning()
         .then(rows => rows[0])
@@ -75,6 +80,7 @@ export const POST = async (request: NextRequest) => {
     if (type === 'board') {
         const {
             deckId,
+            isPublic,
             trucksId,
             wheelsId,
             bearingsId,
@@ -124,7 +130,9 @@ export const POST = async (request: NextRequest) => {
                 'Complete Skateboard',
                 totalPrice,
                 'BOARD',
-                availability
+                availability,
+                undefined,
+                isPublic
             )
 
             const { deck, trucks, wheels, bearings, hardware, griptape } =
@@ -155,8 +163,10 @@ export const POST = async (request: NextRequest) => {
             const newProduct = await createProduct(
                 title,
                 price,
+                'OTHER',
                 availableForSale,
-                featuredImage
+                featuredImage,
+                true
             )
 
             return NextResponse.json(newProduct)

@@ -15,6 +15,13 @@
       "when": 1733340881366,
       "tag": "0001_secret_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733524564677,
+      "tag": "0002_chief_tempest",
+      "breakpoints": true
     }
   ]
 }
