@@ -1,4 +1,4 @@
-import AdminSidebar from '@/components/AdminSidebar'
+import AdminSidebar from '@/app/(admin-page)/admin/(pages)/AdminSidebar'
 
 const AdminLayout: React.FC<React.PropsWithChildren> = async ({ children }) => {
     return (

@@ -25,6 +25,7 @@ const createCheckout = async (cart: Cart) => {
             totalShipping: SHIPPING_COST,
             totalTax,
             cartId: cart.id,
+            customerId: cart.ownerId,
         })
         .returning()
         .then(rows => rows[0].id)

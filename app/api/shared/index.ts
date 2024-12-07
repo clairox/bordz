@@ -1,4 +1,5 @@
 import decodeSessionToken from './decodeSessionToken'
+import handleRoute from './handleRoute'
 import getBoardSetup from './getBoardSetup'
 import getCart from './getCart'
 import getCartByOwnerId from './getCartByOwnerId'
@@ -13,6 +14,7 @@ import updateCheckout from './updateCheckout'
 
 export {
     decodeSessionToken,
+    handleRoute,
     getBoardSetup,
     getCart,
     getCartByOwnerId,

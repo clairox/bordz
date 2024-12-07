@@ -13,6 +13,8 @@
 -   [ ] Move all fetches to /lib/api
 -   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
 -   [ ] Add 'add' button with text input to select
+-   [ ] Use Supabase for data storage
+-   [ ] Use handle route for all api routes
 
 ### Cart
 
@@ -42,3 +44,15 @@
 
 -   [x] Add like post build confirmation modal where you can choose to add to cart or wishlist and make build public
 -   [ ] Component filter/sort
+
+### Customer
+
+-   [ ] Add address to customer type and /customers return
+
+### Account
+
+-   [ ] Create order page
+-   [ ] Create addresses page
+-   [ ] Create change password page
+-   [ ] Create delete account page
+-   [ ] Create personal details page

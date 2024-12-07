@@ -1,5 +1,5 @@
-import { useSkateLabContext } from '@/components/SkateLab/SkateLabContext'
-import { CATEGORIES } from '@/components/SkateLab/utils/constants'
+import { useSkateLabContext } from '@/app/(skate-lab-page)/lab/SkateLab/SkateLabContext'
+import { CATEGORIES } from '@/app/(skate-lab-page)/lab/SkateLab/utils/constants'
 import { getTypeFromCategory } from '@/utils/helpers'
 
 type SkateLabUIMenuNavProps = {

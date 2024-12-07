@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import PriceRepr from '@/components/PriceRepr'
-import { useSkateLabContext } from '@/components/SkateLab/SkateLabContext'
+import { useSkateLabContext } from '@/app/(skate-lab-page)/lab/SkateLab/SkateLabContext'
 import { useSupabase } from '@/context/SupabaseContext'
 import { getTypeFromCategory } from '@/utils/helpers'
 

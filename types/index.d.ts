@@ -53,7 +53,7 @@ type Cart = {
     id: string
     checkout?: Checkout | null
     lines: CartLine[]
-    ownerId: string
+    ownerId?: string
     subtotal: number
     total: number
     totalQuantity: number

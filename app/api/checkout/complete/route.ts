@@ -44,6 +44,7 @@ const createOrder = async (checkout: Checkout) => {
             total: checkout.total,
             totalTax: checkout.totalTax,
             totalShipping: checkout.totalShipping,
+            customerId: checkout.customerId,
             shippingAddressId: checkout.shippingAddressId,
         })
         .returning()
