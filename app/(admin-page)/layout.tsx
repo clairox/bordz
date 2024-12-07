@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import '@/styles/globals.css'
-import Providers from './adminPageProviders'
+import Providers from './AdminPageProviders'
 
 export const metadata: Metadata = {
     title: 'Bordz Admin',

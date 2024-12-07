@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 
 import '@/styles/globals.css'
-import AccountSidebar from '@/app/(pages)/account/AccountSidebar'
+import AccountSidebar from '@/app/(pages)/account/_components/AccountSidebar'
 
 export const metadata: Metadata = {
     title: 'Account | Bordz',

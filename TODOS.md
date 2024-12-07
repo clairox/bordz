@@ -17,7 +17,7 @@
 -   [ ] Use handle route for all api routes
 -   [ ] Use infinite queries where pagination is needed
 -   [ ] Reorganize file structure
--   [ ] Figure out a better name for List and ListItem components
+-   [ ] Figure out a better naming convention for List and ListItem components
 
 ### Cart
 
@@ -54,7 +54,7 @@
 
 ### Account
 
--   [ ] Create order page
+-   [x] Create order page
 -   [ ] Create addresses page
 -   [ ] Create change password page
 -   [ ] Create delete account page

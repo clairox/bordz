@@ -1,4 +1,4 @@
-import NewComponentForm from './NewComponentForm'
+import { NewComponentForm } from './_components'
 
 const NewComponentPage: React.FC = () => {
     return <NewComponentForm />

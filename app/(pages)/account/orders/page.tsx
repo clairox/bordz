@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 
 import { useAuthQuery } from '@/context/AuthContext'
-import AccountHeading from '../AccountHeading'
-import { default as Section } from '../AccountSection'
+import AccountHeading from '../_components/AccountHeading'
+import { default as Section } from '../_components/AccountSection'
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { OrderList } from './components'
+import { OrderList } from './_components'
 
 const OrdersPage = () => {
     const {

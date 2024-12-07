@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation'
 
 import { useAuthQuery } from '@/context/AuthContext'
-import AccountHeading from '../AccountHeading'
-import { default as Section } from '../AccountSection'
+import AccountHeading from '../_components/AccountHeading'
+import { default as Section } from '../_components/AccountSection'
 
 const SettingsPage: React.FC = () => {
     const {
