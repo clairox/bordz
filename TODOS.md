@@ -15,6 +15,9 @@
 -   [ ] Add 'add' button with text input to select
 -   [ ] Use Supabase for data storage
 -   [ ] Use handle route for all api routes
+-   [ ] Use infinite queries where pagination is needed
+-   [ ] Reorganize file structure
+-   [ ] Figure out a better name for List and ListItem components
 
 ### Cart
 
