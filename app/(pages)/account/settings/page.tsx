@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import { default as Section } from '../_components/AccountSection'
+import { useQuery } from '@tanstack/react-query'
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const SettingsPage: React.FC = () => {
     const {
@@ -56,6 +58,9 @@ const SettingsPage: React.FC = () => {
                     {customer?.defaultAddressId ? (
                         <div className="mb-3">
                             <p className="font-semibold">Address:</p>
+                            <AddressDisplay
+                                addressId={customer.defaultAddressId}
+                            />
                         </div>
                     ) : (
                         <p>No home address saved.</p>
@@ -78,6 +83,46 @@ const SettingsPage: React.FC = () => {
                     </div>
                 </Section.Content>
             </Section>
+        </div>
+    )
+}
+
+type AddressDisplayProps = {
+    addressId: string
+}
+
+const AddressDisplay: React.FC<AddressDisplayProps> = ({ addressId }) => {
+    const {
+        data: address,
+        error,
+        isPending,
+    } = useQuery<Address>({
+        queryKey: ['address', addressId],
+        queryFn: async () => {
+            const response = await fetchAbsolute(`/addresses/${addressId}`)
+            if (!response.ok) {
+                throw response
+            }
+            return await response.json()
+        },
+    })
+
+    if (error) {
+        return <div>Something went wrong</div>
+    }
+
+    if (isPending) {
+        return <div>Loading...</div>
+    }
+
+    return (
+        <div>
+            <p>{address.line1}</p>
+            {address.line2 && <p>{address.line2}</p>}
+            <p>
+                {address.city}, {address.state} {address.postalCode}
+            </p>
+            <p>{address.countryCode}</p>
         </div>
     )
 }

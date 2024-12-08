@@ -38,6 +38,7 @@
 -   [ ] Abandon checkout after certain interval
 -   [ ] Make routes/components for other paymentIntent statuses
     -   [ ] List each of them here
+-   [ ] Add addresses to checkout
 
 ### Authentication
 
@@ -55,7 +56,7 @@
 ### Account
 
 -   [x] Create order page
--   [ ] Create addresses page
+-   [x] Create addresses page
 -   [ ] Create change password page
 -   [ ] Create delete account page
 -   [ ] Create personal details page

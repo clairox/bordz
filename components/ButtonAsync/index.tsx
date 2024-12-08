@@ -1,7 +1,7 @@
 'use client'
 
+import { ButtonHTMLAttributes, useEffect, useState } from 'react'
 import { Check } from '@phosphor-icons/react'
-import { ButtonHTMLAttributes, useMemo } from 'react'
 
 type ButtonAsyncProps = React.PropsWithChildren<{
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type']
@@ -15,21 +15,32 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
     loading,
     success,
 }) => {
-    const content = useMemo(() => {
+    const [content, setContent] = useState<React.ReactNode>(children)
+    const [disabled, setDisabled] = useState(false)
+
+    useEffect(() => {
         if (loading) {
-            return <div className="flex justify-center">Loading...</div>
-        } else if (success) {
-            return (
+            setContent(<div className="flex justify-center">Loading...</div>)
+            setDisabled(true)
+        }
+    }, [loading])
+
+    useEffect(() => {
+        if (success) {
+            setContent(
                 <div className="flex justify-center">
                     <Check size={28} weight={'light'} />
                 </div>
             )
-        } else {
-            return children
+            setTimeout(() => {
+                setContent(children)
+                setDisabled(false)
+            }, 3000)
         }
-    }, [children, loading, success])
+    }, [success, children])
+
     return (
-        <button type={type} disabled={loading || success}>
+        <button type={type} disabled={disabled}>
             {content}
         </button>
     )

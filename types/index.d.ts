@@ -117,6 +117,20 @@ type Order = {
     updatedAt: Date
 }
 
+type Address = {
+    id: string
+    fullName: string
+    line1: string
+    line2?: string | null
+    city: string
+    state: string
+    countryCode: string
+    postalCode: string
+    phone?: string | null
+    formatted: string
+    ownerId?: string | null
+}
+
 type ComponentName =
     | 'deck'
     | 'trucks'
@@ -126,3 +140,5 @@ type ComponentName =
     | 'griptape'
 
 type SkateLabMode = 'edit' | 'customize' | 'default'
+
+type FormMessageType = 'error' | 'success'
