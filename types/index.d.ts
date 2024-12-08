@@ -40,6 +40,7 @@ type Customer = {
     id: string
     userId: string
     defaultAddressId?: string
+    defaultAddress?: Address
     displayName: string
     firstName: string
     lastName: string

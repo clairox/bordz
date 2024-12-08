@@ -5,9 +5,11 @@ import { db } from '@/drizzle/db'
 import { CustomerTable } from '@/drizzle/schema/user'
 import {
     createBadRequestError,
+    createInternalServerError,
     createNotFoundError,
     handleError,
 } from '@/lib/errors'
+import { AddressTable } from '@/drizzle/schema/address'
 
 export const GET = async (request: NextRequest) => {
     const userId = request.nextUrl.searchParams.get('userId')
@@ -24,7 +26,20 @@ export const GET = async (request: NextRequest) => {
             throw createNotFoundError('Customer')
         }
 
-        return NextResponse.json(customer)
+        // TODO: Change customer schema so that this isn't necessary
+        if (!customer.defaultAddressId) {
+            return NextResponse.json(customer)
+        }
+
+        const defaultAddress = await db.query.AddressTable.findFirst({
+            where: eq(AddressTable.id, customer.defaultAddressId),
+        })
+
+        if (!defaultAddress) {
+            throw createInternalServerError()
+        }
+
+        return NextResponse.json({ ...customer, defaultAddress })
     } catch (error) {
         return handleError(error as Error)
     }

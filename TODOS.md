@@ -18,6 +18,8 @@
 -   [ ] Use infinite queries where pagination is needed
 -   [ ] Reorganize file structure
 -   [ ] Figure out a better naming convention for List and ListItem components
+-   [ ] Update customer schema to handle defaultAddressId better
+-   [ ] Allow use of multiple addresses per user
 
 ### Cart
 
@@ -35,10 +37,10 @@
     -   [x] TEST /checkout redirects to /cart when cart is empty
     -   [x] TEST Checkout renders when clientSecret, ProcessingCheckoutCompletion renders otherwise
     -   [x] TEST /checkout?payment_intent_client_secret={secret} redirects to /order/confirmation?order={orderId} when POST /checkout/complete is successful
+-   [x] Add addresses to checkout
 -   [ ] Abandon checkout after certain interval
 -   [ ] Make routes/components for other paymentIntent statuses
     -   [ ] List each of them here
--   [ ] Add addresses to checkout
 
 ### Authentication
 
@@ -51,7 +53,7 @@
 
 ### Customer
 
--   [ ] Add address to customer type and /customers return
+-   [x] Add address to customer type and /customers return
 
 ### Account
 

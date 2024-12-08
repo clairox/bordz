@@ -10,6 +10,7 @@ import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useUpdateCheckout } from '@/hooks'
 import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
+import { ContactOption } from '@stripe/stripe-js'
 
 const CheckoutForm = () => {
     const stripe = useStripe()
@@ -23,7 +24,7 @@ const CheckoutForm = () => {
 
     const {
         auth: { data: auth },
-        customer: { status: customerStatus },
+        customer: { data: customer, status: customerStatus },
     } = useAuthQuery()
 
     const { mutateAsync: updateCheckout } = useUpdateCheckout()
@@ -133,6 +134,23 @@ const CheckoutForm = () => {
         }
     }
 
+    const defaultAddress = customer?.defaultAddress
+    const contacts: ContactOption[] = defaultAddress
+        ? [
+              {
+                  name: customer.displayName,
+                  address: {
+                      line1: defaultAddress.line1,
+                      line2: defaultAddress.line2 ?? undefined,
+                      city: defaultAddress.city,
+                      state: defaultAddress.state,
+                      postal_code: defaultAddress.postalCode,
+                      country: 'US',
+                  },
+              },
+          ]
+        : []
+
     return (
         <div>
             <form
@@ -146,7 +164,7 @@ const CheckoutForm = () => {
                         options={{
                             mode: 'shipping',
                             allowedCountries: ['US'],
-                            contacts: [], // TODO: Populate this with Addresses if customer logged in
+                            contacts: contacts, // TODO: Populate this with Addresses if customer logged in
                         }}
                     />
                 </div>
