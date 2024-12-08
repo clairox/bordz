@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import { default as Section } from '../_components/AccountSection'
-import { useQuery } from '@tanstack/react-query'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const SettingsPage: React.FC = () => {
     const {
@@ -55,12 +53,21 @@ const SettingsPage: React.FC = () => {
                     </Section.Header.ActionLink>
                 </Section.Header>
                 <Section.Content>
-                    {customer?.defaultAddressId ? (
-                        <div className="mb-3">
-                            <p className="font-semibold">Address:</p>
-                            <AddressDisplay
-                                addressId={customer.defaultAddressId}
-                            />
+                    {customer?.defaultAddress ? (
+                        <div>
+                            <div className="mb-3">
+                                <p className="font-semibold">
+                                    Default address:
+                                </p>
+                                <AddressDisplay
+                                    address={customer.defaultAddress}
+                                />
+                            </div>
+                            {customer.addresses?.map(address => (
+                                <div key={address.id} className="mb-3">
+                                    <AddressDisplay address={address} />
+                                </div>
+                            ))}
                         </div>
                     ) : (
                         <p>No home address saved.</p>
@@ -88,35 +95,13 @@ const SettingsPage: React.FC = () => {
 }
 
 type AddressDisplayProps = {
-    addressId: string
+    address: Address
 }
 
-const AddressDisplay: React.FC<AddressDisplayProps> = ({ addressId }) => {
-    const {
-        data: address,
-        error,
-        isPending,
-    } = useQuery<Address>({
-        queryKey: ['address', addressId],
-        queryFn: async () => {
-            const response = await fetchAbsolute(`/addresses/${addressId}`)
-            if (!response.ok) {
-                throw response
-            }
-            return await response.json()
-        },
-    })
-
-    if (error) {
-        return <div>Something went wrong</div>
-    }
-
-    if (isPending) {
-        return <div>Loading...</div>
-    }
-
+const AddressDisplay: React.FC<AddressDisplayProps> = ({ address }) => {
     return (
         <div>
+            <p>{address.fullName}</p>
             <p>{address.line1}</p>
             {address.line2 && <p>{address.line2}</p>}
             <p>

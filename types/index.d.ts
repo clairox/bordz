@@ -41,6 +41,7 @@ type Customer = {
     userId: string
     defaultAddressId?: string
     defaultAddress?: Address
+    addresses?: Address[]
     displayName: string
     firstName: string
     lastName: string

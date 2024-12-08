@@ -7,7 +7,7 @@ import {
 } from '@stripe/react-stripe-js'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { useUpdateCheckout } from '@/hooks'
+import { useCreateAddress, useUpdateCheckout } from '@/hooks'
 import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
 import { ContactOption } from '@stripe/stripe-js'
@@ -28,33 +28,7 @@ const CheckoutForm = () => {
     } = useAuthQuery()
 
     const { mutateAsync: updateCheckout } = useUpdateCheckout()
-
-    type AddressData = {
-        fullName: string
-        line1: string
-        line2?: string
-        city: string
-        state: string
-        postalCode: string
-        country: string
-    }
-
-    const createAddress = async (data: AddressData) => {
-        try {
-            const res = await fetchAbsolute('/addresses', {
-                method: 'POST',
-                body: JSON.stringify(data),
-            })
-
-            if (!res.ok) {
-                throw res
-            }
-
-            return await res.json()
-        } catch (error) {
-            throw error
-        }
-    }
+    const { mutateAsync: createAddress } = useCreateAddress()
 
     useEffect(() => {
         if (email || (auth && customerStatus === 'pending')) {
@@ -102,7 +76,7 @@ const CheckoutForm = () => {
                     city: address.city,
                     state: address.state,
                     postalCode: address.postal_code,
-                    country: address.country,
+                    countryCode: address.country,
                 })
 
                 await updateCheckout({

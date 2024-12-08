@@ -5,6 +5,7 @@ import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
 import { AddressTable } from '@/drizzle/schema/address'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
+import { formatAddress } from '@/utils/helpers'
 
 export const GET = async (
     _: NextRequest,
@@ -45,7 +46,14 @@ export const PATCH = async (
                 city,
                 state,
                 postalCode,
-                formatted: `${line1}, ${line2 ? line2 + ', ' : ''}${city}, ${state} ${postalCode}, US`,
+                formatted: formatAddress({
+                    line1,
+                    line2,
+                    city,
+                    state,
+                    postalCode,
+                    countryCode: 'US',
+                }),
                 updatedAt: new Date(),
             })
             .where(eq(AddressTable.id, addressId))

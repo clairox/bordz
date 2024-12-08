@@ -7,8 +7,12 @@ import { AddressForm } from './_components'
 
 const AddressesPage = () => {
     const {
-        customer: { data: customer },
+        customer: { data: customer, isPending },
     } = useAuthQuery()
+
+    if (isPending) {
+        return <div>Loading...</div>
+    }
 
     return (
         <div>

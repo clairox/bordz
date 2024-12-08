@@ -6,6 +6,7 @@ import { AddressTable } from '@/drizzle/schema/address'
 import { handleError } from '@/lib/errors'
 import { decodeSessionToken } from '../shared'
 import { CustomerTable } from '@/drizzle/schema/user'
+import { formatAddress } from '@/utils/helpers'
 
 export const POST = async (request: NextRequest) => {
     const { fullName, line1, line2, city, state, postalCode } =
@@ -24,21 +25,33 @@ export const POST = async (request: NextRequest) => {
                 state,
                 postalCode,
                 countryCode: 'US',
-                formatted: `${line1}, ${line2 ? line2 + ', ' : ''}${city}, ${state} ${postalCode}, US`,
+                formatted: formatAddress({
+                    line1,
+                    line2,
+                    city,
+                    state,
+                    postalCode,
+                    countryCode: 'US',
+                }),
             })
             .returning()
             .then(rows => rows[0])
 
         if (session) {
             const { sub } = decodeSessionToken(session)
-            await db
+            const customer = await db
                 .update(CustomerTable)
                 .set({ defaultAddressId: address.id })
                 .where(eq(CustomerTable.userId, sub))
+                .returning()
+                .then(rows => rows[0])
 
-            const updatedAddress = await db.query.AddressTable.findFirst({
-                where: eq(AddressTable.id, address.id),
-            })
+            const updatedAddress = await db
+                .update(AddressTable)
+                .set({ ownerId: customer.id })
+                .where(eq(AddressTable.id, address.id))
+                .returning()
+                .then(rows => rows[0])
 
             return NextResponse.json(updatedAddress)
         }
