@@ -17,7 +17,6 @@ const ProcessCheckoutCompletion = () => {
             const res = await fetchAbsolute('/checkout/complete', {
                 method: 'POST',
             })
-            router.replace('gay')
 
             if (!res.ok) {
                 setStatus('error')

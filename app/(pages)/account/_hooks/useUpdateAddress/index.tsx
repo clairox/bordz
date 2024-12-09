@@ -1,22 +1,24 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 
 type UseUpdateAddressArgs = {
     id: string
-    fullName: string
-    line1: string
+    fullName?: string
+    line1?: string
     line2?: string | null
-    city: string
-    state: string
-    countryCode: string
-    postalCode: string
+    city?: string
+    state?: string
+    countryCode?: string
+    postalCode?: string
     phone?: string | null
+    isCustomerDefault?: boolean
 }
 
 const useUpdateAddress = () => {
+    const queryClient = useQueryClient()
     return useMutation<Address, Error, UseUpdateAddressArgs>({
         mutationFn: async args => {
             const { id, ...rest } = args
@@ -29,6 +31,8 @@ const useUpdateAddress = () => {
             }
             return await response.json()
         },
+        onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: ['customer'] }),
     })
 }
 

@@ -8,7 +8,7 @@ const getCustomerByUserId = async (userId: string) => {
     return await db.query.CustomerTable.findFirst({
         where: eq(CustomerTable.userId, userId),
         with: {
-            defaultAddress: true,
+            defaultAddress: { with: { address: true } },
             addresses: { orderBy: [desc(AddressTable.createdAt)] },
         },
     })

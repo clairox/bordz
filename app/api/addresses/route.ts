@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { AddressTable } from '@/drizzle/schema/address'
+import { AddressTable, DefaultAddressTable } from '@/drizzle/schema/address'
 import { handleError } from '@/lib/errors'
-import { decodeSessionToken } from '../shared'
-import { CustomerTable } from '@/drizzle/schema/user'
-import { formatAddress } from '@/utils/helpers'
 
 export const POST = async (request: NextRequest) => {
-    const { fullName, line1, line2, city, state, postalCode } =
-        await request.json()
-
-    const session = request.cookies.get('session')?.value
+    const {
+        fullName,
+        line1,
+        line2,
+        city,
+        state,
+        postalCode,
+        ownerId,
+        isCustomerDefault,
+    } = await request.json()
 
     try {
         const address = await db
@@ -25,35 +27,27 @@ export const POST = async (request: NextRequest) => {
                 state,
                 postalCode,
                 countryCode: 'US',
-                formatted: formatAddress({
-                    line1,
-                    line2,
-                    city,
-                    state,
-                    postalCode,
-                    countryCode: 'US',
-                }),
+                ownerId,
             })
             .returning()
             .then(rows => rows[0])
 
-        if (session) {
-            const { sub } = decodeSessionToken(session)
-            const customer = await db
-                .update(CustomerTable)
-                .set({ defaultAddressId: address.id })
-                .where(eq(CustomerTable.userId, sub))
-                .returning()
-                .then(rows => rows[0])
-
-            const updatedAddress = await db
-                .update(AddressTable)
-                .set({ ownerId: customer.id })
-                .where(eq(AddressTable.id, address.id))
-                .returning()
-                .then(rows => rows[0])
-
-            return NextResponse.json(updatedAddress)
+        if (ownerId && isCustomerDefault) {
+            await db
+                .insert(DefaultAddressTable)
+                .values({
+                    ownerId,
+                    addressId: address.id,
+                })
+                .onConflictDoUpdate({
+                    target: DefaultAddressTable.ownerId,
+                    set: { addressId: address.id },
+                })
+        } else if (ownerId) {
+            await db
+                .insert(DefaultAddressTable)
+                .values({ ownerId, addressId: address.id })
+                .onConflictDoNothing()
         }
 
         return NextResponse.json(address)

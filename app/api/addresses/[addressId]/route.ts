@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
+import { desc, eq, exists, sql } from 'drizzle-orm'
 
 import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
-import { AddressTable } from '@/drizzle/schema/address'
+import { AddressTable, DefaultAddressTable } from '@/drizzle/schema/address'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { formatAddress } from '@/utils/helpers'
+import { toLongUUID } from '@/lib/uuidTranslator'
 
 export const GET = async (
     _: NextRequest,
     context: { params: { addressId: string } }
 ) => {
-    const { addressId } = context.params
-
     return handleRoute(async () => {
+        const { addressId } = context.params
+
         const address = await db.query.AddressTable.findFirst({
             where: eq(AddressTable.id, addressId),
         })
@@ -33,10 +34,16 @@ export const PATCH = async (
     return handleRoute(async () => {
         const { addressId } = context.params
 
-        const { fullName, line1, line2, city, state, postalCode } =
-            await request.json()
+        const {
+            fullName,
+            line1,
+            line2,
+            city,
+            state,
+            postalCode,
+            isCustomerDefault,
+        } = await request.json()
 
-        // TODO: Update 'formatted' programmatically
         const updatedAddress = await db
             .update(AddressTable)
             .set({
@@ -46,24 +53,56 @@ export const PATCH = async (
                 city,
                 state,
                 postalCode,
-                formatted: formatAddress({
-                    line1,
-                    line2,
-                    city,
-                    state,
-                    postalCode,
-                    countryCode: 'US',
-                }),
                 updatedAt: new Date(),
             })
             .where(eq(AddressTable.id, addressId))
             .returning()
             .then(rows => rows[0])
 
-        if (!updatedAddress) {
-            throw createInternalServerError()
+        if (updatedAddress.ownerId && isCustomerDefault) {
+            await db
+                .insert(DefaultAddressTable)
+                .values({
+                    ownerId: updatedAddress.ownerId,
+                    addressId: updatedAddress.id,
+                })
+                .onConflictDoUpdate({
+                    target: DefaultAddressTable.ownerId,
+                    set: { addressId: updatedAddress.id },
+                })
+                .returning()
+                .then(rows => rows[0])
         }
 
         return NextResponse.json(updatedAddress)
+    })
+}
+
+export const DELETE = async (
+    _: NextRequest,
+    context: { params: { addressId: string } }
+) => {
+    return handleRoute(async () => {
+        const { addressId } = context.params
+
+        const deletedAddress = await db
+            .delete(AddressTable)
+            .where(eq(AddressTable.id, addressId))
+            .returning()
+            .then(rows => rows[0])
+
+        if (deletedAddress.ownerId) {
+            // Attempt to set a new default address, in case deletedAddress was previous default
+            await db.execute(sql`
+                INSERT INTO default_addresses (owner_id, address_id)
+                SELECT ${toLongUUID(deletedAddress.ownerId)}, id
+                FROM addresses
+                ORDER BY created_at DESC
+                LIMIT 1
+                ON CONFLICT DO NOTHING;
+            `)
+        }
+
+        return new NextResponse(null, { status: 204 })
     })
 }

@@ -13,6 +13,8 @@ type UseCreateAddressArgs = {
     countryCode: string
     postalCode: string
     phone?: string | null
+    ownerId?: string | null
+    isCustomerDefault?: boolean
 }
 
 const useCreateAddress = () => {

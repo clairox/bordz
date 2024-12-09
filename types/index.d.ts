@@ -39,9 +39,8 @@ type CartLine = {
 type Customer = {
     id: string
     userId: string
-    defaultAddressId?: string
-    defaultAddress?: Address
-    addresses?: Address[]
+    defaultAddress?: { address: Address }
+    addresses: Address[]
     displayName: string
     firstName: string
     lastName: string

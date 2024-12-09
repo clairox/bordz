@@ -3,7 +3,7 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useQuery } from '@tanstack/react-query'
 
-const useAddress = (id: string | undefined, enabled: boolean) => {
+const useAddress = (id: string | undefined, enabled: boolean = true) => {
     return useQuery<Address>({
         queryKey: ['address', id],
         queryFn: async () => {

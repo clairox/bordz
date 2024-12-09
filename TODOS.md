@@ -9,6 +9,8 @@
 -   [x] Do a bit of refactoring
 -   [x] Add updatedAt: new Date() to all resource updates
 -   [x] Add 'model' field to component schema
+-   [x] Allow use of multiple addresses per user
+-   [x] Update customer schema to handle defaultAddressId better
 -   [ ] Create form password input component
 -   [ ] Move all fetches to /lib/api
 -   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
@@ -18,8 +20,6 @@
 -   [ ] Use infinite queries where pagination is needed
 -   [ ] Reorganize file structure
 -   [ ] Figure out a better naming convention for List and ListItem components
--   [ ] Update customer schema to handle defaultAddressId better
--   [ ] Allow use of multiple addresses per user
 
 ### Cart
 

@@ -3,7 +3,7 @@
 import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import AccountSection from '../_components/AccountSection'
-import { AddressForm } from './_components'
+import AddressesView from '../_components/AddressesView'
 
 const AddressesPage = () => {
     const {
@@ -20,7 +20,10 @@ const AddressesPage = () => {
             <AccountSection>
                 <AccountSection.Header>Update address</AccountSection.Header>
                 <AccountSection.Content>
-                    <AddressForm existingAddress={customer?.defaultAddress} />
+                    <AddressesView
+                        defaultAddress={customer?.defaultAddress?.address}
+                        addresses={customer?.addresses}
+                    />
                 </AccountSection.Content>
             </AccountSection>
         </div>

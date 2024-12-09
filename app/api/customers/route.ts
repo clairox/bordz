@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
-
 import { db } from '@/drizzle/db'
 import { CustomerTable } from '@/drizzle/schema/user'
 import {
     createBadRequestError,
-    createInternalServerError,
     createNotFoundError,
     handleError,
 } from '@/lib/errors'

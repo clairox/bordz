@@ -11,6 +11,7 @@ import { useCreateAddress, useUpdateCheckout } from '@/hooks'
 import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
 import { ContactOption } from '@stripe/stripe-js'
+import { formatAddress } from '@/utils/helpers'
 
 const CheckoutForm = () => {
     const stripe = useStripe()
@@ -69,20 +70,43 @@ const CheckoutForm = () => {
             const { name, address } = addressElementValues.value
 
             try {
-                const shippingAddress = await createAddress({
-                    fullName: name,
-                    line1: address.line1,
-                    line2: address.line2 || undefined,
-                    city: address.city,
-                    state: address.state,
-                    postalCode: address.postal_code,
-                    countryCode: address.country,
-                })
+                const existingAddress = customer?.addresses.find(
+                    customerAddress => {
+                        const formatted = formatAddress({
+                            ...address,
+                            postalCode: address.postal_code,
+                            countryCode: address.country,
+                        })
+                        return (
+                            customerAddress.fullName === name &&
+                            customerAddress.formatted === formatted &&
+                            customerAddress.ownerId === customer.id
+                        )
+                    }
+                )
 
-                await updateCheckout({
-                    email,
-                    shippingAddressId: shippingAddress.id,
-                })
+                if (existingAddress) {
+                    await updateCheckout({
+                        email,
+                        shippingAddressId: existingAddress.id,
+                    })
+                } else {
+                    const shippingAddress = await createAddress({
+                        fullName: name,
+                        line1: address.line1,
+                        line2: address.line2 || undefined,
+                        city: address.city,
+                        state: address.state,
+                        postalCode: address.postal_code,
+                        countryCode: address.country,
+                        ownerId: customer?.id,
+                    })
+
+                    await updateCheckout({
+                        email,
+                        shippingAddressId: shippingAddress.id,
+                    })
+                }
             } catch {
                 // TODO: toast('An error has occurred while processing your payment. You have not been charged.')
                 setSubmitting(false)
@@ -108,22 +132,18 @@ const CheckoutForm = () => {
         }
     }
 
-    const defaultAddress = customer?.defaultAddress
-    const contacts: ContactOption[] = defaultAddress
-        ? [
-              {
-                  name: customer.displayName,
-                  address: {
-                      line1: defaultAddress.line1,
-                      line2: defaultAddress.line2 ?? undefined,
-                      city: defaultAddress.city,
-                      state: defaultAddress.state,
-                      postal_code: defaultAddress.postalCode,
-                      country: 'US',
-                  },
-              },
-          ]
-        : []
+    const contacts: ContactOption[] =
+        customer?.addresses.map(address => ({
+            name: address.fullName,
+            address: {
+                line1: address.line1,
+                line2: address.line2 ?? undefined,
+                city: address.city,
+                state: address.state,
+                postal_code: address.postalCode,
+                country: address.countryCode,
+            },
+        })) ?? []
 
     return (
         <div>
@@ -138,7 +158,7 @@ const CheckoutForm = () => {
                         options={{
                             mode: 'shipping',
                             allowedCountries: ['US'],
-                            contacts: contacts, // TODO: Populate this with Addresses if customer logged in
+                            contacts: contacts,
                         }}
                     />
                 </div>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import { default as Section } from '../_components/AccountSection'
+import AddressesView from '../_components/AddressesView'
 
 const SettingsPage: React.FC = () => {
     const {
@@ -53,25 +54,10 @@ const SettingsPage: React.FC = () => {
                     </Section.Header.ActionLink>
                 </Section.Header>
                 <Section.Content>
-                    {customer?.defaultAddress ? (
-                        <div>
-                            <div className="mb-3">
-                                <p className="font-semibold">
-                                    Default address:
-                                </p>
-                                <AddressDisplay
-                                    address={customer.defaultAddress}
-                                />
-                            </div>
-                            {customer.addresses?.map(address => (
-                                <div key={address.id} className="mb-3">
-                                    <AddressDisplay address={address} />
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p>No home address saved.</p>
-                    )}
+                    <AddressesView
+                        defaultAddress={customer?.defaultAddress?.address}
+                        addresses={customer?.addresses}
+                    />
                 </Section.Content>
             </Section>
             <Section>
@@ -90,24 +76,6 @@ const SettingsPage: React.FC = () => {
                     </div>
                 </Section.Content>
             </Section>
-        </div>
-    )
-}
-
-type AddressDisplayProps = {
-    address: Address
-}
-
-const AddressDisplay: React.FC<AddressDisplayProps> = ({ address }) => {
-    return (
-        <div>
-            <p>{address.fullName}</p>
-            <p>{address.line1}</p>
-            {address.line2 && <p>{address.line2}</p>}
-            <p>
-                {address.city}, {address.state} {address.postalCode}
-            </p>
-            <p>{address.countryCode}</p>
         </div>
     )
 }
