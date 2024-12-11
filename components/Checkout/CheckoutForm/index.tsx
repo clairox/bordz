@@ -6,7 +6,6 @@ import {
     useStripe,
 } from '@stripe/react-stripe-js'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useCreateAddress, useUpdateCheckout } from '@/hooks'
 import { useRouter } from 'next/navigation'
 import { useAuthQuery } from '@/context/AuthContext'
@@ -70,20 +69,17 @@ const CheckoutForm = () => {
             const { name, address } = addressElementValues.value
 
             try {
-                const existingAddress = customer?.addresses.find(
-                    customerAddress => {
-                        const formatted = formatAddress({
-                            ...address,
-                            postalCode: address.postal_code,
-                            countryCode: address.country,
-                        })
-                        return (
-                            customerAddress.fullName === name &&
-                            customerAddress.formatted === formatted &&
-                            customerAddress.ownerId === customer.id
-                        )
-                    }
-                )
+                const existingAddress = customer?.addresses.find(_address => {
+                    return (
+                        _address.fullName === name &&
+                        _address.line1 === address.line1 &&
+                        _address.line2 == address.line2 &&
+                        _address.city === address.city &&
+                        _address.state === address.state &&
+                        _address.countryCode === address.country &&
+                        _address.postalCode === address.postal_code
+                    )
+                })
 
                 if (existingAddress) {
                     await updateCheckout({

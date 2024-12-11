@@ -49,9 +49,6 @@ const SettingsPage: React.FC = () => {
             <Section>
                 <Section.Header>
                     <Section.Header.Title>Addresses</Section.Header.Title>
-                    <Section.Header.ActionLink href="/account/addresses">
-                        Edit
-                    </Section.Header.ActionLink>
                 </Section.Header>
                 <Section.Content>
                     <AddressesView

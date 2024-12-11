@@ -7,6 +7,7 @@ type ButtonAsyncProps = React.PropsWithChildren<{
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type']
     loading: boolean
     success: boolean
+    shouldReset?: boolean
 }>
 
 const ButtonAsync: React.FC<ButtonAsyncProps> = ({
@@ -14,6 +15,7 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
     children,
     loading,
     success,
+    shouldReset = false,
 }) => {
     const [content, setContent] = useState<React.ReactNode>(children)
     const [disabled, setDisabled] = useState(false)
@@ -32,12 +34,15 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
                     <Check size={28} weight={'light'} />
                 </div>
             )
-            setTimeout(() => {
-                setContent(children)
-                setDisabled(false)
-            }, 3000)
+
+            if (shouldReset) {
+                setTimeout(() => {
+                    setContent(children)
+                    setDisabled(false)
+                }, 3000)
+            }
         }
-    }, [success, children])
+    }, [success, children, shouldReset])
 
     return (
         <button type={type} disabled={disabled}>

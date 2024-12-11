@@ -7,7 +7,7 @@ import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import { default as Section } from '../_components/AccountSection'
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { OrderList } from './_components'
+import OrderList from '../_components/OrderList'
 
 const OrdersPage = () => {
     const {

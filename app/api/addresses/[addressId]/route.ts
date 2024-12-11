@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { desc, eq, exists, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 
 import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
 import { AddressTable, DefaultAddressTable } from '@/drizzle/schema/address'
-import { createInternalServerError, createNotFoundError } from '@/lib/errors'
-import { formatAddress } from '@/utils/helpers'
+import { createNotFoundError } from '@/lib/errors'
 import { toLongUUID } from '@/lib/uuidTranslator'
 
 export const GET = async (

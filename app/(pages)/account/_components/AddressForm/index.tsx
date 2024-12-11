@@ -13,6 +13,7 @@ import { FormInput, FormSelect } from '@/components/Form'
 import states from './states'
 import { useUpdateAddress } from '../../_hooks'
 import { useCreateAddress } from '@/hooks'
+import { useRouter } from 'next/navigation'
 
 type FormData = z.infer<typeof AddressFormSchema>
 
@@ -34,6 +35,8 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         },
     })
 
+    const router = useRouter()
+
     const {
         mutate: createAddress,
         error: createAddressError,
@@ -50,12 +53,15 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
 
     const { message, type, showMessage, clearMessage } = useFormMessage()
 
+    // On successful address creation/update
     useEffect(() => {
         if (createAddressSuccess || updateAddressSuccess) {
             showMessage('Address updated successfully!', 'success')
+            router.push('/account/addresses')
         }
-    }, [createAddressSuccess, updateAddressSuccess, showMessage])
+    }, [createAddressSuccess, updateAddressSuccess, showMessage, router])
 
+    // On erroneous address creation/update
     useEffect(() => {
         if (createAddressError || updateAddressError) {
             showMessage('Something went wrong.')

@@ -5,7 +5,7 @@ import fetchAbsolute from '@/lib/fetchAbsolute'
 const useUpdateCheckout = () => {
     const queryClient = useQueryClient()
 
-    type UpdateTotalTaxVariables = {
+    type UseUpdateCheckout = {
         email?: string
         shippingAddressId?: string
         subtotal?: number
@@ -16,7 +16,7 @@ const useUpdateCheckout = () => {
     }
 
     return useMutation({
-        mutationFn: async (variables: UpdateTotalTaxVariables) => {
+        mutationFn: async (variables: UseUpdateCheckout) => {
             try {
                 const res = await fetchAbsolute(`/checkout`, {
                     method: 'PATCH',
