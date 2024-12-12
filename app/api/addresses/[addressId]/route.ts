@@ -11,7 +11,7 @@ export const GET = async (
     _: NextRequest,
     context: { params: { addressId: string } }
 ) => {
-    return handleRoute(async () => {
+    return await handleRoute(async () => {
         const { addressId } = context.params
 
         const address = await db.query.AddressTable.findFirst({
@@ -30,7 +30,7 @@ export const PATCH = async (
     request: NextRequest,
     context: { params: { addressId: string } }
 ) => {
-    return handleRoute(async () => {
+    return await handleRoute(async () => {
         const { addressId } = context.params
 
         const {
@@ -81,7 +81,7 @@ export const DELETE = async (
     _: NextRequest,
     context: { params: { addressId: string } }
 ) => {
-    return handleRoute(async () => {
+    return await handleRoute(async () => {
         const { addressId } = context.params
 
         const deletedAddress = await db
