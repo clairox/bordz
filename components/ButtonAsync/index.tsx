@@ -21,6 +21,13 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
     const [disabled, setDisabled] = useState(false)
 
     useEffect(() => {
+        if (!loading && !success) {
+            setContent(children)
+            setDisabled(false)
+        }
+    }, [loading, success, children])
+
+    useEffect(() => {
         if (loading) {
             setContent(<div className="flex justify-center">Loading...</div>)
             setDisabled(true)

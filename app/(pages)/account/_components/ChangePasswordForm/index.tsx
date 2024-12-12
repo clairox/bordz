@@ -11,17 +11,21 @@ import { FormInput } from '@/components/Form'
 import ButtonAsync from '@/components/ButtonAsync'
 import { useUpdatePassword } from '../../_hooks'
 import ChangePasswordFormSchema from './schema'
+import { AuthError } from '@supabase/supabase-js'
 
 type FormData = z.infer<typeof ChangePasswordFormSchema>
 
 const ChangePasswordForm = () => {
     const form = useForm<FormData>({
         resolver: zodResolver(ChangePasswordFormSchema),
+        defaultValues: {
+            password: '',
+            passwordConfirmation: '',
+        },
     })
 
     const {
-        mutate: updatePassword,
-        error,
+        mutateAsync: updatePassword,
         isPending,
         isSuccess,
     } = useUpdatePassword()
@@ -34,22 +38,27 @@ const ChangePasswordForm = () => {
     } = useFormMessage()
 
     useEffect(() => {
-        if (error) {
-            showMessage('An error has occurred.', 'error')
+        if (form.formState.isSubmitSuccessful) {
+            form.reset()
         }
-    }, [showMessage, error])
+    }, [form])
 
-    useEffect(() => {
-        if (isSuccess) {
-            showMessage('Password changed successfully.', 'success')
-        }
-    }, [showMessage, isSuccess])
-
-    const handleSubmit: SubmitHandler<FormData> = (data: FormData) => {
+    const handleSubmit: SubmitHandler<FormData> = async (data: FormData) => {
         clearMessage()
 
-        console.log(data)
-        updatePassword()
+        try {
+            await updatePassword({ password: data.password })
+            showMessage('Password changed successfully.', 'success')
+        } catch (error) {
+            if ((error as AuthError).code === 'same_password') {
+                showMessage(
+                    'Cannot use the same password as the current one.',
+                    'error'
+                )
+            } else {
+                showMessage('An unexpected error has occurred', 'error')
+            }
+        }
     }
 
     return (
@@ -73,7 +82,11 @@ const ChangePasswordForm = () => {
                     label="Confirm password *"
                     form={form}
                 />
-                <ButtonAsync loading={isPending} success={isSuccess}>
+                <ButtonAsync
+                    shouldReset
+                    loading={isPending}
+                    success={isSuccess}
+                >
                     Change password
                 </ButtonAsync>
             </form>
