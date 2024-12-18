@@ -1,22 +1,19 @@
 'use client'
 
-import { useSupabase } from '@/context/SupabaseContext'
+import { useSignOut } from '@/hooks'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const AdminSidebar: React.FC = () => {
-    const supabase = useSupabase()
     const router = useRouter()
+    const { mutate: signOut, isSuccess: isSignOutSuccess } = useSignOut()
 
-    const handleSignOut = async () => {
-        const { error } = await supabase.auth.signOut()
-
-        if (error) {
-            console.error(error)
-        } else {
+    useEffect(() => {
+        if (isSignOutSuccess) {
             router.push('/admin/login')
         }
-    }
+    }, [isSignOutSuccess, router])
 
     return (
         <div>
@@ -33,7 +30,7 @@ const AdminSidebar: React.FC = () => {
                 <Link href="/admin/customers">Customers</Link>
             </div>
             <div>
-                <button onClick={handleSignOut}>Logout</button>
+                <button onClick={() => signOut()}>Logout</button>
             </div>
         </div>
     )

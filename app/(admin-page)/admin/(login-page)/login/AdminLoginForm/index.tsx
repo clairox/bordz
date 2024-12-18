@@ -18,8 +18,6 @@ const AdminLoginForm: React.FC = () => {
         resolver: zodResolver(AdminLoginFormSchema),
     })
 
-    const router = useRouter()
-
     const { mutateAsync: login, isPending, isSuccess } = useLogin()
 
     const [message, setMessage] = useState<string | null>(null)
@@ -28,8 +26,7 @@ const AdminLoginForm: React.FC = () => {
         setMessage(null)
 
         try {
-            await login(data)
-            router.push('/admin')
+            login(data)
         } catch {
             setMessage('An error has occurred.')
         }

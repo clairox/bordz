@@ -18,7 +18,6 @@ const EditAddressPage = () => {
         return <div>Loading...</div>
     }
 
-    // TODO: Redirect to /account/addresses on successful submit
     return <AddressForm existingAddress={address} />
 }
 

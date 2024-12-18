@@ -23,7 +23,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
         resolver: zodResolver(LoginFormSchema),
     })
 
-    const router = useRouter()
     const pathname = usePathname()
 
     const { mutateAsync: login, isPending, isSuccess } = useLogin()
@@ -34,8 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
         setMessage(null)
 
         try {
-            await login(data)
-            router.push(redirectTo)
+            login(data)
         } catch {
             setMessage('An error has occurred.')
         }

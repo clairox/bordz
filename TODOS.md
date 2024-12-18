@@ -11,6 +11,7 @@
 -   [x] Add 'model' field to component schema
 -   [x] Allow use of multiple addresses per user
 -   [x] Update customer schema to handle defaultAddressId better
+-   [x] On sign out, wait until it's finished to invalidate auth and cart
 -   [ ] Create form password input component
 -   [ ] Move all fetches to /lib/api
 -   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
@@ -22,7 +23,6 @@
 -   [ ] Figure out a better naming convention for List and ListItem components
 -   [ ] Use validate body for all api routes
 -   [ ] Add email column to customers table
--   [ ] On sign out, wait until it's finished to invalidate auth and cart
 
 ### Cart
 
@@ -62,6 +62,6 @@
 
 -   [x] Create order page
 -   [x] Create addresses page
--   [ ] Create change password page
+-   [x] Create change password page
 -   [ ] Create delete account page
--   [ ] Create personal details page
+-   [x] Create personal details page
