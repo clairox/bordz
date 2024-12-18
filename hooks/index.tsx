@@ -6,6 +6,7 @@ import useCreateAddress from './useCreateAddress'
 import useDeleteCartLineMutation from './useDeleteCartLineMutation'
 import useFormMessage from './useFormMessage'
 import useGetAuthSession from './useGetAuthSession'
+import useGetSessionUserRole from './useGetSessionUserRole'
 import useLogin from './useLogin'
 import usePaymentIntentQuery from './usePaymentIntentQuery'
 import useUpdateCheckout from './useUpdateCheckout'
@@ -20,6 +21,7 @@ export {
     useDeleteCartLineMutation,
     useFormMessage,
     useGetAuthSession,
+    useGetSessionUserRole,
     useLogin,
     usePaymentIntentQuery,
     useUpdateCheckout,

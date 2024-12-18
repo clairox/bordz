@@ -3,13 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useSupabase } from '@/context/SupabaseContext'
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import useGetAuthSession from '../useGetAuthSession'
-import { getSessionUserRole } from '@/utils/helpers'
+import useGetSessionUserRole from '../useGetSessionUserRole'
 
 const useSignOut = () => {
     const supabase = useSupabase()
     const queryClient = useQueryClient()
-    const getAuthSession = useGetAuthSession()
+    const getSessionUserRole = useGetSessionUserRole()
 
     const killSession = useCallback(async () => {
         try {
@@ -29,11 +28,7 @@ const useSignOut = () => {
 
     return useMutation({
         mutationFn: async () => {
-            const session = await getAuthSession()
-            let userRole: string | undefined
-            if (session) {
-                userRole = getSessionUserRole(session)
-            }
+            const userRole = await getSessionUserRole()
 
             const { error } = await supabase.auth.signOut()
             if (error) {

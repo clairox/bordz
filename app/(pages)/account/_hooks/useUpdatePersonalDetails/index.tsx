@@ -1,6 +1,7 @@
 'use client'
 
 import { useSupabase } from '@/context/SupabaseContext'
+import { useGetSessionUserRole } from '@/hooks'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -14,6 +15,7 @@ type UseUpdatePersonalDetailsArgs = {
 const useUpdatePersonalDetails = () => {
     const supabase = useSupabase()
     const queryClient = useQueryClient()
+    const getSessionUserRole = useGetSessionUserRole()
     return useMutation<void, Error, UseUpdatePersonalDetailsArgs>({
         mutationFn: async ({ email, firstName, lastName, phone }) => {
             let userId = ''
@@ -37,9 +39,11 @@ const useUpdatePersonalDetails = () => {
             }
             return
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['customer'] })
+        onSuccess: async () => {
             queryClient.invalidateQueries({ queryKey: ['auth'] })
+            if ((await getSessionUserRole()) === 'customer') {
+                queryClient.invalidateQueries({ queryKey: ['customer'] })
+            }
         },
     })
 }

@@ -1,7 +1,7 @@
 import { Session } from '@supabase/supabase-js'
 import * as jose from 'jose'
 
-const getSessionUserRole = (session: Session): string => {
+const getUserRole = (session: Session): string => {
     const { user_role } = jose.decodeJwt(session!.access_token)
     if (!user_role) {
         throw new Error('User does not have role.')
@@ -9,4 +9,4 @@ const getSessionUserRole = (session: Session): string => {
     return user_role as string
 }
 
-export default getSessionUserRole
+export default getUserRole

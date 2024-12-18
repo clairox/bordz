@@ -12,8 +12,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import { useAuth } from '../AuthContext'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useSupabase } from '../SupabaseContext'
-import { getSessionUserRole } from '@/utils/helpers'
-import { useGetAuthSession } from '@/hooks'
+import { useGetAuthSession, useGetSessionUserRole } from '@/hooks'
 
 type CustomerContextValue = UseQueryResult<Customer | null, Error>
 
@@ -34,6 +33,7 @@ const useProvideCustomer = () => {
     const supabase = useSupabase()
     const { data: user, status: authStatus } = useAuth()
     const getAuthSession = useGetAuthSession()
+    const getSessionUserRole = useGetSessionUserRole()
     const queryKey = ['customer', user?.id]
 
     const [isCustomerQueryEnabled, setIsCustomerQueryEnabled] = useState(false)
@@ -89,10 +89,8 @@ const useProvideCustomer = () => {
                 return null
             }
 
-            const session = await getAuthSession()
-            if (!session) {
-                return null
-            } else if (getSessionUserRole(session) !== 'customer') {
+            const userRole = await getSessionUserRole()
+            if (!userRole || userRole !== 'customer') {
                 return null
             }
 
