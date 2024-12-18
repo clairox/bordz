@@ -31,13 +31,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
     const router = useRouter()
     const pathname = usePathname()
     const supabase = useSupabase()
-    const {
-        createCustomerMutation: {
-            mutateAsync: createCustomer,
-            isPending: createCustomerIsPending,
-            isSuccess: createCustomerIsSuccess,
-        },
-    } = useAuthQuery()
+    // const {
+    //     createCustomerMutation: {
+    //         mutateAsync: createCustomer,
+    //         isPending: createCustomerIsPending,
+    //         isSuccess: createCustomerIsSuccess,
+    //     },
+    // } = useAuthQuery()
 
     const {
         mutateAsync: signup,

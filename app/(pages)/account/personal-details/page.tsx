@@ -1,24 +1,39 @@
-import { useAuthQuery } from '@/context/AuthContext'
+'use client'
+
 import AccountHeading from '../_components/AccountHeading'
 import AccountSection from '../_components/AccountSection'
 import PersonalDetailsForm from '../_components/PersonalDetailsForm'
+import { useAuth } from '@/context/AuthContext'
+import { useCustomer } from '@/context/CustomerContext'
 
 const PersonalDetailsPage = () => {
-    const {
-        customer: { data: customer, isPending },
-    } = useAuthQuery()
+    const { data: auth } = useAuth()
+    const { data: customer, isPending } = useCustomer()
 
     if (isPending) {
         return <div>Loading...</div>
     }
 
+    if (!customer) {
+        return <div>Something went wrong...</div>
+    }
+
     return (
         <div>
-            <AccountHeading>Addresses</AccountHeading>
+            <AccountHeading>Personal Details</AccountHeading>
             <AccountSection>
-                <AccountSection.Header>Update address</AccountSection.Header>
+                <AccountSection.Header>
+                    Update personal details
+                </AccountSection.Header>
                 <AccountSection.Content>
-                    <PersonalDetailsForm />
+                    <PersonalDetailsForm
+                        defaultValues={{
+                            email: auth!.email,
+                            firstName: customer.firstName,
+                            lastName: customer.lastName,
+                            phone: customer.phone || '',
+                        }}
+                    />
                 </AccountSection.Content>
             </AccountSection>
         </div>

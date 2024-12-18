@@ -6,6 +6,7 @@ import { AuthProvider } from './AuthContext'
 import { getQueryClient } from '../lib/queryClient'
 import { CartProvider } from './CartContext'
 import { SupabaseProvider } from './SupabaseContext'
+import { CustomerProvider } from './CustomerContext'
 
 const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
     const queryClient = getQueryClient()
@@ -14,7 +15,9 @@ const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
         <SupabaseProvider>
             <QueryClientProvider client={queryClient}>
                 <AuthProvider>
-                    <CartProvider>{children}</CartProvider>
+                    <CustomerProvider>
+                        <CartProvider>{children}</CartProvider>
+                    </CustomerProvider>
                 </AuthProvider>
             </QueryClientProvider>
         </SupabaseProvider>

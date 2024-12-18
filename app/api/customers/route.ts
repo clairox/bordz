@@ -6,7 +6,8 @@ import {
     createNotFoundError,
     handleError,
 } from '@/lib/errors'
-import { getCustomerByUserId } from '../shared'
+import { getCustomerByUserId, handleRoute } from '../shared'
+import { eq } from 'drizzle-orm'
 
 export const GET = async (request: NextRequest) => {
     const userId = request.nextUrl.searchParams.get('userId')
@@ -40,7 +41,6 @@ export const POST = async (request: NextRequest) => {
             .values({
                 firstName,
                 lastName,
-                displayName: firstName + ' ' + lastName,
                 phone,
                 userId,
             })
@@ -51,4 +51,37 @@ export const POST = async (request: NextRequest) => {
     } catch (error) {
         return handleError(error as Error)
     }
+}
+
+const validateBody = (body: any, requiredFields: any[]) => {
+    return requiredFields.filter(field => body[field] == undefined)
+}
+
+export const PATCH = async (request: NextRequest) => {
+    return await handleRoute(async () => {
+        const body = await request.json()
+        const requiredFields = ['userId', 'firstName', 'lastName']
+        const missingFields = validateBody(body, requiredFields)
+
+        if (missingFields.length > 0) {
+            return handleError(
+                createBadRequestError(
+                    `Missing fields ${missingFields.join(', ')}`
+                )
+            )
+        }
+
+        const customer = await db
+            .update(CustomerTable)
+            .set({
+                firstName: body.firstName,
+                lastName: body.lastName,
+                phone: body.phone,
+            })
+            .where(eq(CustomerTable.userId, body.userId))
+            .returning()
+            .then(rows => rows[0])
+
+        return NextResponse.json(customer)
+    })
 }

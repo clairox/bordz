@@ -1,4 +1,4 @@
-import { pgTable, primaryKey, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
+import { pgTable, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 import { isNotNull, relations, SQL, sql } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'

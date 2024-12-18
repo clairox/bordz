@@ -8,9 +8,9 @@ import {
 
 import { useCreateAddress, useUpdateCheckout } from '@/hooks'
 import { useRouter } from 'next/navigation'
-import { useAuthQuery } from '@/context/AuthContext'
+import { useAuth } from '@/context/AuthContext'
 import { ContactOption } from '@stripe/stripe-js'
-import { formatAddress } from '@/utils/helpers'
+import { useCustomer } from '@/context/CustomerContext'
 
 const CheckoutForm = () => {
     const stripe = useStripe()
@@ -22,10 +22,8 @@ const CheckoutForm = () => {
     const [submitting, setSubmitting] = useState(false)
     const [email, setEmail] = useState('')
 
-    const {
-        auth: { data: auth },
-        customer: { data: customer, status: customerStatus },
-    } = useAuthQuery()
+    const { data: auth } = useAuth()
+    const { data: customer, status: customerStatus } = useCustomer()
 
     const { mutateAsync: updateCheckout } = useUpdateCheckout()
     const { mutateAsync: createAddress } = useCreateAddress()

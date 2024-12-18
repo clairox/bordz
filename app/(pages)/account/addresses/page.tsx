@@ -1,14 +1,12 @@
 'use client'
 
-import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import AccountSection from '../_components/AccountSection'
 import AddressesView from '../_components/AddressesView'
+import { useCustomer } from '@/context/CustomerContext'
 
 const AddressesPage = () => {
-    const {
-        customer: { data: customer, isPending },
-    } = useAuthQuery()
+    const { data: customer, isPending } = useCustomer()
 
     if (isPending) {
         return <div>Loading...</div>

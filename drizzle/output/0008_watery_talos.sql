@@ -1,0 +1,2 @@
+ALTER TABLE "customers" drop column "display_name";--> statement-breakpoint
+ALTER TABLE "customers" ADD COLUMN "display_name" varchar(100) GENERATED ALWAYS AS (first_name || ' ' || last_name) STORED NOT NULL;

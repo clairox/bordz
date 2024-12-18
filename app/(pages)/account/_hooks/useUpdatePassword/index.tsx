@@ -10,6 +10,7 @@ const useUpdatePassword = () => {
     const queryClient = useQueryClient()
     return useMutation<void, Error, UseUpdatePasswordArgs>({
         mutationFn: async args => {
+            // TODO: call supabase.auth.reauthenticate and set nonce with return value
             const { error } = await supabase.auth.updateUser({
                 password: args.password,
             })

@@ -3,16 +3,14 @@
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 
-import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import { default as Section } from '../_components/AccountSection'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import OrderList from '../_components/OrderList'
+import { useCustomer } from '@/context/CustomerContext'
 
 const OrdersPage = () => {
-    const {
-        customer: { data: customer },
-    } = useAuthQuery()
+    const { data: customer } = useCustomer()
 
     const {
         data: orders,

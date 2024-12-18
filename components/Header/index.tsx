@@ -6,7 +6,7 @@ import { Url } from 'next/dist/shared/lib/router/router'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
 
 import { useCartQuery } from '@/context/CartContext'
-import { useAuthQuery } from '@/context/AuthContext'
+import { useCustomer } from '@/context/CustomerContext'
 
 const Header: React.FC = () => {
     return (
@@ -69,25 +69,22 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
 }
 
 const AccountHeaderButton: React.FC = () => {
-    const {
-        auth: { data: auth, status: authStatus },
-        customer: { data: customer },
-    } = useAuthQuery()
+    const { data: customer, isPending: isCustomerPending } = useCustomer()
 
     return (
         <HeaderButton
-            href={auth ? '/account' : '/login'}
+            href={customer ? '/account' : '/login'}
             icon={
                 <div className="flex gap-2">
                     <User
                         size={28}
                         weight="light"
-                        color={authStatus === 'pending' ? '#999' : '#000'}
+                        color={isCustomerPending ? '#999' : '#000'}
                     />
                     {customer && <span>{customer.firstName}</span>}
                 </div>
             }
-            disabled={authStatus === 'pending'}
+            disabled={isCustomerPending}
         />
     )
 }

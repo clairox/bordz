@@ -19,6 +19,7 @@ import { CartLineRecord, CartRecord } from '@/types/records'
 
 export const POST = async (request: NextRequest) => {
     const { customerId } = await request.json()
+    console.log('Customer id: ', customerId)
 
     try {
         const addCartIdCookieToResponse = (
@@ -116,12 +117,10 @@ export const POST = async (request: NextRequest) => {
                         throw createInternalServerError()
                     }
 
-                    console.log(customerCart)
                     const response = NextResponse.json(customerCart)
                     return addCartIdCookieToResponse(customerCart.id, response)
                 } else {
                     console.log('customerCart id cookie already set')
-                    console.log(customerCart.product)
                     const response = NextResponse.json(customerCart)
                     return response
                 }
@@ -142,6 +141,7 @@ export const POST = async (request: NextRequest) => {
                     return addCartIdCookieToResponse(guestCart.id, response)
                 } else {
                     console.log('guestCart found')
+                    console.log('Guest cart id:', guestCart.id)
                     return NextResponse.json(guestCart)
                 }
             } else {

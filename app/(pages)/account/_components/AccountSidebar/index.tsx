@@ -2,23 +2,20 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 
-import { useSupabase } from '@/context/SupabaseContext'
 import Link from 'next/link'
+import { useEffect } from 'react'
+import { useSignOut } from '@/hooks'
 
 const AccountSidebar = () => {
-    const { auth } = useSupabase()
     const router = useRouter()
     const pathname = usePathname()
+    const { mutate: signOut, isSuccess: isSignOutSuccess } = useSignOut()
 
-    const handleSignOut = async () => {
-        const { error } = await auth.signOut()
-
-        if (error) {
-            console.error(error)
-        } else {
+    useEffect(() => {
+        if (isSignOutSuccess) {
             router.push('/login')
         }
-    }
+    }, [isSignOutSuccess, router])
 
     return (
         <aside className="flex flex-col h-full border-r border-black">
@@ -54,7 +51,12 @@ const AccountSidebar = () => {
                 Change Password
             </SidebarMenuItem>
             <div className="py-2 border-b border-black bg-white hover:bg-gray-200">
-                <button onClick={handleSignOut}>Logout</button>
+                <button
+                    onClick={() => signOut()}
+                    className="w-full h-full text-left"
+                >
+                    Logout
+                </button>
             </div>
         </aside>
     )

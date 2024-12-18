@@ -2,18 +2,16 @@
 
 import { FormEvent, useEffect, useState } from 'react'
 
-import { useAuthQuery } from '@/context/AuthContext'
 import AddressDisplay from '../../_components/AddressDisplay'
 import { useUpdateAddress } from '../../_hooks'
 import ButtonAsync from '@/components/ButtonAsync'
 import { useRouter } from 'next/navigation'
+import { useCustomer } from '@/context/CustomerContext'
 
 const EditDefaultAddressPage = () => {
     const router = useRouter()
 
-    const {
-        customer: { data: customer, status: customerStatus },
-    } = useAuthQuery()
+    const { data: customer, status: customerStatus } = useCustomer()
 
     const { mutateAsync: updateAddress, status: updateStatus } =
         useUpdateAddress()

@@ -3,6 +3,7 @@ import calculateTaxManually from './calculateTaxManually'
 import createUrlHandle from './createUrlHandle'
 import formatAddress from './formatAddress'
 import getCategoryFromType from './getCategoryFromType'
+import getSessionUserRole from './getSessionUserRole'
 import getTypeFromCategory from './getTypeFromCategory'
 
 export {
@@ -11,5 +12,6 @@ export {
     createUrlHandle,
     formatAddress,
     getCategoryFromType,
+    getSessionUserRole,
     getTypeFromCategory,
 }

@@ -20,6 +20,9 @@
 -   [ ] Use infinite queries where pagination is needed
 -   [ ] Reorganize file structure
 -   [ ] Figure out a better naming convention for List and ListItem components
+-   [ ] Use validate body for all api routes
+-   [ ] Add email column to customers table
+-   [ ] On sign out, wait until it's finished to invalidate auth and cart
 
 ### Cart
 

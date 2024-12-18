@@ -2,20 +2,19 @@
 
 import { useRouter } from 'next/navigation'
 
-import { useAuthQuery } from '@/context/AuthContext'
 import AccountHeading from '../_components/AccountHeading'
 import { default as Section } from '../_components/AccountSection'
 import AddressesView from '../_components/AddressesView'
+import { useAuth } from '@/context/AuthContext'
+import { useCustomer } from '@/context/CustomerContext'
 
 const SettingsPage: React.FC = () => {
-    const {
-        auth: { data: auth, status: authStatus },
-        customer: { data: customer, status: customerStatus },
-    } = useAuthQuery()
+    const { data: user } = useAuth()
+    const { data: customer, isPending: isCustomerPending } = useCustomer()
 
     const router = useRouter()
 
-    if (authStatus === 'pending' || customerStatus === 'pending') {
+    if (isCustomerPending) {
         return <div>Loading...</div>
     }
 
@@ -38,7 +37,7 @@ const SettingsPage: React.FC = () => {
                     </div>
                     <div className="mb-3">
                         <p className="font-semibold">Email:</p>
-                        <p>{auth?.email}</p>
+                        <p>{user?.email}</p>
                     </div>
                     <div className="mb-3">
                         <p className="font-semibold">Phone:</p>
