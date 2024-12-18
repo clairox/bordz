@@ -25,7 +25,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
 
     const pathname = usePathname()
 
-    const { mutateAsync: login, isPending, isSuccess } = useLogin()
+    const { mutateAsync: login, isPending, isSuccess } = useLogin(redirectTo)
 
     const [message, setMessage] = useState<string | null>(null)
 
@@ -33,7 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = '/' }) => {
         setMessage(null)
 
         try {
-            login(data)
+            await login(data)
         } catch {
             setMessage('An error has occurred.')
         }

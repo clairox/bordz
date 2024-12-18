@@ -59,8 +59,25 @@ export const DELETE = async (request: NextRequest) => {
             maxAge: -1,
         })
 
+        const sbAuthTokenCookieNameBase = `sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID!}-auth`
+        const sbAuthTokenCookie = serialize(sbAuthTokenCookieNameBase, '', {
+            ...DEFAULT_COOKIE_CONFIG,
+            maxAge: -1,
+        })
+
+        const sbAuthTokenCodeVerifierCookie = serialize(
+            sbAuthTokenCookieNameBase + '-code-verifier',
+            '',
+            {
+                ...DEFAULT_COOKIE_CONFIG,
+                maxAge: -1,
+            }
+        )
+
         const response = new NextResponse(null, { status: 204 })
         response.headers.append('Set-Cookie', sessionCookie)
+        response.headers.append('Set-Cookie', sbAuthTokenCookie)
+        response.headers.append('Set-Cookie', sbAuthTokenCodeVerifierCookie)
 
         if (userRole === 'customer') {
             const cartIdCookie = serialize('cartId', '', {

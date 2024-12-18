@@ -85,3 +85,16 @@ export const PATCH = async (request: NextRequest) => {
         return NextResponse.json(customer)
     })
 }
+
+export const DELETE = async (request: NextRequest) => {
+    return await handleRoute(async () => {
+        const userId = request.nextUrl.searchParams.get('userId')
+        if (!userId) {
+            return handleError(createBadRequestError())
+        }
+
+        await db.delete(CustomerTable).where(eq(CustomerTable.userId, userId))
+
+        return new NextResponse(null, { status: 204 })
+    })
+}

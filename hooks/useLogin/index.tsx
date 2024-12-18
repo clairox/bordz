@@ -16,7 +16,7 @@ type UseLoginVariables = {
     password: string
 }
 
-const useLogin = () => {
+const useLogin = (redirectTo?: string) => {
     const supabase = useSupabase()
     const router = useRouter()
     const queryClient = useQueryClient()
@@ -45,7 +45,7 @@ const useLogin = () => {
             if (userRole === 'admin') {
                 router.push('/admin')
             } else if (userRole === 'customer') {
-                router.push('/')
+                router.push(redirectTo ?? '/')
             }
         },
     })
