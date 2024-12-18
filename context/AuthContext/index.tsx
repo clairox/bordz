@@ -7,14 +7,7 @@ import {
     useEffect,
     useState,
 } from 'react'
-import {
-    useMutation,
-    UseMutationResult,
-    useQuery,
-    useQueryClient,
-    UseQueryResult,
-} from '@tanstack/react-query'
-import * as jose from 'jose'
+import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useSupabase } from '../SupabaseContext'
@@ -24,21 +17,7 @@ type Auth = {
     email: string
 } | null
 
-// type CreateCustomerMutationVars = {
-//     userId: string
-//     firstName: string
-//     lastName: string
-//     birthDate: Date
-//     phone?: string
-// }
-
 type AuthContextValue = UseQueryResult<Auth, Error>
-// customer: UseQueryResult<Customer, Error>
-// createCustomerMutation: UseMutationResult<
-//     Customer,
-//     Error,
-//     CreateCustomerMutationVars
-// >
 
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue)
 
@@ -93,138 +72,6 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
             return data
         },
     })
-
-    // const customerQuery = useQuery<Customer>({
-    //     queryKey: ['customer'],
-    //     queryFn: async () => {
-    //         try {
-    //             if (!authQuery.data) {
-    //                 throw new Error(
-    //                     'customerQuery enabled without successful authQuery.'
-    //                 )
-    //             }
-    //
-    //             const res = await fetchAbsolute(
-    //                 `/customers?userId=${authQuery.data.id}`
-    //             )
-    //
-    //             if (!res.ok) {
-    //                 throw res
-    //             }
-    //
-    //             queryClient.invalidateQueries({ queryKey: ['cart'] })
-    //             return await res.json()
-    //         } catch (error) {
-    //             throw error
-    //         }
-    //     },
-    //     enabled: authQuery.data != null && !isNewAccount,
-    // })
-
-    // const createCustomerMutation = useMutation<
-    //     Customer,
-    //     Error,
-    //     CreateCustomerMutationVars
-    // >({
-    //     mutationFn: async ({ userId, firstName, lastName, phone }) => {
-    //         try {
-    //             const res = await fetchAbsolute('/customers', {
-    //                 method: 'POST',
-    //                 body: JSON.stringify({
-    //                     userId,
-    //                     firstName,
-    //                     lastName,
-    //                     phone,
-    //                 }),
-    //             })
-    //
-    //             if (!res.ok) {
-    //                 throw res
-    //             }
-    //
-    //             setIsNewAccount(false)
-    //             const customer = await res.json()
-    //             queryClient.setQueryData(['customer'], customer)
-    //             return customer
-    //         } catch (error) {
-    //             throw error
-    //         }
-    //     },
-    // })
-
-    // useEffect(() => {
-    //     const {
-    //         data: { subscription },
-    //     } = supabase.auth.onAuthStateChange(async (event, session) => {
-    //         if (event === 'INITIAL_SESSION') {
-    //             if (session) {
-    //                 const jwt = jose.decodeJwt(session.access_token)
-    //                 const userRole = jwt.user_role
-    //                 if (userRole === 'admin') {
-    //                     return
-    //                 }
-    //
-    //                 const { data: profile } = await supabase
-    //                     .from('profiles')
-    //                     .select('*')
-    //                     .eq('id', session.user.id)
-    //                     .maybeSingle()
-    //
-    //                 if (profile && !profile.is_new) {
-    //                     setIsNewAccount(false)
-    //                 }
-    //             }
-    //         }
-    //
-    //         if (
-    //             event === 'SIGNED_IN' ||
-    //             event === 'TOKEN_REFRESHED' ||
-    //             event === 'USER_UPDATED'
-    //         ) {
-    //             if (!session) {
-    //                 throw new Error('Session is missing')
-    //             }
-    //
-    //             const auth = await createSession(session?.access_token)
-    //
-    //             queryClient.setQueryData(['auth'], auth)
-    //
-    //             const jwt = jose.decodeJwt(session.access_token)
-    //             const userRole = jwt.user_role
-    //             if (userRole === 'admin') {
-    //                 return
-    //             }
-    //
-    //             const { data: profile } = await supabase
-    //                 .from('profiles')
-    //                 .select('*')
-    //                 .eq('id', session.user.id)
-    //                 .maybeSingle()
-    //
-    //             if (profile && !profile.is_new) {
-    //                 setIsNewAccount(false)
-    //                 queryClient.invalidateQueries({ queryKey: ['customer'] })
-    //             }
-    //         }
-    //
-    //         if (event === 'SIGNED_OUT') {
-    //             const wasCustomer =
-    //                 queryClient.getQueryData(['customer']) != undefined
-    //             queryClient.setQueryData(['customer'], null)
-    //
-    //             setIsNewAccount(true)
-    //
-    //             await killSession()
-    //
-    //             queryClient.invalidateQueries({ queryKey: ['auth'] })
-    //             if (wasCustomer) {
-    //                 queryClient.invalidateQueries({ queryKey: ['cart'] })
-    //             }
-    //         }
-    //     })
-    //
-    //     return () => subscription.unsubscribe()
-    // }, [supabase, queryClient, createSession, killSession])
 
     return (
         <AuthContext.Provider value={{ ...auth }}>
