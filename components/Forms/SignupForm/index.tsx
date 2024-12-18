@@ -6,16 +6,13 @@ import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { User } from '@supabase/supabase-js'
 
-import { useSupabase } from '@/context/SupabaseContext'
 import FormInput from '@/components/Form/FormInput'
 import ButtonAsync from '@/components/ButtonAsync'
 import { CURRENT_YEAR, MIN_ALLOWED_CUSTOMER_AGE } from '@/utils/constants'
 import FormDateSelect from '@/components/Form/FormDateSelect'
 import SignupFormSchema from './schema'
-import { useAuthQuery } from '@/context/AuthContext'
+import { useSignUp } from '@/hooks'
 
 type FormData = z.infer<typeof SignupFormSchema>
 
@@ -30,71 +27,19 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
 
     const router = useRouter()
     const pathname = usePathname()
-    const supabase = useSupabase()
-    // const {
-    //     createCustomerMutation: {
-    //         mutateAsync: createCustomer,
-    //         isPending: createCustomerIsPending,
-    //         isSuccess: createCustomerIsSuccess,
-    //     },
-    // } = useAuthQuery()
-
     const {
-        mutateAsync: signup,
-        isPending: signupIsPending,
-        isSuccess: signupIsSuccess,
-    } = useMutation<
-        User,
-        Error,
-        {
-            email: string
-            password: string
-        }
-    >({
-        mutationFn: async ({ email, password }) => {
-            try {
-                const {
-                    data: { user },
-                    error,
-                } = await supabase.auth.signUp({
-                    email,
-                    password,
-                })
-
-                if (error) {
-                    throw error
-                }
-
-                if (!user) {
-                    throw new Error('An unexpected error has occurred.')
-                }
-
-                return user
-            } catch (error) {
-                throw error
-            }
-        },
-    })
+        mutateAsync: signUp,
+        isPending: isSignupPending,
+        isSuccess: isSignupSuccess,
+    } = useSignUp()
 
     const [message, setMessage] = useState<string | null>(null)
 
     const handleSubmit: SubmitHandler<FormData> = async (data: FormData) => {
         setMessage(null)
-        const { firstName, lastName, birthDate, email, password } = data
 
         try {
-            const newUser = await signup({ email, password })
-            await createCustomer({
-                firstName,
-                lastName,
-                birthDate,
-                userId: newUser.id,
-            })
-            await supabase
-                .from('profiles')
-                .update({ is_new: false })
-                .eq('id', newUser.id)
-
+            await signUp(data)
             router.push(redirectTo)
         } catch (error) {
             if (!(error instanceof Error)) {
@@ -137,8 +82,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
                     form={form}
                 />
                 <ButtonAsync
-                    loading={signupIsPending || createCustomerIsPending}
-                    success={signupIsSuccess || createCustomerIsSuccess}
+                    loading={isSignupPending}
+                    success={isSignupSuccess}
                 >
                     Signup
                 </ButtonAsync>

@@ -11,6 +11,7 @@ import useLogin from './useLogin'
 import usePaymentIntentQuery from './usePaymentIntentQuery'
 import useUpdateCheckout from './useUpdateCheckout'
 import useSignOut from './useSignOut'
+import useSignUp from './useSignUp'
 
 export {
     useAddCartLineMutation,
@@ -26,4 +27,5 @@ export {
     usePaymentIntentQuery,
     useUpdateCheckout,
     useSignOut,
+    useSignUp,
 }

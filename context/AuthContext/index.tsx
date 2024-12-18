@@ -46,9 +46,6 @@ const useAuth = () => useContext(AuthContext)
 
 const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const supabase = useSupabase()
-    const queryClient = useQueryClient()
-
-    // const [isNewAccount, setIsNewAccount] = useState(true)
 
     const storeSession = useCallback(async (token: string) => {
         try {

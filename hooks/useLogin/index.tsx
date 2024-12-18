@@ -45,7 +45,7 @@ const useLogin = () => {
             if (userRole === 'admin') {
                 router.push('/admin')
             } else if (userRole === 'customer') {
-                router.push('/admin')
+                router.push('/')
             }
         },
     })
