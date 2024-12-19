@@ -5,6 +5,9 @@ import * as jose from 'jose'
 import { createBadRequestError, handleError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
 import { decodeSessionToken } from '../shared'
+import { db } from '@/drizzle/db'
+import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { eq } from 'drizzle-orm'
 
 export const POST = async (request: NextRequest) => {
     const { token } = (await request.json()) as { token: string }
@@ -80,6 +83,14 @@ export const DELETE = async (request: NextRequest) => {
         response.headers.append('Set-Cookie', sbAuthTokenCodeVerifierCookie)
 
         if (userRole === 'customer') {
+            const checkoutId = request.cookies.get('checkoutId')?.value
+            if (checkoutId) {
+                await db
+                    .update(CheckoutTable)
+                    .set({ cartId: null })
+                    .where(eq(CheckoutTable.id, checkoutId))
+            }
+
             const cartIdCookie = serialize('cartId', '', {
                 ...DEFAULT_COOKIE_CONFIG,
                 maxAge: -1,
