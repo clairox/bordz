@@ -19,9 +19,13 @@ type FormData = z.infer<typeof AddressFormSchema>
 
 type AddressFormProps = {
     existingAddress?: Address
+    ownerId: string
 }
 
-const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
+const AddressForm: React.FC<AddressFormProps> = ({
+    existingAddress,
+    ownerId,
+}) => {
     const form = useForm<FormData>({
         resolver: zodResolver(AddressFormSchema),
         defaultValues: {
@@ -80,6 +84,8 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         } else {
             createAddress({
                 ...data,
+                line2: data.line2 || null,
+                ownerId,
                 countryCode: 'US',
             })
         }
@@ -121,7 +127,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
                     loading={createAddressPending || updateAddressPending}
                     success={createAddressSuccess || updateAddressSuccess}
                 >
-                    Update address
+                    {existingAddress ? 'Update address' : 'Add'}
                 </ButtonAsync>
             </form>
         </div>

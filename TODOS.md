@@ -28,6 +28,7 @@
 -   [ ] Use unauthorized error for missing session token
 -   [ ] Move utility functions in routes to bottom
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
+-   [ ] BUG session cookie not deleted after account deletion
 
 ### Cart
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 
@@ -13,11 +13,12 @@ type UseCreateAddressArgs = {
     countryCode: string
     postalCode: string
     phone?: string | null
-    ownerId?: string | null
+    ownerId: string | null
     isCustomerDefault?: boolean
 }
 
 const useCreateAddress = () => {
+    const queryClient = useQueryClient()
     return useMutation<Address, Error, UseCreateAddressArgs>({
         mutationFn: async args => {
             const response = await fetchAbsolute('/addresses', {
@@ -28,6 +29,9 @@ const useCreateAddress = () => {
                 throw response
             }
             return await response.json()
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['customer'] })
         },
     })
 }

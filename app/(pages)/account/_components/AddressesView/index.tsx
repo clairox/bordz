@@ -58,6 +58,9 @@ const AddressesView: React.FC<AddressesViewProps> = ({
                         </div>
                     </div>
                 )) || <p>No addresses saved.</p>}
+                <button onClick={() => router.push('/account/addresses/add')}>
+                    Add address
+                </button>
             </div>
         </div>
     )
