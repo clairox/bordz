@@ -1,8 +1,8 @@
 'use client'
 
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
-import { QueryStatus, useQuery } from '@tanstack/react-query'
-import { ArrowClockwise, HeartStraight } from '@phosphor-icons/react'
+import { Fragment } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { ArrowClockwise } from '@phosphor-icons/react'
 
 import { useCartQuery } from '@/context/CartContext'
 import { useAddCartLineMutation, useDeleteWishlistLine } from '@/hooks'
@@ -10,8 +10,9 @@ import fetchAbsolute from '@/lib/fetchAbsolute'
 import PriceRepr from '../PriceRepr'
 import Link from 'next/link'
 import useAddWishlistLine from '@/hooks/useAddWishlistLine'
-import ButtonAsync from '../ButtonAsync'
 import { useWishlist } from '@/context/WishlistContext'
+import WishlistButton from '../WishlistButton'
+import CartButton from '../CartButton'
 
 const ProductsList: React.FC = () => {
     const {
@@ -35,8 +36,8 @@ const ProductsList: React.FC = () => {
         },
     })
 
-    const { data: cart, status: cartStatus } = useCartQuery()
-    const { data: wishlist, status: wishlistStatus } = useWishlist()
+    const { data: cart } = useCartQuery()
+    const { data: wishlist } = useWishlist()
 
     if (productsStatus === 'error') {
         return (
@@ -57,21 +58,19 @@ const ProductsList: React.FC = () => {
     return (
         <div className="flex justify-between w-full">
             {products.map(product => {
+                const cartLineId = cart?.lines.find(
+                    line => line.productId === product.id
+                )?.id
+
+                const wishlistLineId = wishlist?.lines.find(
+                    line => line.productId === product.id
+                )?.id
+
                 return (
                     <ProductsListItem
                         product={product}
-                        cartId={cart?.id}
-                        cartStatus={cartStatus}
-                        isInCart={
-                            cart?.lines
-                                .map(line => line.productId)
-                                .includes(product.id) || false
-                        }
-                        wishlistLineId={
-                            wishlist?.lines.find(
-                                line => line.productId === product.id
-                            )?.id
-                        }
+                        cartLineId={cartLineId}
+                        wishlistLineId={wishlistLineId}
                         key={product.id}
                     />
                 )
@@ -82,122 +81,61 @@ const ProductsList: React.FC = () => {
 
 type ProductsListItemProps = {
     product: Product
-    cartId: string | undefined
-    cartStatus: QueryStatus
-    isInCart: boolean
+    cartLineId?: string
     wishlistLineId?: string
 }
 
 const ProductsListItem: React.FC<ProductsListItemProps> = ({
     product,
-    cartId,
-    cartStatus,
-    isInCart,
+    cartLineId,
     wishlistLineId,
 }) => {
-    const { mutate: addCartLine, status: addToCartStatus } =
+    const { mutate: addCartLine, status: addCartLineStatus } =
         useAddCartLineMutation()
 
-    const {
-        mutate: addWishlistLine,
-        isError: isAddWishlistLineError,
-        isIdle: isAddWishlistLineIdle,
-        isPending: isAddWishlistLinePending,
-    } = useAddWishlistLine()
-    const {
-        mutate: deleteWishlistLine,
-        isIdle: isDeleteWishlistLineIdle,
-        isPending: isDeleteWishlistLinePending,
-    } = useDeleteWishlistLine()
+    const { mutate: addWishlistLine } = useAddWishlistLine()
+    const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
 
-    useEffect(() => {
-        if (addToCartStatus === 'error') {
-            //TODO: toast('There was an issue loading the cart. Please try again later.')
-        }
-    }, [addToCartStatus])
-
-    useEffect(() => {
-        if (isAddWishlistLineError) {
-            //TODO: toast('There was an issue loading the wishlist. Please try again later.')
-        }
-    }, [isAddWishlistLineError])
-
-    const addToCart = useCallback(
-        (productId: string) => {
-            if (!cartId) {
-                return
-            }
-
-            addCartLine({ productId })
-        },
-        [cartId, addCartLine]
-    )
-
-    const addToCartButton = useMemo(() => {
-        const defaultButton = (
-            <button onClick={() => addToCart(product.id)}>Add to Cart</button>
-        )
-
-        if (isInCart && addToCartStatus === 'idle') {
-            return <button disabled>Already in Cart</button>
-        }
-
-        if (!product.availableForSale) {
-            return <button disabled>Out of Stock</button>
-        }
-
-        if (addToCartStatus === 'pending') {
-            return <button disabled>Adding...</button>
-        }
-
-        if (addToCartStatus === 'success') {
-            return <button disabled>Added!</button>
-        }
-
-        switch (cartStatus) {
-            case 'error':
-                return <button disabled>Add to Cart</button>
-            case 'pending':
-                return <button disabled>Loading...</button>
-            case 'success':
-                return defaultButton
-            default:
-                return defaultButton
-        }
-    }, [cartStatus, addToCartStatus, addToCart, isInCart, product])
-
-    const addToWishlistButton = useMemo(() => {
-        const defaultButton = (
-            <button
-                disabled={isAddWishlistLinePending}
-                onClick={() => addWishlistLine({ productId: product.id })}
-            >
-                <HeartStraight size={28} weight="light" />
-            </button>
-        )
-
+    const handleWishlistButtonToggle = () => {
         if (wishlistLineId) {
-            return (
-                <button
-                    disabled={isDeleteWishlistLinePending}
-                    onClick={() =>
-                        deleteWishlistLine({ lineId: wishlistLineId })
-                    }
-                >
-                    <HeartStraight size={28} weight="fill" />
-                </button>
-            )
+            deleteWishlistLine({ lineId: wishlistLineId })
         } else {
-            return defaultButton
+            addWishlistLine({ productId: product.id })
         }
-    }, [
-        addWishlistLine,
-        deleteWishlistLine,
-        product,
-        wishlistLineId,
-        isAddWishlistLinePending,
-        isDeleteWishlistLinePending,
-    ])
+    }
+
+    // const addToCartButton = useMemo(() => {
+    //     const defaultButton = (
+    //         <button onClick={() => addToCart(product.id)}>Add to Cart</button>
+    //     )
+    //
+    //     if (isInCart && addToCartStatus === 'idle') {
+    //         return <button disabled>Already in Cart</button>
+    //     }
+    //
+    //     if (!product.availableForSale) {
+    //         return <button disabled>Out of Stock</button>
+    //     }
+    //
+    //     if (addToCartStatus === 'pending') {
+    //         return <button disabled>Adding...</button>
+    //     }
+    //
+    //     if (addToCartStatus === 'success') {
+    //         return <button disabled>Added!</button>
+    //     }
+    //
+    //     switch (cartStatus) {
+    //         case 'error':
+    //             return <button disabled>Add to Cart</button>
+    //         case 'pending':
+    //             return <button disabled>Loading...</button>
+    //         case 'success':
+    //             return defaultButton
+    //         default:
+    //             return defaultButton
+    //     }
+    // }, [cartStatus, addToCartStatus, addToCart, isInCart, product])
 
     return (
         <article className="flex flex-col gap-2">
@@ -236,8 +174,16 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
                 <PriceRepr value={product.price} />
             </p>
             <div className="flex justify-between">
-                {addToCartButton}
-                {addToWishlistButton}
+                <CartButton
+                    isInCart={!!cartLineId}
+                    addCartLineStatus={addCartLineStatus}
+                    isInStock={product.availableForSale}
+                    onClick={() => addCartLine({ productId: product.id })}
+                />
+                <WishlistButton
+                    isInWishlist={!!wishlistLineId}
+                    onToggle={handleWishlistButtonToggle}
+                />
             </div>
         </article>
     )

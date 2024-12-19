@@ -34,16 +34,6 @@ type WishlistProps = {
 const Wishlist: React.FC<WishlistProps> = ({ wishlist }) => {
     const lines = wishlist.lines
     const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
-    const { mutateAsync: addCartLine } = useAddCartLineMutation()
-
-    const handleMoveToCart = async (wishlistLine: WishlistLine) => {
-        try {
-            await addCartLine({ productId: wishlistLine.productId })
-            deleteWishlistLine({ lineId: wishlistLine.id })
-        } catch (error) {
-            console.error(error)
-        }
-    }
 
     const handleDeleteWishlistLine = (id: string) =>
         deleteWishlistLine({ lineId: id })
@@ -54,7 +44,6 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlist }) => {
                 lines.map(line => (
                     <WishlistLineItem
                         wishlistLine={line}
-                        moveToCart={handleMoveToCart}
                         deleteWishlistLine={handleDeleteWishlistLine}
                         key={line.id}
                     />
@@ -68,13 +57,11 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlist }) => {
 
 type WishlistLineItemProps = {
     wishlistLine: WishlistLine
-    moveToCart: (wishlistLine: WishlistLine) => Promise<void>
     deleteWishlistLine: (lineId: string) => void
 }
 
 const WishlistLineItem: React.FC<WishlistLineItemProps> = ({
     wishlistLine,
-    moveToCart,
     deleteWishlistLine,
 }) => {
     const { product } = wishlistLine
@@ -83,10 +70,6 @@ const WishlistLineItem: React.FC<WishlistLineItemProps> = ({
     const handleDeleteButtonClick = () => {
         const { id } = wishlistLine
         deleteWishlistLine(id)
-    }
-
-    const handleCartButtonClick = () => {
-        moveToCart(wishlistLine)
     }
 
     return (
@@ -106,9 +89,6 @@ const WishlistLineItem: React.FC<WishlistLineItemProps> = ({
                     <div>
                         <button onClick={handleDeleteButtonClick}>
                             <Trash size={28} weight="light" />
-                        </button>
-                        <button onClick={handleCartButtonClick}>
-                            Add to cart
                         </button>
                     </div>
                 </div>

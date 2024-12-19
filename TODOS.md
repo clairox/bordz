@@ -36,6 +36,7 @@
 -   [x] Move cartId to cookie
 -   [x] Use single cart provider
 -   [ ] Don't allow duplicate boardsetup product on merge
+-   [ ] Add unique index to cart cart_id_product_id IF product.type === 'BOARD'
 
 ### Checkout
 
@@ -77,3 +78,5 @@
 
 -   [ ] Sort wishlist by createdAt desc
 -   [ ] Don't allow duplicate boardsetup product on merge
+-   [ ] Change saved to wishlist
+-   [ ] Add unique index to wishlist wishlist_id_product_id

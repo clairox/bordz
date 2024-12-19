@@ -1,4 +1,5 @@
 import useAddCartLineMutation from './useAddCartLineMutation'
+import useAddWishlistLine from './useAddWishlistLine'
 import useAuthSession from './useAuthSession'
 import useClearCartMutation from './useClearCartMutation'
 import useComponentModelPropsQuery from './useComponentModelPropsQuery'
@@ -16,6 +17,7 @@ import useSignUp from './useSignUp'
 
 export {
     useAddCartLineMutation,
+    useAddWishlistLine,
     useAuthSession,
     useClearCartMutation,
     useComponentModelPropsQuery,

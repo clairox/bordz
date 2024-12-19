@@ -5,11 +5,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
 
-import { useDeleteCartLineMutation } from '@/hooks'
+import { useDeleteCartLineMutation, useDeleteWishlistLine } from '@/hooks'
 import { useCartQuery } from '@/context/CartContext'
 import PriceRepr from '../PriceRepr'
 import { useCustomer } from '@/context/CustomerContext'
 import useAddWishlistLine from '@/hooks/useAddWishlistLine'
+import WishlistButton from '../WishlistButton'
+import { useWishlist } from '@/context/WishlistContext'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
@@ -80,25 +82,26 @@ type CartLinesListProps = {
 }
 
 const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
+    const { data: wishlist } = useWishlist()
     const { mutate: deleteCartLine } = useDeleteCartLineMutation()
-    const { mutateAsync: addWishlistLine } = useAddWishlistLine()
 
-    const handleMoveToWishlist = async (cartLine: CartLine) => {
-        try {
-            await addWishlistLine({ productId: cartLine.productId })
-            deleteCartLine({ lineId: cartLine.id })
-        } catch (error) {
-            console.error(error)
-        }
+    if (!wishlist) {
+        return <div>Loading...</div>
     }
+
     return (
         <div className="flex flex-col">
             {lines?.length ? (
                 lines.map(line => (
                     <CartLinesListItem
                         cartLine={line}
-                        moveToWishlist={handleMoveToWishlist}
                         deleteCartLine={deleteCartLine}
+                        wishlistLineId={
+                            wishlist?.lines.find(
+                                wishlistLine =>
+                                    wishlistLine.productId === line.productId
+                            )?.id
+                        }
                         key={line.id}
                     />
                 ))
@@ -111,25 +114,41 @@ const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
 
 type CartLinesListItemProps = {
     cartLine: CartLine
-    moveToWishlist: (cartLine: CartLine) => Promise<void>
     deleteCartLine: ({ lineId }: { lineId: string }) => void
+    wishlistLineId?: string
 }
 
 const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     cartLine,
-    moveToWishlist,
     deleteCartLine,
+    wishlistLineId,
 }) => {
     const { product } = cartLine
     const { boardSetup } = product
+
+    const { mutateAsync: addWishlistLine } = useAddWishlistLine()
+    const { mutateAsync: deleteWishlistLine } = useDeleteWishlistLine()
 
     const handleDeleteButtonClick = () => {
         const { id } = cartLine
         deleteCartLine({ lineId: id })
     }
 
-    const handleWishlistButtonClick = () => {
-        moveToWishlist(cartLine)
+    const moveToWishlist = async () => {
+        try {
+            await addWishlistLine({ productId: cartLine.productId })
+            deleteCartLine({ lineId: cartLine.id })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const handleWishlistButtonToggle = () => {
+        if (wishlistLineId) {
+            deleteWishlistLine({ lineId: wishlistLineId })
+        } else {
+            moveToWishlist()
+        }
     }
 
     return (
@@ -150,9 +169,10 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
                         <button onClick={handleDeleteButtonClick}>
                             <Trash size={28} weight="light" />
                         </button>
-                        <button onClick={handleWishlistButtonClick}>
-                            <HeartStraight size={28} weight="light" />
-                        </button>
+                        <WishlistButton
+                            isInWishlist={!!wishlistLineId}
+                            onToggle={handleWishlistButtonToggle}
+                        />
                     </div>
                 </div>
                 <ul className="text-sm">
