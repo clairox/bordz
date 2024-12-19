@@ -1,4 +1,4 @@
-import { integer, smallint } from 'drizzle-orm/pg-core'
+import { integer, smallint, uniqueIndex } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
@@ -15,17 +15,26 @@ export const CartTable = pgTableWithAutoFields('carts', {
     }),
 })
 
-export const CartLineItemTable = pgTableWithAutoFields('cart_line_items', {
-    subtotal: integer('subtotal').default(0).notNull(),
-    total: integer('total').default(0).notNull(),
-    quantity: smallint('quantity').default(1).notNull(),
-    productId: shortUuid('product_id')
-        .references(() => ProductTable.id, { onDelete: 'cascade' })
-        .notNull(),
-    cartId: shortUuid('cart_id')
-        .references(() => CartTable.id, { onDelete: 'cascade' })
-        .notNull(),
-})
+export const CartLineItemTable = pgTableWithAutoFields(
+    'cart_line_items',
+    {
+        subtotal: integer('subtotal').default(0).notNull(),
+        total: integer('total').default(0).notNull(),
+        quantity: smallint('quantity').default(1).notNull(),
+        productId: shortUuid('product_id')
+            .references(() => ProductTable.id, { onDelete: 'cascade' })
+            .notNull(),
+        cartId: shortUuid('cart_id')
+            .references(() => CartTable.id, { onDelete: 'cascade' })
+            .notNull(),
+    },
+    table => ({
+        cartIdProductIdIdx: uniqueIndex('cart_id_product_id_idx').on(
+            table.cartId,
+            table.productId
+        ),
+    })
+)
 
 export const CartRelations = relations(CartTable, ({ one, many }) => ({
     owner: one(CustomerTable, {

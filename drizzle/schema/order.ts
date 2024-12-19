@@ -1,4 +1,4 @@
-import { integer, smallint, varchar } from 'drizzle-orm/pg-core'
+import { integer, smallint, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
@@ -22,17 +22,26 @@ export const OrderTable = pgTableWithAutoFields('orders', {
     ),
 })
 
-export const OrderLineItemTable = pgTableWithAutoFields('order_line_items', {
-    title: varchar('title', { length: 100 }).notNull(),
-    total: integer('total').default(0).notNull(),
-    quantity: smallint('quantity').default(1).notNull(),
-    productId: shortUuid('product_id').references(() => ProductTable.id, {
-        onDelete: 'set null',
-    }),
-    orderId: shortUuid('order_id')
-        .references(() => OrderTable.id, { onDelete: 'cascade' })
-        .notNull(),
-})
+export const OrderLineItemTable = pgTableWithAutoFields(
+    'order_line_items',
+    {
+        title: varchar('title', { length: 100 }).notNull(),
+        total: integer('total').default(0).notNull(),
+        quantity: smallint('quantity').default(1).notNull(),
+        productId: shortUuid('product_id').references(() => ProductTable.id, {
+            onDelete: 'set null',
+        }),
+        orderId: shortUuid('order_id')
+            .references(() => OrderTable.id, { onDelete: 'cascade' })
+            .notNull(),
+    },
+    table => ({
+        orderIdProductIdIdx: uniqueIndex('order_id_product_id_idx').on(
+            table.orderId,
+            table.productId
+        ),
+    })
+)
 
 export const OrderRelations = relations(OrderTable, ({ one, many }) => ({
     lines: many(OrderLineItemTable),

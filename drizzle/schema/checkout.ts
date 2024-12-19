@@ -1,4 +1,10 @@
-import { integer, smallint, timestamp, varchar } from 'drizzle-orm/pg-core'
+import {
+    integer,
+    smallint,
+    timestamp,
+    uniqueIndex,
+    varchar,
+} from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
@@ -42,7 +48,13 @@ export const CheckoutLineItemTable = pgTableWithAutoFields(
         checkoutId: shortUuid('checkout_id')
             .references(() => CheckoutTable.id, { onDelete: 'cascade' })
             .notNull(),
-    }
+    },
+    table => ({
+        checkoutIdProductIdIdx: uniqueIndex('checkout_id_product_id_idx').on(
+            table.checkoutId,
+            table.productId
+        ),
+    })
 )
 
 export const CheckoutRelations = relations(CheckoutTable, ({ one, many }) => ({

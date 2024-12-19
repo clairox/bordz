@@ -1,4 +1,4 @@
-import { smallint } from 'drizzle-orm/pg-core'
+import { smallint, uniqueIndex } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
@@ -25,7 +25,13 @@ export const WishlistLineItemTable = pgTableWithAutoFields(
                 onDelete: 'cascade',
             })
             .notNull(),
-    }
+    },
+    table => ({
+        wishlistIdProductIdIdx: uniqueIndex('wishlist_id_product_id_idx').on(
+            table.wishlistId,
+            table.productId
+        ),
+    })
 )
 
 export const WishlistRelations = relations(WishlistTable, ({ one, many }) => ({

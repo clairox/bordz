@@ -64,6 +64,13 @@
       "when": 1734010747508,
       "tag": "0008_watery_talos",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1734628016465,
+      "tag": "0009_easy_synch",
+      "breakpoints": true
     }
   ]
 }

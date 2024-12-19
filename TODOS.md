@@ -12,6 +12,7 @@
 -   [x] Allow use of multiple addresses per user
 -   [x] Update customer schema to handle defaultAddressId better
 -   [x] On sign out, wait until it's finished to invalidate auth and cart
+-   [x] Add 'add address' to addresses
 -   [ ] Create form password input component
 -   [ ] Move all fetches to /lib/api
 -   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
@@ -24,7 +25,6 @@
 -   [ ] Use validate body for all api routes
 -   [ ] Add email column to customers table
 -   [ ] Use [userId] route in /customers
--   [ ] Add 'add address' to addresses
 -   [ ] Use unauthorized error for missing session token
 -   [ ] Move utility functions in routes to bottom
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
