@@ -7,6 +7,7 @@ import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
 
 import { useCartQuery } from '@/context/CartContext'
 import { useCustomer } from '@/context/CustomerContext'
+import { useWishlist } from '@/context/WishlistContext'
 
 const Header: React.FC = () => {
     return (
@@ -25,10 +26,7 @@ const Header: React.FC = () => {
             </div>
             <div className="flex gap-4">
                 <AccountHeaderButton />
-                <HeaderButton
-                    href="/saved"
-                    icon={<HeartStraight size={28} weight="light" />}
-                />
+                <WishlistHeaderButton />
                 <CartHeaderButton />
             </div>
         </header>
@@ -84,6 +82,22 @@ const AccountHeaderButton: React.FC = () => {
                 </div>
             }
             disabled={isCustomerPending}
+        />
+    )
+}
+
+const WishlistHeaderButton: React.FC = () => {
+    const { data: wishlist } = useWishlist()
+
+    return (
+        <HeaderButton
+            href="/saved"
+            icon={
+                <div className="flex">
+                    <HeartStraight size={28} weight="light" />
+                    {wishlist && <span>{wishlist.quantity}</span>}
+                </div>
+            }
         />
     )
 }
