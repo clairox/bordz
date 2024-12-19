@@ -14,49 +14,16 @@ import { useWishlist } from '@/context/WishlistContext'
 import WishlistButton from '../WishlistButton'
 import CartButton from '../CartButton'
 
-const ProductsList: React.FC = () => {
-    const {
-        data: products,
-        status: productsStatus,
-        refetch,
-    } = useQuery<Product[]>({
-        queryKey: ['products'],
-        queryFn: async () => {
-            try {
-                const res = await fetchAbsolute('/products?publicOnly=true')
+type ProductsListProps = {
+    products: Product[]
+}
 
-                if (!res.ok) {
-                    throw res
-                }
-
-                return await res.json()
-            } catch (error) {
-                throw error
-            }
-        },
-    })
-
+const ProductsList: React.FC<ProductsListProps> = ({ products }) => {
     const { data: cart } = useCartQuery()
     const { data: wishlist } = useWishlist()
 
-    if (productsStatus === 'error') {
-        return (
-            <div>
-                <p>There was a problem loading your cart</p>
-                <button onClick={() => refetch()} className="flex">
-                    <span>Retry</span>
-                    <ArrowClockwise size={22} weight="light" />
-                </button>
-            </div>
-        )
-    }
-
-    if (productsStatus === 'pending' || !products) {
-        return <div>Loading...</div>
-    }
-
     return (
-        <div className="flex justify-between w-full">
+        <div className="grid grid-cols-4 gap-[1px] w-full border-b border-black">
             {products.map(product => {
                 const cartLineId = cart?.lines.find(
                     line => line.productId === product.id
@@ -104,41 +71,8 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
         }
     }
 
-    // const addToCartButton = useMemo(() => {
-    //     const defaultButton = (
-    //         <button onClick={() => addToCart(product.id)}>Add to Cart</button>
-    //     )
-    //
-    //     if (isInCart && addToCartStatus === 'idle') {
-    //         return <button disabled>Already in Cart</button>
-    //     }
-    //
-    //     if (!product.availableForSale) {
-    //         return <button disabled>Out of Stock</button>
-    //     }
-    //
-    //     if (addToCartStatus === 'pending') {
-    //         return <button disabled>Adding...</button>
-    //     }
-    //
-    //     if (addToCartStatus === 'success') {
-    //         return <button disabled>Added!</button>
-    //     }
-    //
-    //     switch (cartStatus) {
-    //         case 'error':
-    //             return <button disabled>Add to Cart</button>
-    //         case 'pending':
-    //             return <button disabled>Loading...</button>
-    //         case 'success':
-    //             return defaultButton
-    //         default:
-    //             return defaultButton
-    //     }
-    // }, [cartStatus, addToCartStatus, addToCart, isInCart, product])
-
     return (
-        <article className="flex flex-col gap-2">
+        <article className="flex flex-col gap-2 p-6 border-r border-black last:border-none">
             <h3>{product.title}</h3>
             {product.boardSetup != undefined && (
                 <Fragment>

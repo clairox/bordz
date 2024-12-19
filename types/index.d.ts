@@ -24,6 +24,11 @@ type Product = {
     isPublic: boolean
 }
 
+type Page<T> = {
+    data: T[]
+    nextPage?: number
+}
+
 type CartLine = {
     id: string
     cartId: string

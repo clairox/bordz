@@ -14,22 +14,22 @@ import {
     getComponentsTotalPrice,
 } from '../shared'
 import { ComponentRecord } from '@/types/records'
-import { eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 
 const defaultLimit = 40
-const defaultOffset = 0
+const defaultPage = 1
 
 export const GET = async (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams
-    const limit = Number(searchParams.get('limit') || defaultLimit)
-    const offset = Number(searchParams.get('offset') || defaultOffset)
+    const pageSize = Number(searchParams.get('size') || defaultLimit)
+    const page = Number(searchParams.get('page') || defaultPage)
     const publicOnly = searchParams.get('publicOnly') === 'true' ? true : false
 
     try {
         const products = await db.query.ProductTable.findMany({
             where: publicOnly ? eq(ProductTable.isPublic, true) : undefined,
-            limit,
-            offset,
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
             with: {
                 boardSetup: {
                     with: {
@@ -44,7 +44,14 @@ export const GET = async (request: NextRequest) => {
             },
         })
 
-        return NextResponse.json(products)
+        const productCount = await db
+            .select({ count: count() })
+            .from(ProductTable)
+            .then(rows => rows[0].count)
+        const totalPages = Math.ceil(productCount / pageSize)
+        const nextPage = totalPages > page ? page + 1 : undefined
+
+        return NextResponse.json({ data: products, nextPage })
     } catch (error) {
         handleError(error)
     }
