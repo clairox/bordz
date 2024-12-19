@@ -9,6 +9,7 @@ import getComponentsOverallAvailability from './getComponentsOverallAvailability
 import getComponentsTotalPrice from './getComponentsTotalPrice'
 import getCustomerByUserId from './getCustomer'
 import getProduct from './getProduct'
+import getWishlist from './getWishlist'
 import createCart from './createCart'
 import updateCheckout from './updateCheckout'
 
@@ -24,6 +25,7 @@ export {
     getComponentsTotalPrice,
     getCustomerByUserId,
     getProduct,
+    getWishlist,
     createCart,
     updateCheckout,
 }

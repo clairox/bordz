@@ -9,6 +9,7 @@ import { useDeleteCartLineMutation } from '@/hooks'
 import { useCartQuery } from '@/context/CartContext'
 import PriceRepr from '../PriceRepr'
 import { useCustomer } from '@/context/CustomerContext'
+import useAddWishlistLine from '@/hooks/useAddWishlistLine'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
@@ -80,13 +81,23 @@ type CartLinesListProps = {
 
 const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
     const { mutate: deleteCartLine } = useDeleteCartLineMutation()
+    const { mutateAsync: addWishlistLine } = useAddWishlistLine()
 
+    const handleMoveToWishlist = async (cartLine: CartLine) => {
+        try {
+            await addWishlistLine({ productId: cartLine.productId })
+            deleteCartLine({ lineId: cartLine.id })
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
         <div className="flex flex-col">
             {lines?.length ? (
                 lines.map(line => (
                     <CartLinesListItem
                         cartLine={line}
+                        moveToWishlist={handleMoveToWishlist}
                         deleteCartLine={deleteCartLine}
                         key={line.id}
                     />
@@ -100,11 +111,13 @@ const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
 
 type CartLinesListItemProps = {
     cartLine: CartLine
+    moveToWishlist: (cartLine: CartLine) => Promise<void>
     deleteCartLine: ({ lineId }: { lineId: string }) => void
 }
 
 const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     cartLine,
+    moveToWishlist,
     deleteCartLine,
 }) => {
     const { product } = cartLine
@@ -115,9 +128,8 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
         deleteCartLine({ lineId: id })
     }
 
-    // TODO: Move cart item to wishlist
     const handleWishlistButtonClick = () => {
-        console.log('handleWishlistButtonClick()')
+        moveToWishlist(cartLine)
     }
 
     return (

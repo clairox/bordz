@@ -43,7 +43,8 @@ const SkateLabUI: React.FC = () => {
 }
 
 const SkateLabUIConfirmation: React.FC = () => {
-    const { selectedComponents, addBoardSetupToCart } = useSkateLabContext()
+    const { selectedComponents, addBoardSetupToCart, addBoardSetupToWishlist } =
+        useSkateLabContext()
 
     const router = useRouter()
 
@@ -52,6 +53,11 @@ const SkateLabUIConfirmation: React.FC = () => {
     const addToCart = async () => {
         await addBoardSetupToCart(shouldPublish)
         router.push('/cart')
+    }
+
+    const addToWishlist = async () => {
+        await addBoardSetupToWishlist(shouldPublish)
+        router.push('/saved')
     }
 
     return (
@@ -136,7 +142,7 @@ const SkateLabUIConfirmation: React.FC = () => {
                 </label>
             </div>
             <button onClick={addToCart}>Add to cart</button>
-            {/* Save for later button */}
+            <button onClick={addToWishlist}>Save for later</button>
         </div>
     )
 }

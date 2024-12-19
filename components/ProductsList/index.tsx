@@ -2,13 +2,16 @@
 
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { QueryStatus, useQuery } from '@tanstack/react-query'
-import { ArrowClockwise } from '@phosphor-icons/react'
+import { ArrowClockwise, HeartStraight } from '@phosphor-icons/react'
 
 import { useCartQuery } from '@/context/CartContext'
-import { useAddCartLineMutation } from '@/hooks'
+import { useAddCartLineMutation, useDeleteWishlistLine } from '@/hooks'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import PriceRepr from '../PriceRepr'
 import Link from 'next/link'
+import useAddWishlistLine from '@/hooks/useAddWishlistLine'
+import ButtonAsync from '../ButtonAsync'
+import { useWishlist } from '@/context/WishlistContext'
 
 const ProductsList: React.FC = () => {
     const {
@@ -33,6 +36,7 @@ const ProductsList: React.FC = () => {
     })
 
     const { data: cart, status: cartStatus } = useCartQuery()
+    const { data: wishlist, status: wishlistStatus } = useWishlist()
 
     if (productsStatus === 'error') {
         return (
@@ -63,6 +67,11 @@ const ProductsList: React.FC = () => {
                                 .map(line => line.productId)
                                 .includes(product.id) || false
                         }
+                        wishlistLineId={
+                            wishlist?.lines.find(
+                                line => line.productId === product.id
+                            )?.id
+                        }
                         key={product.id}
                     />
                 )
@@ -76,6 +85,7 @@ type ProductsListItemProps = {
     cartId: string | undefined
     cartStatus: QueryStatus
     isInCart: boolean
+    wishlistLineId?: string
 }
 
 const ProductsListItem: React.FC<ProductsListItemProps> = ({
@@ -83,15 +93,34 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
     cartId,
     cartStatus,
     isInCart,
+    wishlistLineId,
 }) => {
     const { mutate: addCartLine, status: addToCartStatus } =
         useAddCartLineMutation()
+
+    const {
+        mutate: addWishlistLine,
+        isError: isAddWishlistLineError,
+        isIdle: isAddWishlistLineIdle,
+        isPending: isAddWishlistLinePending,
+    } = useAddWishlistLine()
+    const {
+        mutate: deleteWishlistLine,
+        isIdle: isDeleteWishlistLineIdle,
+        isPending: isDeleteWishlistLinePending,
+    } = useDeleteWishlistLine()
 
     useEffect(() => {
         if (addToCartStatus === 'error') {
             //TODO: toast('There was an issue loading the cart. Please try again later.')
         }
     }, [addToCartStatus])
+
+    useEffect(() => {
+        if (isAddWishlistLineError) {
+            //TODO: toast('There was an issue loading the wishlist. Please try again later.')
+        }
+    }, [isAddWishlistLineError])
 
     const addToCart = useCallback(
         (productId: string) => {
@@ -137,6 +166,39 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
         }
     }, [cartStatus, addToCartStatus, addToCart, isInCart, product])
 
+    const addToWishlistButton = useMemo(() => {
+        const defaultButton = (
+            <button
+                disabled={isAddWishlistLinePending}
+                onClick={() => addWishlistLine({ productId: product.id })}
+            >
+                <HeartStraight size={28} weight="light" />
+            </button>
+        )
+
+        if (wishlistLineId) {
+            return (
+                <button
+                    disabled={isDeleteWishlistLinePending}
+                    onClick={() =>
+                        deleteWishlistLine({ lineId: wishlistLineId })
+                    }
+                >
+                    <HeartStraight size={28} weight="fill" />
+                </button>
+            )
+        } else {
+            return defaultButton
+        }
+    }, [
+        addWishlistLine,
+        deleteWishlistLine,
+        product,
+        wishlistLineId,
+        isAddWishlistLinePending,
+        isDeleteWishlistLinePending,
+    ])
+
     return (
         <article className="flex flex-col gap-2">
             <h3>{product.title}</h3>
@@ -173,7 +235,10 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
             <p>
                 <PriceRepr value={product.price} />
             </p>
-            {addToCartButton}
+            <div className="flex justify-between">
+                {addToCartButton}
+                {addToWishlistButton}
+            </div>
         </article>
     )
 }

@@ -23,12 +23,18 @@
 -   [ ] Figure out a better naming convention for List and ListItem components
 -   [ ] Use validate body for all api routes
 -   [ ] Add email column to customers table
+-   [ ] Use [userId] route in /customers
+-   [ ] Add 'add address' to addresses
+-   [ ] Use unauthorized error for missing session token
+-   [ ] Move utility functions in routes to bottom
+-   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
 
 ### Cart
 
 -   [x] BUG When cart is newly created in BrowsePage, if not reloaded or navigated back to, adding to cart will not work.
 -   [x] Move cartId to cookie
 -   [x] Use single cart provider
+-   [ ] Don't allow duplicate boardsetup product on merge
 
 ### Checkout
 
@@ -63,5 +69,10 @@
 -   [x] Create order page
 -   [x] Create addresses page
 -   [x] Create change password page
--   [ ] Create delete account page
+-   [x] Create delete account page
 -   [x] Create personal details page
+
+### Wishlist
+
+-   [ ] Sort wishlist by createdAt desc
+-   [ ] Don't allow duplicate boardsetup product on merge

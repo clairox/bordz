@@ -29,6 +29,7 @@ const useSignOut = () => {
             if (data?.role === 'customer') {
                 queryClient.removeQueries({ queryKey: ['customer'] })
                 queryClient.removeQueries({ queryKey: ['cart'] })
+                queryClient.removeQueries({ queryKey: ['wishlist'] })
             }
         },
     })

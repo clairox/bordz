@@ -27,7 +27,6 @@ const Header: React.FC = () => {
                 <AccountHeaderButton />
                 <HeaderButton
                     href="/saved"
-                    onClick={() => {}}
                     icon={<HeartStraight size={28} weight="light" />}
                 />
                 <CartHeaderButton />

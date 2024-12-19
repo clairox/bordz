@@ -4,6 +4,7 @@ import useClearCartMutation from './useClearCartMutation'
 import useComponentModelPropsQuery from './useComponentModelPropsQuery'
 import useCreateAddress from './useCreateAddress'
 import useDeleteCartLineMutation from './useDeleteCartLineMutation'
+import useDeleteWishlistLine from './useDeleteWishlistLine'
 import useFormMessage from './useFormMessage'
 import useGetAuthSession from './useGetAuthSession'
 import useGetSessionUserRole from './useGetSessionUserRole'
@@ -20,6 +21,7 @@ export {
     useComponentModelPropsQuery,
     useCreateAddress,
     useDeleteCartLineMutation,
+    useDeleteWishlistLine,
     useFormMessage,
     useGetAuthSession,
     useGetSessionUserRole,

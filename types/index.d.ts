@@ -62,6 +62,24 @@ type Cart = {
     updatedAt: Date
 }
 
+type WishlistLine = {
+    id: string
+    wishlistId: string
+    product: Product
+    productId: string
+    createdAt: Date
+    updatedAt: Date
+}
+
+type Wishlist = {
+    id: string
+    lines: WishlistLine[]
+    ownerId?: string
+    quantity: number
+    createdAt: Date
+    updatedAt: Date
+}
+
 type CheckoutLine = {
     id: string
     checkoutId: string

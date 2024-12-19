@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
@@ -12,24 +12,23 @@ const CartContext = createContext<CartContextValue>({} as CartContextValue)
 
 const useCartQuery = () => useContext(CartContext)
 
+const fetchCart = async (customerId?: string) => {
+    const response = await fetchAbsolute('/cart', {
+        method: 'POST',
+        body: JSON.stringify({ customerId }),
+    })
+    if (!response.ok) {
+        throw response
+    }
+    return await response.json()
+}
+
 const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const { data: customer, isPending: isCustomerPending } = useCustomer()
-    const queryKey = ['cart', customer?.id]
 
     const cartQuery = useQuery<Cart>({
-        queryKey,
-        queryFn: async () => {
-            const res = await fetchAbsolute('/cart', {
-                method: 'POST',
-                body: JSON.stringify({
-                    customerId: customer?.id || undefined,
-                }),
-            })
-            if (!res.ok) {
-                throw res
-            }
-            return await res.json()
-        },
+        queryKey: ['cart', customer?.id],
+        queryFn: async () => fetchCart(customer?.id),
         enabled: !isCustomerPending,
     })
 

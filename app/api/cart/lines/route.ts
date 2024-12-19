@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
-import { getCart, updateCheckout } from '@/app/api/shared'
+import { getCart, getProduct, updateCheckout } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
-import { ProductTable } from '@/drizzle/schema/product'
 import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
 import { CartLineRecord, ProductRecord } from '@/types/records'
 import {
@@ -13,12 +12,6 @@ import {
     createNotFoundError,
     handleError,
 } from '@/lib/errors'
-
-const getProduct = async (id: string) => {
-    return await db.query.ProductTable.findFirst({
-        where: eq(ProductTable.id, id),
-    })
-}
 
 const createCartLine = async (
     product: ProductRecord,
@@ -142,6 +135,23 @@ export const POST = async (request: NextRequest) => {
         if (!product) {
             throw createNotFoundError('Product')
         }
+
+        // TODO: Conflict 409 if board type product cart line already exists
+        // if (product.productType === 'BOARD') {
+        //     const existingCartLine = await db
+        //         .select()
+        //         .from(CartLineItemTable)
+        //         .where(
+        //             and(
+        //                 eq(CartLineItemTable.cartId, cartId),
+        //                 eq(CartLineItemTable.productId, product)
+        //             )
+        //         )
+        //
+        //     if (existingCartLine) {
+        //         throw
+        //     }
+        // }
 
         const newCartLine = await createCartLine(product, quantity, cartId)
         const updatedCart = await updateCartWithNewCartLine(cartId, newCartLine)

@@ -7,6 +7,7 @@ import { useLoadSelectedComponents } from '../hooks'
 import { useAddCartLineMutation } from '@/hooks'
 import { useMutation } from '@tanstack/react-query'
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import useAddWishlistLine from '@/hooks/useAddWishlistLine'
 
 type SkateLabContextValue = {
     selectedComponents: Record<ComponentType, Component | undefined>
@@ -20,6 +21,7 @@ type SkateLabContextValue = {
     setActiveComponentType: (type: ComponentTypeOrNone) => void
     finishEditing: () => Promise<void>
     addBoardSetupToCart: (publish?: boolean) => Promise<void>
+    addBoardSetupToWishlist: (publish?: boolean) => Promise<void>
     reset: () => void
 }
 
@@ -86,6 +88,7 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     }
 
     const { mutateAsync: addCartLine } = useAddCartLineMutation()
+    const { mutateAsync: addWishlistLine } = useAddWishlistLine()
 
     const { mutateAsync: updateBoardSetup } = useMutation({
         mutationFn: async ({
@@ -151,6 +154,19 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         setLoading(false)
     }
 
+    const addBoardSetupToWishlist = async (publish?: boolean) => {
+        if (!isComplete) {
+            return
+        }
+
+        setLoading(true)
+
+        const product = await createProductFromSelectedComponents(publish)
+        await addWishlistLine({ productId: product.id })
+
+        setLoading(false)
+    }
+
     const reset = () => {
         setSelectedComponents({
             deck: undefined,
@@ -176,6 +192,7 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
                 setActiveComponentType,
                 finishEditing,
                 addBoardSetupToCart,
+                addBoardSetupToWishlist,
                 reset,
             }}
         >

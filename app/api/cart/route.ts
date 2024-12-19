@@ -19,7 +19,6 @@ import { CartLineRecord, CartRecord } from '@/types/records'
 
 export const POST = async (request: NextRequest) => {
     const { customerId } = await request.json()
-    console.log('Customer id: ', customerId)
 
     try {
         const addCartIdCookieToResponse = (

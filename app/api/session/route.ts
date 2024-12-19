@@ -90,8 +90,14 @@ export const DELETE = async (request: NextRequest) => {
                 maxAge: -1,
             })
 
+            const wishlistIdCookie = serialize('wishlistId', '', {
+                ...DEFAULT_COOKIE_CONFIG,
+                maxAge: -1,
+            })
+
             response.headers.append('Set-Cookie', cartIdCookie)
             response.headers.append('Set-Cookie', checkoutIdCookie)
+            response.headers.append('Set-Cookie', wishlistIdCookie)
         }
 
         return response
