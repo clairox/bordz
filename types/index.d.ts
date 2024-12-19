@@ -166,3 +166,5 @@ type ComponentName =
 type SkateLabMode = 'edit' | 'customize' | 'default'
 
 type FormMessageType = 'error' | 'success'
+
+type SortKey = 'date-desc' | 'date-asc' | 'price-asc' | 'price-desc'

@@ -76,7 +76,8 @@
 
 ### Wishlist
 
--   [ ] Sort wishlist by createdAt desc
+-   [x] Sort wishlist by createdAt desc
 -   [x] Don't allow duplicate boardsetup product on merge
 -   [ ] Change saved to wishlist
 -   [x] Add unique index to wishlist wishlist_id_product_id
+-   [ ] Add price to wishlist line

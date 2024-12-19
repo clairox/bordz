@@ -7,15 +7,18 @@ import PriceRepr from '@/components/PriceRepr'
 import Image from 'next/image'
 import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
+import SortSelect from '@/components/SortSelect'
 
 const SavedItemsPage = () => {
     const searchParams = useSearchParams()
     const page = Number(searchParams.get('page')) || 1
     const pageSize = Number(searchParams.get('size')) || 40
+    const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
 
     const { data, status, hasNextPage, fetchNextPage } = useWishlistLines({
         page,
         size: pageSize,
+        orderBy,
     })
 
     const wishlistLines = useMemo(() => {
@@ -39,6 +42,13 @@ const SavedItemsPage = () => {
         <div>
             <div className="pl-4 py-4 w-full border-b border-black">
                 <h1>Saved Items</h1>
+                <div className="flex">
+                    <label htmlFor="sortSelect">Sort by</label>
+                    <SortSelect
+                        value={orderBy}
+                        availableOptions={['date-desc', 'date-asc']}
+                    />
+                </div>
             </div>
             <Wishlist items={wishlistLines} />
             {hasNextPage && (

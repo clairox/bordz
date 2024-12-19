@@ -14,15 +14,29 @@ import {
     getComponentsTotalPrice,
 } from '../shared'
 import { ComponentRecord } from '@/types/records'
-import { count, eq } from 'drizzle-orm'
+import { asc, count, desc, eq, SQL } from 'drizzle-orm'
 
 const defaultLimit = 40
 const defaultPage = 1
+
+type Sort = Partial<Record<SortKey, SQL>>
+
+const sorts: Sort = {
+    'date-desc': desc(ProductTable.createdAt),
+    'date-asc': asc(ProductTable.createdAt),
+    'price-desc': desc(ProductTable.price),
+    'price-asc': asc(ProductTable.price),
+}
+
+const defaultSortKey: SortKey = 'date-desc'
 
 export const GET = async (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams
     const pageSize = Number(searchParams.get('size') || defaultLimit)
     const page = Number(searchParams.get('page') || defaultPage)
+    const orderBy =
+        sorts[(searchParams.get('orderBy') as SortKey) || defaultSortKey]
+
     const publicOnly = searchParams.get('publicOnly') === 'true' ? true : false
 
     try {
@@ -30,6 +44,7 @@ export const GET = async (request: NextRequest) => {
             where: publicOnly ? eq(ProductTable.isPublic, true) : undefined,
             limit: pageSize,
             offset: (page - 1) * pageSize,
+            orderBy,
             with: {
                 boardSetup: {
                     with: {

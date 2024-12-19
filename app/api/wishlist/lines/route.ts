@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { count, eq } from 'drizzle-orm'
+import { asc, count, desc, eq, SQL } from 'drizzle-orm'
 
 import { getProduct, getWishlist, handleRoute } from '../../shared'
 import {
@@ -15,6 +15,15 @@ import { ProductRecord } from '@/types/records'
 const defaultLimit = 40
 const defaultPage = 1
 
+type Sort = Partial<Record<SortKey, SQL>>
+
+const sorts: Sort = {
+    'date-desc': desc(WishlistLineItemTable.createdAt),
+    'date-asc': asc(WishlistLineItemTable.createdAt),
+}
+
+const defaultSortKey: SortKey = 'date-desc'
+
 export const GET = async (request: NextRequest) => {
     return handleRoute(async () => {
         const wishlistId = request.cookies.get('wishlistId')?.value
@@ -25,11 +34,14 @@ export const GET = async (request: NextRequest) => {
         const searchParams = request.nextUrl.searchParams
         const pageSize = Number(searchParams.get('size') || defaultLimit)
         const page = Number(searchParams.get('page') || defaultPage)
+        const orderBy =
+            sorts[(searchParams.get('orderBy') as SortKey) || defaultSortKey]
 
         const lines = await db.query.WishlistLineItemTable.findMany({
             where: eq(WishlistLineItemTable.wishlistId, wishlistId),
             limit: pageSize,
             offset: (page - 1) * pageSize,
+            orderBy,
             with: {
                 product: {
                     with: {
