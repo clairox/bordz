@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
+import { and, eq, notInArray } from 'drizzle-orm'
 import { serialize } from 'cookie'
 
 import { getWishlist, handleRoute } from '../shared'
@@ -151,28 +151,45 @@ const mergeWishlists = async (target: WishlistType, source: WishlistType) => {
         return await getWishlist(target.id)
     }
 
-    await db
-        .insert(WishlistLineItemTable)
-        .values(
-            source.lines.map(line => {
+    const sourceLines = await db
+        .select()
+        .from(WishlistLineItemTable)
+        .where(
+            and(
+                eq(WishlistLineItemTable.wishlistId, source.id),
+                notInArray(
+                    WishlistLineItemTable.productId,
+                    target.lines.map(line => line.productId)
+                )
+            )
+        )
+
+    if (sourceLines.length) {
+        await db.insert(WishlistLineItemTable).values(
+            sourceLines.map(line => {
                 return {
                     productId: line.productId,
                     wishlistId: target.id,
                 }
             })
         )
-        .returning()
+    }
 
     await db.delete(WishlistTable).where(eq(WishlistTable.id, source.id))
 
-    return await db
-        .update(WishlistTable)
-        .set({
-            quantity: target.quantity + source.quantity,
-            updatedAt: new Date(),
-        })
-        .returning()
-        .then(async rows => await getWishlist(rows[0].id))
+    if (sourceLines.length) {
+        return await db
+            .update(WishlistTable)
+            .set({
+                quantity: target.quantity + sourceLines.length,
+                updatedAt: new Date(),
+            })
+            .where(eq(WishlistTable.id, target.id))
+            .returning()
+            .then(async rows => await getWishlist(rows[0].id))
+    } else {
+        return await getWishlist(target.id)
+    }
 }
 
 const addWishlistIdCookieToResponse = (

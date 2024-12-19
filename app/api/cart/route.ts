@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
+import { and, eq, notInArray } from 'drizzle-orm'
 import { serialize } from 'cookie'
 
 import { getCart, createCart, getCartByOwnerId } from '../shared'
@@ -35,44 +35,72 @@ export const POST = async (request: NextRequest) => {
         }
 
         const mergeCarts = async (
-            targetCart: CartRecord & { lines: CartLineRecord[] },
-            sourceCart: CartRecord & { lines: CartLineRecord[] }
+            target: CartRecord & { lines: CartLineRecord[] },
+            source: CartRecord & { lines: CartLineRecord[] }
         ) => {
-            if (sourceCart.lines.length === 0) {
-                return await getCart(targetCart.id)
+            if (source.lines.length === 0) {
+                return await getCart(target.id)
             }
 
-            await db
-                .insert(CartLineItemTable)
-                .values(
-                    sourceCart.lines.map(line => {
+            const sourceLines = await db
+                .select()
+                .from(CartLineItemTable)
+                .where(
+                    and(
+                        eq(CartLineItemTable.cartId, source.id),
+                        notInArray(
+                            CartLineItemTable.productId,
+                            target.lines.map(line => line.productId)
+                        )
+                    )
+                )
+
+            if (sourceLines.length) {
+                await db.insert(CartLineItemTable).values(
+                    sourceLines.map(line => {
                         return {
                             subtotal: line.subtotal,
                             total: line.total,
                             quantity: line.quantity,
                             productId: line.productId,
-                            cartId: targetCart.id,
+                            cartId: target.id,
                         }
                     })
                 )
-                .returning()
+            }
+            // TODO: add items to checkout if checkoutId cookie is present
 
-            await db.delete(CartTable).where(eq(CartTable.id, sourceCart.id))
+            await db.delete(CartTable).where(eq(CartTable.id, source.id))
 
-            return await db
-                .update(CartTable)
-                .set({
-                    subtotal: targetCart.subtotal + sourceCart.subtotal,
-                    total: targetCart.total + sourceCart.total,
-                    totalQuantity:
-                        targetCart.totalQuantity + sourceCart.totalQuantity,
-                    updatedAt: new Date(),
-                })
-                .returning()
-                .then(async rows => {
-                    const id = rows[0].id
-                    return await getCart(id)
-                })
+            if (sourceLines.length) {
+                return await db
+                    .update(CartTable)
+                    .set({
+                        subtotal:
+                            target.subtotal +
+                            sourceLines.reduce(
+                                (subtotal, line) => subtotal + line.subtotal,
+                                0
+                            ),
+                        total:
+                            target.total +
+                            sourceLines.reduce(
+                                (total, line) => total + line.total,
+                                0
+                            ),
+                        totalQuantity:
+                            target.totalQuantity + sourceLines.length,
+                        updatedAt: new Date(),
+                    })
+                    .where(eq(CartTable.id, target.id))
+                    .returning()
+                    .then(async rows => {
+                        const id = rows[0].id
+                        return await getCart(id)
+                    })
+            } else {
+                return await getCart(target.id)
+            }
         }
 
         if (customerId) {
