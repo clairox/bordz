@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 
 import { getProduct, getWishlist, handleRoute } from '../../shared'
 import {
@@ -11,6 +11,54 @@ import {
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import { db } from '@/drizzle/db'
 import { ProductRecord } from '@/types/records'
+
+const defaultLimit = 40
+const defaultPage = 1
+
+export const GET = async (request: NextRequest) => {
+    return handleRoute(async () => {
+        const wishlistId = request.cookies.get('wishlistId')?.value
+        if (!wishlistId) {
+            throw createBadRequestError()
+        }
+
+        const searchParams = request.nextUrl.searchParams
+        const pageSize = Number(searchParams.get('size') || defaultLimit)
+        const page = Number(searchParams.get('page') || defaultPage)
+
+        const lines = await db.query.WishlistLineItemTable.findMany({
+            where: eq(WishlistLineItemTable.wishlistId, wishlistId),
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
+            with: {
+                product: {
+                    with: {
+                        boardSetup: {
+                            with: {
+                                deck: true,
+                                trucks: true,
+                                wheels: true,
+                                bearings: true,
+                                hardware: true,
+                                griptape: true,
+                            },
+                        },
+                    },
+                },
+            },
+        })
+
+        const lineCount = await db
+            .select({ count: count() })
+            .from(WishlistLineItemTable)
+            .where(eq(WishlistLineItemTable.wishlistId, wishlistId))
+            .then(rows => rows[0].count)
+        const totalPages = Math.ceil(lineCount / pageSize)
+        const nextPage = totalPages > page ? page + 1 : undefined
+
+        return NextResponse.json({ data: lines, nextPage })
+    })
+}
 
 export const POST = async (request: NextRequest) => {
     return handleRoute(async () => {

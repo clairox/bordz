@@ -47,6 +47,7 @@ export const GET = async (request: NextRequest) => {
         const productCount = await db
             .select({ count: count() })
             .from(ProductTable)
+            .where(publicOnly ? eq(ProductTable.isPublic, true) : undefined)
             .then(rows => rows[0].count)
         const totalPages = Math.ceil(productCount / pageSize)
         const nextPage = totalPages > page ? page + 1 : undefined

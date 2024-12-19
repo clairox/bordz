@@ -14,6 +14,7 @@ import usePaymentIntentQuery from './usePaymentIntentQuery'
 import useUpdateCheckout from './useUpdateCheckout'
 import useSignOut from './useSignOut'
 import useSignUp from './useSignUp'
+import useWishlistLines from './useWishlistLines'
 
 export {
     useAddCartLineMutation,
@@ -32,4 +33,5 @@ export {
     useUpdateCheckout,
     useSignOut,
     useSignUp,
+    useWishlistLines,
 }
