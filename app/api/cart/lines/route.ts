@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 import { getCart, getProduct, updateCheckout } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
@@ -8,6 +8,7 @@ import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
 import { CartLineRecord, ProductRecord } from '@/types/records'
 import {
     createBadRequestError,
+    createConflictError,
     createInternalServerError,
     createNotFoundError,
     handleError,
@@ -18,44 +19,52 @@ const createCartLine = async (
     quantity: number,
     cartId: string
 ) => {
-    const newCartLine = await db
-        .insert(CartLineItemTable)
-        .values({
-            subtotal: product.price,
-            total: product.price,
-            quantity: quantity,
-            productId: product.id,
-            cartId: cartId,
-        })
-        .returning()
-        .then(async rows => {
-            const id = rows[0].id
-            return await db.query.CartLineItemTable.findFirst({
-                where: eq(CartLineItemTable.id, id),
-                with: {
-                    product: {
-                        with: {
-                            boardSetup: {
-                                with: {
-                                    deck: true,
-                                    trucks: true,
-                                    wheels: true,
-                                    bearings: true,
-                                    hardware: true,
-                                    griptape: true,
+    try {
+        const newCartLine = await db
+            .insert(CartLineItemTable)
+            .values({
+                subtotal: product.price,
+                total: product.price,
+                quantity: quantity,
+                productId: product.id,
+                cartId: cartId,
+            })
+            .returning()
+            .then(async rows => {
+                const id = rows[0].id
+                return await db.query.CartLineItemTable.findFirst({
+                    where: eq(CartLineItemTable.id, id),
+                    with: {
+                        product: {
+                            with: {
+                                boardSetup: {
+                                    with: {
+                                        deck: true,
+                                        trucks: true,
+                                        wheels: true,
+                                        bearings: true,
+                                        hardware: true,
+                                        griptape: true,
+                                    },
                                 },
                             },
                         },
                     },
-                },
+                })
             })
-        })
 
-    if (!newCartLine) {
-        throw createInternalServerError('Failed to create cart line.')
+        if (!newCartLine) {
+            throw createInternalServerError('Failed to create cart line.')
+        }
+
+        return newCartLine
+    } catch (error) {
+        if ((error as Error).message.includes('cart_id_product_id_idx')) {
+            throw createConflictError('Cart line')
+        } else {
+            throw createInternalServerError('An unexpected error occurred.')
+        }
     }
-
-    return newCartLine
 }
 
 const updateCartWithNewCartLine = async (
@@ -95,27 +104,35 @@ const createCheckoutLine = async (
     product: ProductRecord,
     checkoutId: string
 ) => {
-    const newCheckoutLine = await db
-        .insert(CheckoutLineItemTable)
-        .values({
-            unitPrice: product.price,
-            quantity: cartLine.quantity,
-            productId: cartLine.productId,
-            checkoutId,
-        })
-        .returning()
-        .then(async rows => {
-            const id = rows[0].id
-            return await db.query.CheckoutLineItemTable.findFirst({
-                where: eq(CheckoutLineItemTable.id, id),
+    try {
+        const newCheckoutLine = await db
+            .insert(CheckoutLineItemTable)
+            .values({
+                unitPrice: product.price,
+                quantity: cartLine.quantity,
+                productId: cartLine.productId,
+                checkoutId,
             })
-        })
+            .returning()
+            .then(async rows => {
+                const id = rows[0].id
+                return await db.query.CheckoutLineItemTable.findFirst({
+                    where: eq(CheckoutLineItemTable.id, id),
+                })
+            })
 
-    if (!newCheckoutLine) {
-        throw createInternalServerError('Failed to create checkout line.')
+        if (!newCheckoutLine) {
+            throw createInternalServerError('Failed to create checkout line.')
+        }
+
+        return newCheckoutLine
+    } catch (error) {
+        if ((error as Error).message.includes('checkout_id_product_id_idx')) {
+            throw createConflictError('Checkout line')
+        } else {
+            throw createInternalServerError('An unexpected error occurred.')
+        }
     }
-
-    return newCheckoutLine
 }
 
 export const POST = async (request: NextRequest) => {
@@ -135,23 +152,6 @@ export const POST = async (request: NextRequest) => {
         if (!product) {
             throw createNotFoundError('Product')
         }
-
-        // TODO: Conflict 409 if board type product cart line already exists
-        // if (product.productType === 'BOARD') {
-        //     const existingCartLine = await db
-        //         .select()
-        //         .from(CartLineItemTable)
-        //         .where(
-        //             and(
-        //                 eq(CartLineItemTable.cartId, cartId),
-        //                 eq(CartLineItemTable.productId, product)
-        //             )
-        //         )
-        //
-        //     if (existingCartLine) {
-        //         throw
-        //     }
-        // }
 
         const newCartLine = await createCartLine(product, quantity, cartId)
         const updatedCart = await updateCartWithNewCartLine(cartId, newCartLine)

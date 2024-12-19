@@ -68,7 +68,6 @@ export const POST = async (request: NextRequest) => {
                     })
                 )
             }
-            // TODO: add items to checkout if checkoutId cookie is present
 
             await db.delete(CartTable).where(eq(CartTable.id, source.id))
 

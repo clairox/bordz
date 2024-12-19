@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm'
 import { getProduct, getWishlist, handleRoute } from '../../shared'
 import {
     createBadRequestError,
+    createConflictError,
     createInternalServerError,
     createNotFoundError,
 } from '@/lib/errors'
@@ -28,8 +29,6 @@ export const POST = async (request: NextRequest) => {
         if (!product) {
             throw createNotFoundError('Product')
         }
-
-        // TODO: Conflict 409 if board type product wishlist line already exists
 
         await createWishlistLine(product, wishlistId)
         const updatedWishlist = await updateWishlistWithNewLine(wishlistId)
@@ -74,41 +73,49 @@ const createWishlistLine = async (
     product: ProductRecord,
     wishlistId: string
 ) => {
-    const newWishlistLine = await db
-        .insert(WishlistLineItemTable)
-        .values({
-            productId: product.id,
-            wishlistId,
-        })
-        .returning()
-        .then(async rows => {
-            const id = rows[0].id
-            return await db.query.WishlistLineItemTable.findFirst({
-                where: eq(WishlistLineItemTable.id, id),
-                with: {
-                    product: {
-                        with: {
-                            boardSetup: {
-                                with: {
-                                    deck: true,
-                                    trucks: true,
-                                    wheels: true,
-                                    bearings: true,
-                                    hardware: true,
-                                    griptape: true,
+    try {
+        const newWishlistLine = await db
+            .insert(WishlistLineItemTable)
+            .values({
+                productId: product.id,
+                wishlistId,
+            })
+            .returning()
+            .then(async rows => {
+                const id = rows[0].id
+                return await db.query.WishlistLineItemTable.findFirst({
+                    where: eq(WishlistLineItemTable.id, id),
+                    with: {
+                        product: {
+                            with: {
+                                boardSetup: {
+                                    with: {
+                                        deck: true,
+                                        trucks: true,
+                                        wheels: true,
+                                        bearings: true,
+                                        hardware: true,
+                                        griptape: true,
+                                    },
                                 },
                             },
                         },
                     },
-                },
+                })
             })
-        })
 
-    if (!newWishlistLine) {
-        throw createInternalServerError('Failed to create wishlist line.')
+        if (!newWishlistLine) {
+            throw createInternalServerError('Failed to create wishlist line.')
+        }
+
+        return newWishlistLine
+    } catch (error) {
+        if ((error as Error).message.includes('wishlist_id_product_id_idx')) {
+            throw createConflictError('Wishlist line')
+        } else {
+            throw createInternalServerError('An unexpected error occurred.')
+        }
     }
-
-    return newWishlistLine
 }
 
 const updateWishlistWithNewLine = async (id: string) => {

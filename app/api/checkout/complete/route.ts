@@ -9,6 +9,7 @@ import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
 import {
     createBadRequestError,
+    createConflictError,
     createInternalServerError,
     handleError,
 } from '@/lib/errors'
@@ -36,38 +37,46 @@ const createOrder = async (checkout: Checkout) => {
         )
     }
 
-    const newOrderId = await db
-        .insert(OrderTable)
-        .values({
-            email: checkout.email,
-            subtotal: checkout.subtotal,
-            total: checkout.total,
-            totalTax: checkout.totalTax,
-            totalShipping: checkout.totalShipping,
-            customerId: checkout.customerId,
-            shippingAddressId: checkout.shippingAddressId,
-        })
-        .returning()
-        .then(rows => rows[0].id)
+    try {
+        const newOrderId = await db
+            .insert(OrderTable)
+            .values({
+                email: checkout.email,
+                subtotal: checkout.subtotal,
+                total: checkout.total,
+                totalTax: checkout.totalTax,
+                totalShipping: checkout.totalShipping,
+                customerId: checkout.customerId,
+                shippingAddressId: checkout.shippingAddressId,
+            })
+            .returning()
+            .then(rows => rows[0].id)
 
-    await createOrderLines(newOrderId, checkout.lines)
+        await createOrderLines(newOrderId, checkout.lines)
 
-    const newOrder = await db.query.OrderTable.findFirst({
-        where: eq(OrderTable.id, newOrderId),
-        with: {
-            lines: {
-                with: {
-                    product: true,
+        const newOrder = await db.query.OrderTable.findFirst({
+            where: eq(OrderTable.id, newOrderId),
+            with: {
+                lines: {
+                    with: {
+                        product: true,
+                    },
                 },
             },
-        },
-    })
+        })
 
-    if (!newOrder) {
-        throw createInternalServerError('Failed to create order.')
+        if (!newOrder) {
+            throw createInternalServerError('Failed to create order.')
+        }
+
+        return newOrder
+    } catch (error) {
+        if ((error as Error).message.includes('order_id_product_id_idx')) {
+            throw createConflictError('Order line')
+        } else {
+            throw createInternalServerError('An unexpected error occurred.')
+        }
     }
-
-    return newOrder
 }
 
 const createOrderLines = async (
