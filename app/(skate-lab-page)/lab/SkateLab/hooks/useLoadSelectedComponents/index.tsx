@@ -1,3 +1,5 @@
+'use client'
+
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { BoardSetupRecord } from '@/types/records'
 import { useSuspenseQuery } from '@tanstack/react-query'

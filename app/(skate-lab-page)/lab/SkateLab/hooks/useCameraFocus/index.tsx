@@ -1,3 +1,5 @@
+'use client'
+
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Euler, Group, Matrix4, Mesh, Object3D, Vector3 } from 'three'
 

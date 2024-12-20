@@ -1,3 +1,5 @@
+'use client'
+
 import { useSkateLabContext } from '@/app/(skate-lab-page)/lab/SkateLab/SkateLabContext'
 import { CATEGORIES } from '@/app/(skate-lab-page)/lab/SkateLab/utils/constants'
 import { getTypeFromCategory } from '@/utils/helpers'

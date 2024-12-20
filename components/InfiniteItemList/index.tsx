@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 
 import { useCombinedPages } from '@/hooks'
+import { Fragment } from 'react'
 
 type InfiniteItemListProps<T> = {
     pages: Page<T>[]
@@ -30,12 +31,12 @@ const InfiniteItemList = <T extends object>({
     const items = useCombinedPages(pages)
 
     return (
-        <div>
+        <Fragment>
             {render(items)}
             {hasNextPage && (
                 <button onClick={() => fetchNextPage()}>Load more</button>
             )}
-        </div>
+        </Fragment>
     )
 }
 

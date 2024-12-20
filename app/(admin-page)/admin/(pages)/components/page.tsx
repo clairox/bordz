@@ -11,7 +11,6 @@ import useComponents from '@/hooks/useComponents'
 
 const ComponentsPage: React.FC = () => {
     const searchParams = useSearchParams()
-    const page = Number(searchParams.get('page')) || 1
     const pageSize = Number(searchParams.get('size')) || 40
     const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
 

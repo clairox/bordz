@@ -1,7 +1,9 @@
-import { useSuspenseQuery } from '@tanstack/react-query'
+'use client'
 
 import SkateLabUIMenuList from '../SkateLabUIMenuList'
-import fetchAbsolute from '@/lib/fetchAbsolute'
+import useComponents from '@/hooks/useComponents'
+import InfiniteItemList from '@/components/InfiniteItemList'
+import { Fragment } from 'react'
 
 type SkateLabUIMenuSectionProps = {
     section: Category['label']
@@ -10,29 +12,29 @@ type SkateLabUIMenuSectionProps = {
 const SkateLabUIMenuSection: React.FC<SkateLabUIMenuSectionProps> = ({
     section,
 }) => {
-    // TODO: Use infinite query
-    const { data: components } = useSuspenseQuery<Component[]>({
-        queryKey: ['components', section],
-        queryFn: async () => {
-            const response = await fetchAbsolute(
-                `/components?category=${section}`
-            )
-            if (!response.ok) {
-                throw response
-            }
-            return await response.json()
-        },
+    const { data, hasNextPage, fetchNextPage } = useComponents({
+        size: 10,
+        category: section,
     })
 
     return (
         <div className="relative pt-12 h-full">
             <div className="flex flex-col w-full h-full overflow-auto">
-                <SkateLabUIMenuList components={components} />
-                <div className="h-full border-t border-black">
-                    <p className="py-2 text-center text-gray-700">
-                        Showing {components.length} of {components.length}
-                    </p>
-                </div>
+                <InfiniteItemList
+                    pages={data.pages}
+                    hasNextPage={hasNextPage}
+                    fetchNextPage={fetchNextPage}
+                    render={items => (
+                        <Fragment>
+                            <SkateLabUIMenuList components={items} />
+                            <div className="h-full border-t border-black">
+                                <p className="py-2 text-center text-gray-700">
+                                    Showing {items.length} of {items.length}
+                                </p>
+                            </div>
+                        </Fragment>
+                    )}
+                />
             </div>
         </div>
     )
