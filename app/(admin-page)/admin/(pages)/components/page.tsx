@@ -1,76 +1,87 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { InfiniteData, useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import PriceRepr from '@/components/PriceRepr'
 import { Table, TableCell, TableHeader, TableRow } from '@/components/Table'
-import fetchAbsolute from '@/lib/fetchAbsolute'
+import { Fragment } from 'react'
+import InfiniteItemList from '@/components/InfiniteItemList'
+import useComponents from '@/hooks/useComponents'
 
 const ComponentsPage: React.FC = () => {
-    const router = useRouter()
+    const searchParams = useSearchParams()
+    const page = Number(searchParams.get('page')) || 1
+    const pageSize = Number(searchParams.get('size')) || 40
+    const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
 
-    const { data: components } = useSuspenseInfiniteQuery<
-        Component[],
-        Error,
-        InfiniteData<Component[]>
-    >({
-        queryKey: ['components'],
-        queryFn: async () => {
-            try {
-                const response = await fetchAbsolute('/components')
-
-                if (!response.ok) {
-                    throw response
-                }
-
-                return await response.json()
-            } catch (error) {
-                throw error
-            }
-        },
-        initialPageParam: 0,
-        getNextPageParam: () => {},
+    const { data, fetchNextPage, hasNextPage } = useComponents({
+        size: pageSize,
+        orderBy,
     })
+
+    const router = useRouter()
 
     return (
         <div>
             <button onClick={() => router.push('/admin/components/new')}>
                 New
             </button>
-            <Table>
-                <thead>
-                    <tr>
-                        <TableHeader>Title</TableHeader>
-                        <TableHeader>Price</TableHeader>
-                        <TableHeader>Quantity</TableHeader>
-                        <TableHeader>Brand</TableHeader>
-                        <TableHeader>Category</TableHeader>
-                        <TableHeader>Size</TableHeader>
-                        <TableHeader>Color</TableHeader>
-                    </tr>
-                </thead>
-                <tbody>
-                    {components.pages[0].map(component => {
-                        return (
-                            <ComponentListItem
-                                component={component}
-                                key={component.id}
-                            />
-                        )
-                    })}
-                </tbody>
-            </Table>
+            <InfiniteItemList
+                pages={data.pages}
+                hasNextPage={hasNextPage}
+                fetchNextPage={fetchNextPage}
+                render={items => (
+                    <Table>
+                        <thead>
+                            <tr>
+                                <TableHeader>Title</TableHeader>
+                                <TableHeader>Price</TableHeader>
+                                <TableHeader>Quantity</TableHeader>
+                                <TableHeader>Brand</TableHeader>
+                                <TableHeader>Category</TableHeader>
+                                <TableHeader>Size</TableHeader>
+                                <TableHeader>Color</TableHeader>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ComponentTableList components={items} />
+                        </tbody>
+                    </Table>
+                )}
+            />
         </div>
     )
 }
 
-type ComponentListItemProps = {
+type ComponentTableListProps = {
+    components: Component[]
+}
+
+const ComponentTableList: React.FC<ComponentTableListProps> = ({
+    components,
+}) => {
+    return (
+        <Fragment>
+            {components.map(component => {
+                return (
+                    <ComponentTableListItem
+                        component={component}
+                        key={component.id}
+                    />
+                )
+            })}
+        </Fragment>
+    )
+}
+
+type ComponentTableListItemProps = {
     component: Component
 }
 
-const ComponentListItem: React.FC<ComponentListItemProps> = ({ component }) => {
+const ComponentTableListItem: React.FC<ComponentTableListItemProps> = ({
+    component,
+}) => {
     const componentAttributes = component.componentAttributes
     return (
         <TableRow>

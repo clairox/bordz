@@ -1,11 +1,11 @@
 'use client'
 
-import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import ProductsList from '@/components/ProductsList'
 import useProducts from '@/hooks/useProducts'
 import SortSelect from '@/components/SortSelect'
+import InfiniteItemList from '@/components/InfiniteItemList'
 
 const BrowsePage: React.FC = () => {
     const searchParams = useSearchParams()
@@ -18,15 +18,6 @@ const BrowsePage: React.FC = () => {
         size: pageSize,
         orderBy,
     })
-
-    const products = useMemo(() => {
-        const products: Product[] = []
-        if (data) {
-            data.pages.forEach(page => products.push(...page.data))
-        }
-
-        return products
-    }, [data])
 
     if (status === 'error') {
         return <div>Error</div>
@@ -52,10 +43,12 @@ const BrowsePage: React.FC = () => {
                     />
                 </div>
             </div>
-            <ProductsList products={products} />
-            {hasNextPage && (
-                <button onClick={() => fetchNextPage()}>Load more</button>
-            )}
+            <InfiniteItemList
+                pages={data.pages}
+                hasNextPage={hasNextPage}
+                fetchNextPage={fetchNextPage}
+                render={items => <ProductsList products={items} />}
+            />
         </div>
     )
 }

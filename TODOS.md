@@ -29,6 +29,8 @@
 -   [ ] Move utility functions in routes to bottom
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
 -   [ ] BUG session cookie not deleted after account deletion
+-   [ ] Add 'recommended' (or something) sort key based on views (?)
+-   [ ] Paginate admin tables
 
 ### Cart
 

@@ -1,13 +1,14 @@
 'use client'
 
-import { Trash } from '@phosphor-icons/react'
-import { useDeleteWishlistLine, useWishlistLines } from '@/hooks'
-import Link from 'next/link'
-import PriceRepr from '@/components/PriceRepr'
-import Image from 'next/image'
-import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Trash } from '@phosphor-icons/react'
+
+import { useDeleteWishlistLine, useWishlistLines } from '@/hooks'
+import PriceRepr from '@/components/PriceRepr'
 import SortSelect from '@/components/SortSelect'
+import InfiniteItemList from '@/components/InfiniteItemList'
 
 const SavedItemsPage = () => {
     const searchParams = useSearchParams()
@@ -20,15 +21,6 @@ const SavedItemsPage = () => {
         size: pageSize,
         orderBy,
     })
-
-    const wishlistLines = useMemo(() => {
-        const lines: WishlistLine[] = []
-        if (data) {
-            data.pages.forEach(page => lines.push(...page.data))
-        }
-
-        return lines
-    }, [data])
 
     if (status === 'error') {
         return <div>Error</div>
@@ -50,10 +42,12 @@ const SavedItemsPage = () => {
                     />
                 </div>
             </div>
-            <Wishlist items={wishlistLines} />
-            {hasNextPage && (
-                <button onClick={() => fetchNextPage()}>Load more</button>
-            )}
+            <InfiniteItemList
+                pages={data.pages}
+                hasNextPage={hasNextPage}
+                fetchNextPage={fetchNextPage}
+                render={items => <Wishlist items={items} />}
+            />
         </div>
     )
 }
