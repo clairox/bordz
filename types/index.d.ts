@@ -44,6 +44,7 @@ type CartLine = {
 type Customer = {
     id: string
     userId: string
+    email: string
     defaultAddress?: { address: Address }
     addresses: Address[]
     displayName: string
@@ -129,10 +130,12 @@ type OrderLine = {
 type Order = {
     id: string
     customerId?: string
+    customer: Customer
     email: string
     lines: OrderLine[]
     phone?: string
     shippingAddressId?: string
+    shippingAddress: Address
     subtotal: number
     total: number
     totalShipping: number
@@ -168,3 +171,9 @@ type SkateLabMode = 'edit' | 'customize' | 'default'
 type FormMessageType = 'error' | 'success'
 
 type SortKey = 'date-desc' | 'date-asc' | 'price-asc' | 'price-desc'
+
+type FetchManyOptions = {
+    size?: number
+    page?: number
+    orderBy?: SortKey
+}

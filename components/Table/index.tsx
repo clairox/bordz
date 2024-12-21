@@ -11,7 +11,7 @@ const TableRow: React.FC<React.PropsWithChildren> = ({ children }) => {
 }
 
 const TableCell: React.FC<React.PropsWithChildren> = ({ children }) => {
-    return <td className="p-3 border border-black text-left">{children}</td>
+    return <td className="p-2 border border-black text-left">{children}</td>
 }
 
 export { Table, TableHeader, TableRow, TableCell }

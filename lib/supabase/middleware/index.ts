@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import * as jose from 'jose'
+
 import { getUserRole } from '@/utils/helpers'
 
 const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL

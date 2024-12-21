@@ -24,6 +24,7 @@
 -   [ ] Figure out a better naming convention for List and ListItem components
 -   [ ] Use validate body for all api routes
 -   [ ] Add email column to customers table
+-   [ ] Refactor code for email column addition where necessary
 -   [ ] Use [userId] route in /customers
 -   [ ] Use unauthorized error for missing session token
 -   [ ] Move utility functions in routes to bottom

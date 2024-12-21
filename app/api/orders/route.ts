@@ -1,31 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { desc, eq } from 'drizzle-orm'
 
-import { createNotFoundError, createUnauthorizedError } from '@/lib/errors'
-import { decodeSessionToken, handleRoute } from '../shared'
+import { handleRoute, calculateNextPageNumber } from '../shared'
 import { db } from '@/drizzle/db'
-import { CustomerTable } from '@/drizzle/schema/user'
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/utils/constants'
 import { OrderTable } from '@/drizzle/schema/order'
 
 export const GET = async (request: NextRequest) => {
     return await handleRoute(async () => {
-        const session = request.cookies.get('session')?.value
-        if (!session) {
-            throw createUnauthorizedError('Missing session token')
-        }
+        const searchParams = request.nextUrl.searchParams
+        const customerId = searchParams.get('customer')
+        const page = Number(searchParams.get('page')) || DEFAULT_PAGE_NUMBER
+        const pageSize = Number(searchParams.get('size')) || DEFAULT_PAGE_SIZE
 
-        const { sub } = decodeSessionToken(session)
-
-        const customer = await db.query.CustomerTable.findFirst({
-            where: eq(CustomerTable.userId, sub),
-        })
-
-        if (!customer) {
-            throw createNotFoundError('Customer')
-        }
+        const where = customerId
+            ? eq(OrderTable.customerId, customerId)
+            : undefined
 
         const orders = await db.query.OrderTable.findMany({
-            where: eq(OrderTable.customerId, customer.id),
+            where,
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
             orderBy: [desc(OrderTable.createdAt)],
             with: {
                 lines: {
@@ -46,9 +41,18 @@ export const GET = async (request: NextRequest) => {
                         },
                     },
                 },
+                customer: true,
+                shippingAddress: true,
             },
         })
 
-        return NextResponse.json(orders)
+        const nextPage = await calculateNextPageNumber(
+            page,
+            pageSize,
+            OrderTable,
+            where
+        )
+
+        return NextResponse.json({ data: orders, nextPage })
     })
 }

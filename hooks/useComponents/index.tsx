@@ -20,14 +20,12 @@ type UseComponentsArgs = {
     orderBy?: SortKey
 }
 
-const fetchComponents = async ({
-    category,
-    size,
-    page,
-    orderBy,
-}: FetchComponentsOptions) => {
-    const path =
-        '/components' + buildParamString({ category, size, page, orderBy })
+const fetchComponents = async (options?: FetchComponentsOptions) => {
+    let path = '/components'
+    if (options) {
+        path = path.concat(buildParamString(options))
+    }
+
     const response = await fetchAbsolute(path)
     if (!response.ok) {
         throw response

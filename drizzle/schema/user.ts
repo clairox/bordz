@@ -8,6 +8,7 @@ import { CartTable } from './cart'
 import { WishlistTable } from './wishlist'
 
 export const CustomerTable = pgTableWithAutoFields('customers', {
+    email: varchar('email', { length: 320 }).unique().notNull(),
     firstName: varchar('first_name', { length: 50 }).notNull(),
     lastName: varchar('last_name', { length: 50 }).notNull(),
     displayName: varchar('display_name', { length: 100 })

@@ -71,6 +71,20 @@
       "when": 1734628016465,
       "tag": "0009_easy_synch",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1734739697895,
+      "tag": "0010_thin_speedball",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1734739760724,
+      "tag": "0011_dark_skin",
+      "breakpoints": true
     }
   ]
 }

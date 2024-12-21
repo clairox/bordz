@@ -1,3 +1,4 @@
+import calculateNextPageNumber from './calculateNextPageNumber'
 import decodeSessionToken from './decodeSessionToken'
 import handleRoute from './handleRoute'
 import getBoardSetup from './getBoardSetup'
@@ -14,6 +15,7 @@ import createCart from './createCart'
 import updateCheckout from './updateCheckout'
 
 export {
+    calculateNextPageNumber,
     decodeSessionToken,
     handleRoute,
     getBoardSetup,
