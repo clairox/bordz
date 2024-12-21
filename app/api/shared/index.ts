@@ -10,9 +10,11 @@ import getComponentsOverallAvailability from './getComponentsOverallAvailability
 import getComponentsTotalPrice from './getComponentsTotalPrice'
 import getCustomerByUserId from './getCustomer'
 import getProduct from './getProduct'
+import getRequestOptionsParams from './getRequestOptions'
 import getWishlist from './getWishlist'
 import createCart from './createCart'
 import updateCheckout from './updateCheckout'
+import validateRequestBody from './validateRequestBody'
 
 export {
     calculateNextPageNumber,
@@ -27,7 +29,9 @@ export {
     getComponentsTotalPrice,
     getCustomerByUserId,
     getProduct,
+    getRequestOptionsParams,
     getWishlist,
     createCart,
     updateCheckout,
+    validateRequestBody,
 }

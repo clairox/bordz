@@ -30,9 +30,9 @@ const useUpdatePersonalDetails = () => {
                 userId = user!.id
             }
 
-            const response = await fetchAbsolute(`/customers`, {
+            const response = await fetchAbsolute(`/customers/${userId}`, {
                 method: 'PATCH',
-                body: JSON.stringify({ userId, firstName, lastName, phone }),
+                body: JSON.stringify({ firstName, lastName, phone }),
             })
             if (!response.ok) {
                 throw response

@@ -32,6 +32,7 @@
 -   [ ] BUG session cookie not deleted after account deletion
 -   [ ] Add 'recommended' (or something) sort key based on views (?)
 -   [ ] Paginate admin tables
+-   [ ] Change createBadRequestError to handle Missing required fields:
 
 ### Cart
 
@@ -55,6 +56,7 @@
 -   [ ] Abandon checkout after certain interval
 -   [ ] Make routes/components for other paymentIntent statuses
     -   [ ] List each of them here
+-   [ ] Update customer number of orders on checkout completion
 
 ### Authentication
 

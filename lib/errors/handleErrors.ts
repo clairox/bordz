@@ -5,7 +5,10 @@ import APIError from '@/lib/APIError'
 const handleError = (error: unknown) => {
     console.error(error)
     if (error instanceof APIError) {
-        return NextResponse.json(error, { status: error.status })
+        return NextResponse.json(
+            { ...error, message: error.message },
+            { status: error.status }
+        )
     } else if (error instanceof Error) {
         return NextResponse.json({ message: error.message }, { status: 500 })
     }

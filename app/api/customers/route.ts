@@ -1,100 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { desc } from 'drizzle-orm'
+
 import { db } from '@/drizzle/db'
 import { CustomerTable } from '@/drizzle/schema/user'
 import {
-    createBadRequestError,
-    createNotFoundError,
-    handleError,
-} from '@/lib/errors'
-import { getCustomerByUserId, handleRoute } from '../shared'
-import { eq } from 'drizzle-orm'
+    calculateNextPageNumber,
+    getRequestOptionsParams,
+    handleRoute,
+    validateRequestBody,
+} from '../shared'
+import { AddressTable } from '@/drizzle/schema/address'
 
-export const GET = async (request: NextRequest) => {
-    const userId = request.nextUrl.searchParams.get('userId')
-    if (!userId) {
-        return handleError(createBadRequestError())
-    }
+export const GET = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { page, size } = getRequestOptionsParams(request)
 
-    try {
-        const customer = await getCustomerByUserId(userId)
+        const customers = await db.query.CustomerTable.findMany({
+            limit: size,
+            offset: (page - 1) * size,
+            with: {
+                defaultAddress: { with: { address: true } },
+                addresses: { orderBy: [desc(AddressTable.createdAt)] },
+            },
+        })
 
-        if (!customer) {
-            throw createNotFoundError('Customer')
-        }
+        const nextPage = await calculateNextPageNumber(
+            page,
+            size,
+            CustomerTable
+        )
 
-        return NextResponse.json(customer)
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+        return NextResponse.json({ data: customers, nextPage })
+    })
 
-export const POST = async (request: NextRequest) => {
-    const { firstName, lastName, phone, userId } = await request.json()
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        const requiredFields = ['email', 'firstName', 'lastName', 'userId']
+        validateRequestBody(data, requiredFields)
 
-    if (!firstName || !lastName || !userId) {
-        return handleError(createBadRequestError())
-    }
-
-    try {
         const customer = await db
             .insert(CustomerTable)
             .values({
-                firstName,
-                lastName,
-                phone,
-                userId,
+                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phone: data.phone,
+                userId: data.userId,
             })
             .returning()
             .then(rows => rows[0])
 
         return NextResponse.json(customer)
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
-
-const validateBody = (body: any, requiredFields: any[]) => {
-    return requiredFields.filter(field => body[field] == undefined)
-}
-
-export const PATCH = async (request: NextRequest) => {
-    return await handleRoute(async () => {
-        const body = await request.json()
-        const requiredFields = ['userId', 'firstName', 'lastName']
-        const missingFields = validateBody(body, requiredFields)
-
-        if (missingFields.length > 0) {
-            return handleError(
-                createBadRequestError(
-                    `Missing fields ${missingFields.join(', ')}`
-                )
-            )
-        }
-
-        const customer = await db
-            .update(CustomerTable)
-            .set({
-                firstName: body.firstName,
-                lastName: body.lastName,
-                phone: body.phone,
-            })
-            .where(eq(CustomerTable.userId, body.userId))
-            .returning()
-            .then(rows => rows[0])
-
-        return NextResponse.json(customer)
     })
-}
-
-export const DELETE = async (request: NextRequest) => {
-    return await handleRoute(async () => {
-        const userId = request.nextUrl.searchParams.get('userId')
-        if (!userId) {
-            return handleError(createBadRequestError())
-        }
-
-        await db.delete(CustomerTable).where(eq(CustomerTable.userId, userId))
-
-        return new NextResponse(null, { status: 204 })
-    })
-}

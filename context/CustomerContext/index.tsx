@@ -22,7 +22,7 @@ const CustomerContext = createContext<CustomerContextValue>(
 const useCustomer = () => useContext(CustomerContext)
 
 const fetchCustomer = async (userId: string) => {
-    const response = await fetchAbsolute(`/customers?userId=${userId}`)
+    const response = await fetchAbsolute(`/customers/${userId}`)
     if (!response.ok) {
         throw response
     }

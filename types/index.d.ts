@@ -177,3 +177,7 @@ type FetchManyOptions = {
     page?: number
     orderBy?: SortKey
 }
+
+type DynamicRoutePropsWithParams<T extends object> = {
+    params: T
+}

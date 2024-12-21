@@ -9,7 +9,7 @@ const CustomersPage = () => {
 
     return (
         <div>
-            <h1>Orders</h1>
+            <h1>Customers</h1>
             <Table>
                 <thead>
                     <tr>
