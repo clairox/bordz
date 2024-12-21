@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { asc, count, desc, eq, SQL } from 'drizzle-orm'
+import { asc, desc, eq, SQL } from 'drizzle-orm'
 
-import { getProduct, getWishlist, handleRoute } from '../../shared'
 import {
-    createBadRequestError,
+    calculateNextPageNumber,
+    getProduct,
+    getRequestOptionsParams,
+    getRequiredRequestCookie,
+    getWishlist,
+    handleRoute,
+    validateRequestBody,
+} from '../../shared'
+import {
     createConflictError,
     createInternalServerError,
     createNotFoundError,
@@ -12,36 +19,26 @@ import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import { db } from '@/drizzle/db'
 import { ProductRecord } from '@/types/records'
 
-const defaultLimit = 40
-const defaultPage = 1
+export const GET = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { value: wishlistId } = getRequiredRequestCookie(
+            request,
+            'wishlistId'
+        )
+        const { page, size, orderBy } = getRequestOptionsParams(request)
 
-type Sort = Partial<Record<SortKey, SQL>>
-
-const sorts: Sort = {
-    'date-desc': desc(WishlistLineItemTable.createdAt),
-    'date-asc': asc(WishlistLineItemTable.createdAt),
-}
-
-const defaultSortKey: SortKey = 'date-desc'
-
-export const GET = async (request: NextRequest) => {
-    return handleRoute(async () => {
-        const wishlistId = request.cookies.get('wishlistId')?.value
-        if (!wishlistId) {
-            throw createBadRequestError()
+        const sorts: Partial<Record<SortKey, SQL>> = {
+            'date-desc': desc(WishlistLineItemTable.createdAt),
+            'date-asc': asc(WishlistLineItemTable.createdAt),
         }
 
-        const searchParams = request.nextUrl.searchParams
-        const pageSize = Number(searchParams.get('size') || defaultLimit)
-        const page = Number(searchParams.get('page') || defaultPage)
-        const orderBy =
-            sorts[(searchParams.get('orderBy') as SortKey) || defaultSortKey]
+        const where = eq(WishlistLineItemTable.wishlistId, wishlistId)
 
         const lines = await db.query.WishlistLineItemTable.findMany({
-            where: eq(WishlistLineItemTable.wishlistId, wishlistId),
-            limit: pageSize,
-            offset: (page - 1) * pageSize,
-            orderBy,
+            where,
+            limit: size,
+            offset: (page - 1) * size,
+            orderBy: sorts[orderBy],
             with: {
                 product: {
                     with: {
@@ -60,32 +57,27 @@ export const GET = async (request: NextRequest) => {
             },
         })
 
-        const lineCount = await db
-            .select({ count: count() })
-            .from(WishlistLineItemTable)
-            .where(eq(WishlistLineItemTable.wishlistId, wishlistId))
-            .then(rows => rows[0].count)
-        const totalPages = Math.ceil(lineCount / pageSize)
-        const nextPage = totalPages > page ? page + 1 : undefined
+        const nextPage = await calculateNextPageNumber(
+            page,
+            size,
+            WishlistLineItemTable,
+            where
+        )
 
         return NextResponse.json({ data: lines, nextPage })
     })
-}
 
-export const POST = async (request: NextRequest) => {
-    return handleRoute(async () => {
-        const wishlistId = request.cookies.get('wishlistId')?.value
-        if (!wishlistId) {
-            throw createBadRequestError('Missing wishlistId cookie.')
-        }
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { value: wishlistId } = getRequiredRequestCookie(
+            request,
+            'wishlistId'
+        )
 
-        const { productId } = await request.json()
+        const data = await request.json()
+        validateRequestBody(data, ['productId'])
 
-        if (!productId) {
-            throw createBadRequestError('Missing productId.')
-        }
-
-        const product = await getProduct(productId)
+        const product = await getProduct(data.productId)
         if (!product) {
             throw createNotFoundError('Product')
         }
@@ -95,14 +87,13 @@ export const POST = async (request: NextRequest) => {
 
         return NextResponse.json(updatedWishlist)
     })
-}
 
-export const DELETE = async (request: NextRequest) => {
-    return handleRoute(async () => {
-        const wishlistId = request.cookies.get('wishlistId')?.value
-        if (!wishlistId) {
-            throw createBadRequestError('Missing wishlistId cookie.')
-        }
+export const DELETE = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { value: wishlistId } = getRequiredRequestCookie(
+            request,
+            'wishlistId'
+        )
 
         const oldWishlist = await getWishlist(wishlistId)
         if (!oldWishlist) {
@@ -127,7 +118,6 @@ export const DELETE = async (request: NextRequest) => {
 
         return NextResponse.json(updatedWishlist)
     })
-}
 
 const createWishlistLine = async (
     product: ProductRecord,

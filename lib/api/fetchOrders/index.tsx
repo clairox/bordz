@@ -1,11 +1,7 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { buildPathWithParams } from '@/utils/helpers'
 
-type FetchOrdersOptions = {
-    size?: number
-    page?: number
-    orderBy?: number
-}
+type FetchOrdersOptions = { customerId?: string } & FetchManyOptions
 
 const fetchOrders = async (options?: FetchOrdersOptions) => {
     const path = buildPathWithParams('/orders', options)

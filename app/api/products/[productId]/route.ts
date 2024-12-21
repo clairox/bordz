@@ -4,28 +4,22 @@ import { eq } from 'drizzle-orm'
 import { db } from '@/drizzle/db'
 import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
 import { ProductTable } from '@/drizzle/schema/product'
-import {
-    createBadRequestError,
-    createInternalServerError,
-    createNotFoundError,
-    handleError,
-} from '@/lib/errors'
+import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import {
     getBoardSetup,
     getComponents,
     getComponentsOverallAvailability,
     getComponentsTotalPrice,
     getProduct,
+    handleRoute,
+    validateRequestBody,
 } from '../../shared'
 import { ComponentRecord } from '@/types/records'
 
-export const GET = async (
-    _: NextRequest,
-    context: { params: { productId: string } }
-) => {
-    const { productId } = context.params
+type Props = DynamicRoutePropsWithParams<{ productId: string }>
 
-    try {
+export const GET = async (_: NextRequest, { params: { productId } }: Props) =>
+    await handleRoute(async () => {
         const product = await db.query.ProductTable.findFirst({
             where: eq(ProductTable.id, productId),
             with: {
@@ -38,10 +32,79 @@ export const GET = async (
         }
 
         return NextResponse.json(product)
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+    })
+
+export const PATCH = async (
+    request: NextRequest,
+    { params: { productId } }: Props
+) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+
+        if (data.type === 'board') {
+            const requiredFields = [
+                'deckId',
+                'trucksId',
+                'wheelsId',
+                'bearingsId',
+                'hardwareId',
+                'griptapeId',
+            ]
+            validateRequestBody(data, requiredFields)
+
+            const components = await getComponents({
+                deckId: data.deckId,
+                trucksId: data.trucksId,
+                wheelsId: data.wheelsId,
+                bearingsId: data.bearingsId,
+                hardwareId: data.hardwareId,
+                griptapeId: data.griptapeId,
+            })
+
+            if (
+                Object.values(components).some(component => component == null)
+            ) {
+                throw createNotFoundError('Component')
+            }
+
+            const validComponents = components as Record<
+                string,
+                ComponentRecord
+            >
+
+            const totalPrice = getComponentsTotalPrice(validComponents)
+            const availability =
+                getComponentsOverallAvailability(validComponents)
+
+            const updatedProduct = await updateProduct(productId, {
+                price: totalPrice,
+                availableForSale: availability,
+            })
+
+            const { deck, trucks, wheels, bearings, hardware, griptape } =
+                validComponents
+
+            await updateBoardSetup(updatedProduct.boardSetup!.id, {
+                deckId: deck.id,
+                trucksId: trucks.id,
+                wheelsId: wheels.id,
+                bearingsId: bearings.id,
+                hardwareId: hardware.id,
+                griptapeId: griptape.id,
+            })
+
+            return NextResponse.json(updatedProduct)
+        } else {
+            const updatedProduct = await updateProduct(productId, {
+                title: data.title,
+                price: data.price,
+                availableForSale: data.availableForSale,
+                featuredImage: data.featuredImage,
+            })
+
+            return NextResponse.json(updatedProduct)
+        }
+    })
 
 const updateProduct = async (
     id: string,
@@ -103,99 +166,4 @@ const updateBoardSetup = async (
     }
 
     return updatedBoardSetup
-}
-
-export const PATCH = async (
-    request: NextRequest,
-    context: { params: { productId: string } }
-) => {
-    const { productId } = context.params
-    const requestBody = await request.json()
-
-    const { type } = requestBody
-
-    if (type === 'board') {
-        const {
-            deckId,
-            trucksId,
-            wheelsId,
-            bearingsId,
-            hardwareId,
-            griptapeId,
-        } = requestBody
-
-        if (
-            !(
-                deckId &&
-                trucksId &&
-                wheelsId &&
-                bearingsId &&
-                hardwareId &&
-                griptapeId
-            )
-        ) {
-            return handleError(createBadRequestError('Missing component.'))
-        }
-        try {
-            const components = await getComponents({
-                deckId,
-                trucksId,
-                wheelsId,
-                bearingsId,
-                hardwareId,
-                griptapeId,
-            })
-
-            if (
-                Object.values(components).some(component => component == null)
-            ) {
-                throw createNotFoundError('Component')
-            }
-
-            const validComponents = components as Record<
-                string,
-                ComponentRecord
-            >
-
-            const totalPrice = getComponentsTotalPrice(validComponents)
-            const availability =
-                getComponentsOverallAvailability(validComponents)
-
-            const updatedProduct = await updateProduct(productId, {
-                price: totalPrice,
-                availableForSale: availability,
-            })
-
-            const { deck, trucks, wheels, bearings, hardware, griptape } =
-                validComponents
-
-            await updateBoardSetup(updatedProduct.boardSetup!.id, {
-                deckId: deck.id,
-                trucksId: trucks.id,
-                wheelsId: wheels.id,
-                bearingsId: bearings.id,
-                hardwareId: hardware.id,
-                griptapeId: griptape.id,
-            })
-
-            return NextResponse.json(updatedProduct)
-        } catch (error) {
-            return handleError(error as Error)
-        }
-    } else {
-        const { title, price, availableForSale, featuredImage } = requestBody
-
-        try {
-            const updatedProduct = await updateProduct(productId, {
-                title,
-                price,
-                availableForSale,
-                featuredImage,
-            })
-
-            return NextResponse.json(updatedProduct)
-        } catch (error) {
-            return handleError(error as Error)
-        }
-    }
 }

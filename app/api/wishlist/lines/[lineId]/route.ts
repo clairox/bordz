@@ -1,4 +1,8 @@
-import { getWishlist, handleRoute } from '@/app/api/shared'
+import {
+    getRequiredRequestCookie,
+    getWishlist,
+    handleRoute,
+} from '@/app/api/shared'
 import { db } from '@/drizzle/db'
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import {
@@ -9,13 +13,10 @@ import {
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const GET = async (
-    _: NextRequest,
-    context: { params: { lineId: string } }
-) => {
-    return handleRoute(async () => {
-        const { lineId } = context.params
+type Props = DynamicRoutePropsWithParams<{ lineId: string }>
 
+export const GET = async (_: NextRequest, { params: { lineId } }: Props) =>
+    await handleRoute(async () => {
         const wishlistLine = await db.query.WishlistLineItemTable.findFirst({
             where: eq(WishlistLineItemTable.id, lineId),
             with: {
@@ -33,26 +34,22 @@ export const GET = async (
 
         return NextResponse.json(wishlistLine)
     })
-}
 
 export const DELETE = async (
     request: NextRequest,
-    context: { params: { lineId: string } }
-) => {
-    return handleRoute(async () => {
-        const wishlistId = request.cookies.get('wishlistId')?.value
-        if (!wishlistId) {
-            throw createBadRequestError('Missing wishlistId cookie.')
-        }
-
-        const { lineId } = context.params
+    { params: { lineId } }: Props
+) =>
+    await handleRoute(async () => {
+        const { value: wishlistId } = getRequiredRequestCookie(
+            request,
+            'wishlistId'
+        )
 
         await deleteWishlistLine(lineId)
         const updatedWishlist = await updateWishlistWithDeletedLine(wishlistId)
 
         return NextResponse.json(updatedWishlist)
     })
-}
 
 const deleteWishlistLine = async (id: string) => {
     const deletedWishlistLine = await db

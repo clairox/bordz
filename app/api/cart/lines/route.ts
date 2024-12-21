@@ -1,18 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
-import { getCart, getProduct, updateCheckout } from '@/app/api/shared'
+import {
+    getCart,
+    getProduct,
+    getRequiredRequestCookie,
+    handleRoute,
+    updateCheckout,
+    validateRequestBody,
+} from '@/app/api/shared'
 import { db } from '@/drizzle/db'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
 import { CartLineRecord, ProductRecord } from '@/types/records'
 import {
-    createBadRequestError,
     createConflictError,
     createInternalServerError,
     createNotFoundError,
-    handleError,
 } from '@/lib/errors'
+
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
+        const data = await request.json()
+        validateRequestBody(data, ['productId', 'quantity'])
+
+        const product = await getProduct(data.productId)
+        if (!product) {
+            throw createNotFoundError('Product')
+        }
+
+        const newCartLine = await createCartLine(product, data.quantity, cartId)
+        const updatedCart = await updateCartWithNewCartLine(cartId, newCartLine)
+
+        if (updatedCart.checkout) {
+            const updatedCheckout = await updateCheckout(
+                updatedCart.checkout.id,
+                updatedCart
+            )
+
+            await createCheckoutLine(newCartLine, product, updatedCheckout.id)
+        }
+
+        return NextResponse.json(updatedCart)
+    })
+
+export const DELETE = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
+
+        const oldCart = await getCart(cartId)
+        if (!oldCart) {
+            throw createNotFoundError('Cart')
+        }
+
+        await db
+            .delete(CartLineItemTable)
+            .where(eq(CartLineItemTable.cartId, oldCart.id))
+
+        const updatedCart = await db
+            .update(CartTable)
+            .set({
+                subtotal: 0,
+                total: 0,
+                totalQuantity: 0,
+                updatedAt: new Date(),
+            })
+            .where(eq(CartTable.id, cartId))
+
+        if (!updatedCart) {
+            throw createInternalServerError('Failed to update cart.')
+        }
+
+        return NextResponse.json(updatedCart)
+    })
 
 const createCartLine = async (
     product: ProductRecord,
@@ -132,77 +193,5 @@ const createCheckoutLine = async (
         } else {
             throw createInternalServerError('An unexpected error occurred.')
         }
-    }
-}
-
-export const POST = async (request: NextRequest) => {
-    const cartId = request.cookies.get('cartId')?.value
-    if (!cartId) {
-        return handleError(createBadRequestError('Missing cartId cookie.'))
-    }
-
-    const { productId, quantity } = await request.json()
-
-    if (!productId || !quantity) {
-        throw createBadRequestError()
-    }
-
-    try {
-        const product = await getProduct(productId)
-        if (!product) {
-            throw createNotFoundError('Product')
-        }
-
-        const newCartLine = await createCartLine(product, quantity, cartId)
-        const updatedCart = await updateCartWithNewCartLine(cartId, newCartLine)
-
-        if (updatedCart.checkout) {
-            const updatedCheckout = await updateCheckout(
-                updatedCart.checkout.id,
-                updatedCart
-            )
-
-            await createCheckoutLine(newCartLine, product, updatedCheckout.id)
-        }
-
-        return NextResponse.json(updatedCart)
-    } catch (error) {
-        return handleError(error)
-    }
-}
-
-export const DELETE = async (request: NextRequest) => {
-    const cartId = request.cookies.get('cartId')?.value
-    if (!cartId) {
-        return handleError(createBadRequestError('Missing cartId cookie.'))
-    }
-
-    try {
-        const oldCart = await getCart(cartId)
-        if (!oldCart) {
-            throw createNotFoundError('Cart')
-        }
-
-        await db
-            .delete(CartLineItemTable)
-            .where(eq(CartLineItemTable.cartId, oldCart.id))
-
-        const updatedCart = await db
-            .update(CartTable)
-            .set({
-                subtotal: 0,
-                total: 0,
-                totalQuantity: 0,
-                updatedAt: new Date(),
-            })
-            .where(eq(CartTable.id, cartId))
-
-        if (!updatedCart) {
-            throw createInternalServerError('Failed to update cart.')
-        }
-
-        return NextResponse.json(updatedCart)
-    } catch (error) {
-        return handleError(error)
     }
 }

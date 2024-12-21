@@ -11,6 +11,7 @@ import getComponentsTotalPrice from './getComponentsTotalPrice'
 import getCustomerByUserId from './getCustomer'
 import getProduct from './getProduct'
 import getRequestOptionsParams from './getRequestOptions'
+import getRequiredRequestCookie from './getRequiredRequestCookie'
 import getWishlist from './getWishlist'
 import createCart from './createCart'
 import updateCheckout from './updateCheckout'
@@ -30,6 +31,7 @@ export {
     getCustomerByUserId,
     getProduct,
     getRequestOptionsParams,
+    getRequiredRequestCookie,
     getWishlist,
     createCart,
     updateCheckout,

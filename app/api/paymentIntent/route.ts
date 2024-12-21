@@ -2,7 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { uuid } from 'short-uuid'
 
 import stripe from '@/lib/stripe/server'
-import { createBadRequestError, handleError } from '@/lib/errors'
+import { handleRoute, validateRequestBody } from '../shared'
+
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        validateRequestBody(data, ['checkout'])
+
+        const paymentIntent = await stripe.paymentIntents.create(
+            {
+                amount: data.checkout.total,
+                currency: 'usd',
+            },
+            { idempotencyKey: uuid() }
+        )
+
+        return NextResponse.json(paymentIntent)
+    })
 
 // type Item = {
 //     amount: number
@@ -57,24 +73,3 @@ import { createBadRequestError, handleError } from '@/lib/errors'
 //         return acc + item.amount
 //     }, taxCalculation.tax_amount_exclusive)
 // }
-
-export const POST = async (request: NextRequest) => {
-    const { checkout } = await request.json()
-    if (!checkout) {
-        throw createBadRequestError()
-    }
-
-    try {
-        const paymentIntent = await stripe.paymentIntents.create(
-            {
-                amount: checkout.total,
-                currency: 'usd',
-            },
-            { idempotencyKey: uuid() }
-        )
-
-        return NextResponse.json(paymentIntent)
-    } catch (error) {
-        handleError(error)
-    }
-}

@@ -2,20 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { serialize } from 'cookie'
 import * as jose from 'jose'
 
-import { createBadRequestError, handleError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
-import { decodeSessionToken } from '../shared'
+import { decodeSessionToken, handleRoute, validateRequestBody } from '../shared'
 import { db } from '@/drizzle/db'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { eq } from 'drizzle-orm'
 
-export const POST = async (request: NextRequest) => {
-    const { token } = (await request.json()) as { token: string }
-    if (!token) {
-        return handleError(createBadRequestError('Token is missing.'))
-    }
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        validateRequestBody(data, ['token'])
 
-    try {
+        const token = data.token as string
+
         const existingSessionCookie = request.cookies.get('session')?.value
         if (existingSessionCookie === token) {
             const {
@@ -42,21 +41,18 @@ export const POST = async (request: NextRequest) => {
         response.headers.append('Set-Cookie', cookie)
 
         return response
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+    })
 
-export const DELETE = async (request: NextRequest) => {
-    const session = request.cookies.get('session')?.value
-    if (!session) {
-        return new NextResponse(null, { status: 204 })
-    }
+export const DELETE = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const session = request.cookies.get('session')?.value
+        if (!session) {
+            return new NextResponse(null, { status: 204 })
+        }
 
-    const jwt = jose.decodeJwt(session)
-    const userRole = jwt.user_role
+        const jwt = jose.decodeJwt(session)
+        const userRole = jwt.user_role
 
-    try {
         const sessionCookie = serialize('session', '', {
             ...DEFAULT_COOKIE_CONFIG,
             maxAge: -1,
@@ -112,7 +108,4 @@ export const DELETE = async (request: NextRequest) => {
         }
 
         return response
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+    })

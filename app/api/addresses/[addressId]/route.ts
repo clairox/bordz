@@ -7,58 +7,42 @@ import { AddressTable, DefaultAddressTable } from '@/drizzle/schema/address'
 import { createNotFoundError } from '@/lib/errors'
 import { toLongUUID } from '@/lib/uuidTranslator'
 
-export const GET = async (
-    _: NextRequest,
-    context: { params: { addressId: string } }
-) => {
-    return await handleRoute(async () => {
-        const { addressId } = context.params
+type Props = DynamicRoutePropsWithParams<{ addressId: string }>
 
+export const GET = async (_: NextRequest, { params: { addressId } }: Props) =>
+    await handleRoute(async () => {
         const address = await db.query.AddressTable.findFirst({
             where: eq(AddressTable.id, addressId),
         })
-
         if (!address) {
             throw createNotFoundError('Address')
         }
-
         return NextResponse.json(address)
     })
-}
 
 export const PATCH = async (
     request: NextRequest,
-    context: { params: { addressId: string } }
-) => {
-    return await handleRoute(async () => {
-        const { addressId } = context.params
-
-        const {
-            fullName,
-            line1,
-            line2,
-            city,
-            state,
-            postalCode,
-            isCustomerDefault,
-        } = await request.json()
+    { params: { addressId } }: Props
+) =>
+    await handleRoute(async () => {
+        const data = await request.json()
 
         const updatedAddress = await db
             .update(AddressTable)
             .set({
-                fullName,
-                line1,
-                line2,
-                city,
-                state,
-                postalCode,
+                fullName: data.fullName,
+                line1: data.line1,
+                line2: data.line2,
+                city: data.city,
+                state: data.state,
+                postalCode: data.postalCode,
                 updatedAt: new Date(),
             })
             .where(eq(AddressTable.id, addressId))
             .returning()
             .then(rows => rows[0])
 
-        if (updatedAddress.ownerId && isCustomerDefault) {
+        if (updatedAddress.ownerId && data.isCustomerDefault) {
             await db
                 .insert(DefaultAddressTable)
                 .values({
@@ -75,15 +59,12 @@ export const PATCH = async (
 
         return NextResponse.json(updatedAddress)
     })
-}
 
 export const DELETE = async (
     _: NextRequest,
-    context: { params: { addressId: string } }
-) => {
-    return await handleRoute(async () => {
-        const { addressId } = context.params
-
+    { params: { addressId } }: Props
+) =>
+    await handleRoute(async () => {
         const deletedAddress = await db
             .delete(AddressTable)
             .where(eq(AddressTable.id, addressId))
@@ -104,4 +85,3 @@ export const DELETE = async (
 
         return new NextResponse(null, { status: 204 })
     })
-}

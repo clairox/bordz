@@ -3,15 +3,13 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { ComponentTable } from '@/drizzle/schema/component'
-import { createNotFoundError, handleError } from '@/lib/errors'
+import { createNotFoundError } from '@/lib/errors'
+import { handleRoute } from '../../shared'
 
-export const GET = async (
-    request: NextRequest,
-    context: { params: { componentId: string } }
-) => {
-    const { componentId } = context.params
+type Props = DynamicRoutePropsWithParams<{ componentId: string }>
 
-    try {
+export const GET = async (_: NextRequest, { params: { componentId } }: Props) =>
+    await handleRoute(async () => {
         const component = await db.query.ComponentTable.findFirst({
             where: eq(ComponentTable.id, componentId),
             with: {
@@ -31,7 +29,4 @@ export const GET = async (
         }
 
         return NextResponse.json(component)
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+    })

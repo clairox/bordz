@@ -5,7 +5,7 @@ import {
     useSuspenseInfiniteQuery,
 } from '@tanstack/react-query'
 
-type UseOrdersArgs = FetchManyOptions
+type UseOrdersArgs = { customerId?: string } & FetchManyOptions
 
 const useOrders = (args?: UseOrdersArgs) => {
     return useSuspenseInfiniteQuery<

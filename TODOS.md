@@ -13,26 +13,27 @@
 -   [x] Update customer schema to handle defaultAddressId better
 -   [x] On sign out, wait until it's finished to invalidate auth and cart
 -   [x] Add 'add address' to addresses
+-   [x] Use handle route for all api routes
+-   [x] Use infinite queries where pagination is needed
+-   [x] Use validate body for all api routes
+-   [x] Add email column to customers table
+-   [x] Refactor code for email column addition where necessary
+-   [x] Use [userId] route in /customers
+-   [x] Move utility functions in routes to bottom
 -   [ ] Create form password input component
 -   [ ] Move all fetches to /lib/api
 -   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
 -   [ ] Add 'add' button with text input to select
 -   [ ] Use Supabase for data storage
--   [ ] Use handle route for all api routes
--   [ ] Use infinite queries where pagination is needed
 -   [ ] Reorganize file structure
 -   [ ] Figure out a better naming convention for List and ListItem components
--   [ ] Use validate body for all api routes
--   [ ] Add email column to customers table
--   [ ] Refactor code for email column addition where necessary
--   [ ] Use [userId] route in /customers
 -   [ ] Use unauthorized error for missing session token
--   [ ] Move utility functions in routes to bottom
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
 -   [ ] BUG session cookie not deleted after account deletion
 -   [ ] Add 'recommended' (or something) sort key based on views (?)
 -   [ ] Paginate admin tables
 -   [ ] Change createBadRequestError to handle Missing required fields:
+-   [ ] Change validateRequestBody to validateRequestData
 
 ### Cart
 
@@ -83,6 +84,6 @@
 
 -   [x] Sort wishlist by createdAt desc
 -   [x] Don't allow duplicate boardsetup product on merge
--   [ ] Change saved to wishlist
 -   [x] Add unique index to wishlist wishlist_id_product_id
+-   [ ] Change saved to wishlist
 -   [ ] Add price to wishlist line

@@ -9,6 +9,7 @@ export const WISHLIST_ID_COOKIE_MAX_AGE = 60 * 60 * 24 * 14
 export const MAX_HANDLE_LENGTH = 150
 export const DEFAULT_PAGE_SIZE = 40
 export const DEFAULT_PAGE_NUMBER = 1
+export const DEFAULT_SORT_KEY = 'date-desc'
 
 export const DEFAULT_COOKIE_CONFIG: SerializeOptions = {
     httpOnly: true,

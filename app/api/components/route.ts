@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { db } from '@/drizzle/db'
-import { createBadRequestError, handleError } from '@/lib/errors'
 import {
     CategoryTable,
     ColorTable,
@@ -12,108 +11,69 @@ import {
 } from '@/drizzle/schema/component'
 import { count, eq } from 'drizzle-orm'
 import { createUrlHandle } from '@/utils/helpers'
+import {
+    getRequestOptionsParams,
+    handleRoute,
+    validateRequestBody,
+} from '../shared'
+import { DEFAULT_PAGE_SIZE } from '@/utils/constants'
 
-const defaultLimit = 40
-const defaultPage = 1
-
-export const GET = async (request: NextRequest) => {
-    const searchParams = request.nextUrl.searchParams
-    const pageSize = Number(searchParams.get('size') || defaultLimit)
-    const page = Number(searchParams.get('page') || defaultPage)
-
-    const category = request.nextUrl.searchParams.get('category')
-    try {
+export const GET = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { page, size } = getRequestOptionsParams(request)
+        const category = request.nextUrl.searchParams.get('category')
         const components = await getComponents(category, {
-            limit: pageSize,
-            offset: (page - 1) * pageSize,
+            limit: size,
+            offset: (page - 1) * size,
         })
 
         const componentCount = await getComponentCount(category)
-        const totalPages = Math.ceil(componentCount / pageSize)
+        const totalPages = Math.ceil(componentCount / size)
         const nextPage = totalPages > page ? page + 1 : undefined
 
-        // let components
-        //
-        // if (category) {
-        //     components = await getComponents(category)
-        // } else {
-        //     components = await db.query.ComponentTable.findMany({
-        //         with: {
-        //             componentAttributes: {
-        //                 with: {
-        //                     category: true,
-        //                     size: true,
-        //                     color: true,
-        //                     vendor: true,
-        //                 },
-        //             },
-        //         },
-        //     })
-        // }
-
         return NextResponse.json({ data: components, nextPage })
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+    })
 
-export const POST = async (request: NextRequest) => {
-    const {
-        title,
-        price,
-        image,
-        model,
-        description,
-        specifications,
-        totalInventory,
-        category,
-        vendor,
-        size,
-        color,
-    } = await request.json()
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        const requiredFields = [
+            'title',
+            'price',
+            'totalInventory',
+            'category',
+            'vendor',
+            'size',
+            'color',
+        ]
+        validateRequestBody(data, requiredFields)
 
-    if (
-        !title ||
-        !price ||
-        !totalInventory ||
-        !category ||
-        !vendor ||
-        !size ||
-        !color
-    ) {
-        return handleError(createBadRequestError())
-    }
-
-    try {
         const component = await db
             .insert(ComponentTable)
             .values({
-                title,
-                handle: createUrlHandle(title),
-                price: parseInt(price),
-                image: image,
-                model,
-                description,
-                specifications,
-                totalInventory: parseInt(totalInventory),
-                availableForSale: totalInventory > 0,
+                title: data.title,
+                handle: createUrlHandle(data.title),
+                price: parseInt(data.price),
+                image: data.image,
+                model: data.model,
+                description: data.description,
+                specifications: data.specifications,
+                totalInventory: parseInt(data.totalInventory),
+                availableForSale: data.totalInventory > 0,
             })
             .returning()
             .then(rows => rows[0])
 
         await db.insert(ComponentAttributesTable).values({
             componentId: component.id,
-            categoryId: category,
-            vendorId: vendor,
-            sizeId: size,
-            colorId: color,
+            categoryId: data.category,
+            vendorId: data.vendor,
+            sizeId: data.size,
+            colorId: data.color,
         })
 
         return NextResponse.json(component)
-    } catch (error) {
-        return handleError(error as Error)
-    }
-}
+    })
 
 type GetComponentsOptions = {
     limit?: number
@@ -149,7 +109,7 @@ const getComponents = async (
             eq(ComponentAttributesTable.vendorId, VendorTable.id)
         )
         .where(category ? eq(CategoryTable.label, category) : undefined)
-        .limit(options?.limit || defaultLimit)
+        .limit(options?.limit || DEFAULT_PAGE_SIZE)
         .offset(options?.offset || 0)
         .then(rows => {
             return rows.map(row => {

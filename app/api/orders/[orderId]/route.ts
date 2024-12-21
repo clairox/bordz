@@ -3,18 +3,12 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { OrderTable } from '@/drizzle/schema/order'
-import { createNotFoundError, handleError } from '@/lib/errors'
+import { handleRoute } from '../../shared'
 
-export const GET = async (
-    _: NextRequest,
-    context: { params: { orderId: string } }
-) => {
-    const { orderId } = context.params
-    if (!orderId) {
-        throw createNotFoundError('Order')
-    }
+type Props = DynamicRoutePropsWithParams<{ orderId: string }>
 
-    try {
+export const GET = async (_: NextRequest, { params: { orderId } }: Props) =>
+    await handleRoute(async () => {
         const order = await db.query.OrderTable.findFirst({
             where: eq(OrderTable.id, orderId),
             with: {
@@ -40,7 +34,4 @@ export const GET = async (
         })
 
         return NextResponse.json(order)
-    } catch (error) {
-        handleError(error)
-    }
-}
+    })

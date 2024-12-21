@@ -12,8 +12,8 @@ import {
     WISHLIST_ID_COOKIE_MAX_AGE,
 } from '@/utils/constants'
 
-export const POST = async (request: NextRequest) => {
-    return handleRoute(async () => {
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
         const { customerId } = await request.json()
 
         if (customerId) {
@@ -103,7 +103,6 @@ export const POST = async (request: NextRequest) => {
             }
         }
     })
-}
 
 const getWishlistByOwnerId = async (ownerId: string) => {
     return await db.query.WishlistTable.findFirst({

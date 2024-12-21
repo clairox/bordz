@@ -2,18 +2,56 @@ import { NextRequest, NextResponse } from 'next/server'
 import { serialize } from 'cookie'
 import { eq } from 'drizzle-orm'
 
-import { getCheckout } from '@/app/api/shared'
+import {
+    getCheckout,
+    getRequiredRequestCookie,
+    handleRoute,
+} from '@/app/api/shared'
 import { db } from '@/drizzle/db'
 import { CartTable } from '@/drizzle/schema/cart'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
-import {
-    createBadRequestError,
-    createConflictError,
-    createInternalServerError,
-    handleError,
-} from '@/lib/errors'
+import { createConflictError, createInternalServerError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
+
+export const POST = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
+        const { value: checkoutId } = getRequiredRequestCookie(
+            request,
+            'checkoutId'
+        )
+
+        const checkout = await completeCheckout(checkoutId)
+
+        // TODO: Include nulls in types or make new types
+        // @ts-expect-error type shit
+        const order = await createOrder(checkout)
+
+        await db
+            .update(CheckoutTable)
+            .set({ orderId: order.id, updatedAt: new Date() })
+
+        await db.delete(CartTable).where(eq(CartTable.id, cartId))
+
+        const cartIdCookie = serialize('cartId', '', {
+            ...DEFAULT_COOKIE_CONFIG,
+            maxAge: -1,
+        })
+        const checkoutIdCookie = serialize('checkoutId', '', {
+            ...DEFAULT_COOKIE_CONFIG,
+            maxAge: -1,
+        })
+
+        const response = NextResponse.json(
+            { orderId: order.id },
+            { status: 200 }
+        )
+        response.headers.append('Set-Cookie', cartIdCookie)
+        response.headers.append('Set-Cookie', checkoutIdCookie)
+
+        return response
+    })
 
 const completeCheckout = async (id: string) => {
     const completedCheckout = await db
@@ -97,47 +135,4 @@ const createOrderLines = async (
             })
         )
         .returning()
-}
-
-export const POST = async (request: NextRequest) => {
-    const cartId = request.cookies.get('cartId')?.value
-    const checkoutId = request.cookies.get('checkoutId')?.value
-
-    if (!cartId || !checkoutId) {
-        return handleError(createBadRequestError())
-    }
-
-    try {
-        const checkout = await completeCheckout(checkoutId)
-
-        // TODO: Include nulls in types or make new types
-        // @ts-expect-error type shit
-        const order = await createOrder(checkout)
-
-        await db
-            .update(CheckoutTable)
-            .set({ orderId: order.id, updatedAt: new Date() })
-
-        await db.delete(CartTable).where(eq(CartTable.id, cartId))
-
-        const cartIdCookie = serialize('cartId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
-        const checkoutIdCookie = serialize('checkoutId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
-
-        const response = NextResponse.json(
-            { orderId: order.id },
-            { status: 200 }
-        )
-        response.headers.append('Set-Cookie', cartIdCookie)
-        response.headers.append('Set-Cookie', checkoutIdCookie)
-
-        return response
-    } catch (error) {
-        return handleError(error)
-    }
 }
