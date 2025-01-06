@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 type CreateComponentMutationVars = {
     title: string
     price: number
-    image?: string[]
+    images?: string[]
     model?: string
     description?: string
     specifications?: string[]

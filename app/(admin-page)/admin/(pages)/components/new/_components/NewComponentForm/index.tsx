@@ -7,17 +7,26 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import NewComponentFormSchema from './schema'
-import { FormInput, FormTextArea, FormFileUpload } from '@/components/Form'
+import { FormInput, FormTextArea } from '@/components/Form'
 import ButtonAsync from '@/components/ButtonAsync'
 import useCreateComponent from './useCreateComponent'
 import FormSelectWithAsyncOptions from '@/components/Form/FormSelectWithAsyncOptions'
-import fetchAbsolute from '@/lib/fetchAbsolute'
+import {
+    fetchCategories,
+    fetchColors,
+    fetchSizes,
+    fetchVendors,
+} from '@/lib/api'
+import SelectedAssets from '@/components/SelectedAssets'
 
 type FormData = z.infer<typeof NewComponentFormSchema>
 
 const NewComponentForm: React.FC = () => {
     const form = useForm<FormData>({
         resolver: zodResolver(NewComponentFormSchema),
+        defaultValues: {
+            images: [],
+        },
     })
 
     const router = useRouter()
@@ -34,43 +43,23 @@ const NewComponentForm: React.FC = () => {
         }
     }, [isSuccess, router])
 
-    const fetchCategories = async (): Promise<Category[]> => {
-        const response = await fetchAbsolute('/categories', {
-            cache: 'no-cache',
-        })
-        if (!response.ok) {
-            throw response
-        }
-        return await response.json()
+    const selectImage = (path: string) => {
+        const images = form.getValues('images')
+        form.setValue('images', images.concat(path))
     }
 
-    const fetchVendors = async (): Promise<Vendor[]> => {
-        const response = await fetchAbsolute('/vendors', { cache: 'no-cache' })
-        if (!response.ok) {
-            throw response
-        }
-        return await response.json()
-    }
-
-    const fetchSizes = async (): Promise<Size[]> => {
-        const response = await fetchAbsolute('/sizes', { cache: 'no-cache' })
-        if (!response.ok) {
-            throw response
-        }
-        return await response.json()
-    }
-
-    const fetchColors = async (): Promise<Color[]> => {
-        const response = await fetchAbsolute('/colors', { cache: 'no-cache' })
-        if (!response.ok) {
-            throw response
-        }
-        return await response.json()
+    const deselectImage = (path: string) => {
+        const images = form.getValues('images')
+        form.setValue(
+            'images',
+            images.filter(image => image !== path)
+        )
     }
 
     const handleSubmit: SubmitHandler<FormData> = (data: FormData) => {
         createComponent({
             ...data,
+            images: data.images || [],
             price: parseFloat(data.price),
             totalInventory: parseFloat(data.totalInventory),
         })
@@ -92,20 +81,23 @@ const NewComponentForm: React.FC = () => {
                     label="Price (without decimal) *"
                     form={form}
                 />
-                <FormFileUpload
-                    name="image"
-                    label="Image"
-                    accept=".jpg,.png,.webp"
-                    uploadBucket="images"
-                    uploadPath="/components"
-                    form={form}
+                <SelectedAssets
+                    assetPaths={form.watch('images')}
+                    bucket="images"
+                    folder="components"
+                    accept="image/*"
+                    select={selectImage}
+                    deselect={deselectImage}
                 />
-                <FormFileUpload
-                    name="model"
-                    label="Model"
+                <SelectedAssets
+                    assetPaths={
+                        form.watch('model') ? [form.watch('model')!] : []
+                    }
+                    bucket="models"
                     accept=".fbx"
-                    uploadBucket="models"
-                    form={form}
+                    max={1}
+                    select={path => form.setValue('model', path)}
+                    deselect={() => form.setValue('model', undefined)}
                 />
                 <FormInput
                     name="totalInventory"

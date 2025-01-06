@@ -181,3 +181,10 @@ type FetchManyOptions = {
 type DynamicRoutePropsWithParams<T extends object> = {
     params: T
 }
+
+type AssetData = {
+    error: string | null
+    path: string | null
+    signedUrl: string
+    isSelected: boolean
+}

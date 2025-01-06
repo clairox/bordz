@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { desc } from 'drizzle-orm'
+import { desc, inArray } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { CustomerTable } from '@/drizzle/schema/user'
@@ -52,4 +52,15 @@ export const POST = async (request: NextRequest) =>
             .then(rows => rows[0])
 
         return NextResponse.json(customer)
+    })
+
+export const DELETE = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        validateRequestBody(data, ['ids'])
+
+        await db
+            .delete(CustomerTable)
+            .where(inArray(CustomerTable.id, data.ids))
+        return new NextResponse(null, { status: 204 })
     })

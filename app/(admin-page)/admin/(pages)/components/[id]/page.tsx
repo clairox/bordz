@@ -1,27 +1,14 @@
-import fetchAbsolute from '@/lib/fetchAbsolute'
+import EditComponentForm from '@/components/Forms/EditComponentForm'
+import { fetchComponent } from '@/lib/api'
 
 type ComponentPageProps = {
     params: { id: string }
 }
 
-const fetchComponent = async (id: string) => {
-    const response = await fetchAbsolute(`/components/${id}`)
-
-    if (!response.ok) {
-        throw response
-    }
-
-    return await response.json()
-}
-
 const ComponentPage: React.FC<ComponentPageProps> = async ({ params }) => {
     const component = await fetchComponent(params.id)
 
-    return (
-        <div>
-            <h1>{component.title}</h1>
-        </div>
-    )
+    return <EditComponentForm component={component} />
 }
 
 export default ComponentPage

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { asc, desc, eq, SQL } from 'drizzle-orm'
+import { asc, desc, eq, inArray, SQL } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { ProductTable } from '@/drizzle/schema/product'
@@ -138,6 +138,15 @@ export const POST = async (request: NextRequest) =>
 
             return NextResponse.json(newProduct)
         }
+    })
+
+export const DELETE = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        validateRequestBody(data, ['ids'])
+
+        await db.delete(ProductTable).where(inArray(ProductTable.id, data.ids))
+        return new NextResponse(null, { status: 204 })
     })
 
 const createProduct = async (

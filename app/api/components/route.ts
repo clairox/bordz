@@ -9,7 +9,7 @@ import {
     SizeTable,
     VendorTable,
 } from '@/drizzle/schema/component'
-import { count, eq } from 'drizzle-orm'
+import { count, eq, inArray } from 'drizzle-orm'
 import { createUrlHandle } from '@/utils/helpers'
 import {
     getRequestOptionsParams,
@@ -54,7 +54,7 @@ export const POST = async (request: NextRequest) =>
                 title: data.title,
                 handle: createUrlHandle(data.title),
                 price: parseInt(data.price),
-                image: data.image,
+                images: data.images,
                 model: data.model,
                 description: data.description,
                 specifications: data.specifications,
@@ -73,6 +73,17 @@ export const POST = async (request: NextRequest) =>
         })
 
         return NextResponse.json(component)
+    })
+
+export const DELETE = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const data = await request.json()
+        validateRequestBody(data, ['ids'])
+
+        await db
+            .delete(ComponentTable)
+            .where(inArray(ComponentTable.id, data.ids))
+        return new NextResponse(null, { status: 204 })
     })
 
 type GetComponentsOptions = {

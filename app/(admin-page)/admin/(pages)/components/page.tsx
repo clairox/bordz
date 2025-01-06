@@ -1,13 +1,12 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import PriceRepr from '@/components/PriceRepr'
-import { Table, TableCell, TableHeader, TableRow } from '@/components/Table'
-import { Fragment } from 'react'
-import InfiniteItemList from '@/components/InfiniteItemList'
 import useComponents from '@/hooks/useComponents'
+import { DataTable } from '@/components/ShadUI/DataTable'
+import { componentTableColumns } from '@/tables/Components/columns'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { deleteComponents } from '@/lib/api'
 
 const ComponentsPage: React.FC = () => {
     const searchParams = useSearchParams()
@@ -19,86 +18,36 @@ const ComponentsPage: React.FC = () => {
         orderBy,
     })
 
+    const { mutateAsync: deleteComponents } = useDeleteComponents()
+
     const router = useRouter()
 
     return (
-        <div>
-            <button onClick={() => router.push('/admin/components/new')}>
-                New
-            </button>
-            <InfiniteItemList
-                pages={data.pages}
+        <div className="p-4">
+            <h1>Components</h1>
+            <div className="flex justify-end">
+                <button onClick={() => router.push('/admin/components/new')}>
+                    New
+                </button>
+            </div>
+            <DataTable
+                columns={componentTableColumns}
+                data={data.pages}
                 hasNextPage={hasNextPage}
                 fetchNextPage={fetchNextPage}
-                render={items => (
-                    <Table>
-                        <thead>
-                            <tr>
-                                <TableHeader>Title</TableHeader>
-                                <TableHeader>Price</TableHeader>
-                                <TableHeader>Quantity</TableHeader>
-                                <TableHeader>Brand</TableHeader>
-                                <TableHeader>Category</TableHeader>
-                                <TableHeader>Size</TableHeader>
-                                <TableHeader>Color</TableHeader>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ComponentTableList components={items} />
-                        </tbody>
-                    </Table>
-                )}
+                deleteRows={deleteComponents}
             />
         </div>
     )
 }
 
-type ComponentTableListProps = {
-    components: Component[]
-}
-
-const ComponentTableList: React.FC<ComponentTableListProps> = ({
-    components,
-}) => {
-    return (
-        <Fragment>
-            {components.map(component => {
-                return (
-                    <ComponentTableListItem
-                        component={component}
-                        key={component.id}
-                    />
-                )
-            })}
-        </Fragment>
-    )
-}
-
-type ComponentTableListItemProps = {
-    component: Component
-}
-
-const ComponentTableListItem: React.FC<ComponentTableListItemProps> = ({
-    component,
-}) => {
-    const componentAttributes = component.componentAttributes
-    return (
-        <TableRow>
-            <TableCell>
-                <Link href={`/admin/components/${component.id}`}>
-                    {component.title}
-                </Link>
-            </TableCell>
-            <TableCell>
-                <PriceRepr value={component.price} />
-            </TableCell>
-            <TableCell>{component.totalInventory}</TableCell>
-            <TableCell>{componentAttributes.vendor.name}</TableCell>
-            <TableCell>{componentAttributes.category.label}</TableCell>
-            <TableCell>{componentAttributes.size.label}</TableCell>
-            <TableCell>{componentAttributes.color.label}</TableCell>
-        </TableRow>
-    )
+const useDeleteComponents = () => {
+    const queryClient = useQueryClient()
+    return useMutation<void, Error, string[]>({
+        mutationFn: deleteComponents,
+        onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: ['components'] }),
+    })
 }
 
 export default ComponentsPage

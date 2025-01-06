@@ -68,9 +68,9 @@ const SkateLabUIMenuListItem: React.FC<SkateLabUIMenuListItemProps> = ({
             onClick={handleComponentSelection}
             className={`flex flex-col w-full border-b border-black last:border-none ${isSelected ? 'bg-sky-100 hover:bg-sky-200' : 'bg-white hover:bg-gray-100'}`}
         >
-            {component.image && (
+            {component.images && (
                 <StoredImage
-                    path={component.image}
+                    path={component.images[0]}
                     alt={`Skateboard ${getTypeFromCategory(category)}`}
                 />
             )}

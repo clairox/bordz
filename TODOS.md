@@ -34,6 +34,8 @@
 -   [ ] Paginate admin tables
 -   [ ] Change createBadRequestError to handle Missing required fields:
 -   [ ] Change validateRequestBody to validateRequestData
+-   [ ] Use bucket arg with useImages hook
+-   [ ] Create default unexpected error text constant
 
 ### Cart
 
