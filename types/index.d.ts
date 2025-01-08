@@ -56,6 +56,10 @@ type Customer = {
     updatedAt: Date
 }
 
+type UpdateCustomerArgs = Partial<
+    Pick<Customer, 'email' | 'addresses' | 'firstName' | 'lastName' | 'phone'>
+>
+
 type Cart = {
     id: string
     checkout?: Checkout | null
@@ -144,6 +148,19 @@ type Order = {
     updatedAt: Date
 }
 
+type UpdateOrderArgs = Partial<
+    Pick<
+        Order,
+        | 'customerId'
+        | 'email'
+        | 'phone'
+        | 'shippingAddressId'
+        | 'shippingAddress'
+        | 'totalShipping'
+        | 'totalTax'
+    >
+>
+
 type Address = {
     id: string
     fullName: string
@@ -187,4 +204,9 @@ type AssetData = {
     path: string | null
     signedUrl: string
     isSelected: boolean
+}
+
+type FormSelectOption = {
+    value: string
+    name: string
 }

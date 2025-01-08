@@ -19,6 +19,9 @@ import useSignOut from './useSignOut'
 import useSignUp from './useSignUp'
 import useUpdateCheckout from './useUpdateCheckout'
 import useUpdateComponent from './useUpdateComponent'
+import useUpdateCustomer from './useUpdateCustomer'
+import useUpdateOrder from './useUpdateOrder'
+import useUpdateProduct from './useUpdateProduct'
 import useUploadFile from './useUploadFile'
 import useWishlistLines from './useWishlistLines'
 
@@ -44,6 +47,9 @@ export {
     useSignUp,
     useUpdateCheckout,
     useUpdateComponent,
+    useUpdateCustomer,
+    useUpdateOrder,
+    useUpdateProduct,
     useUploadFile,
     useWishlistLines,
 }

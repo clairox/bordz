@@ -1,7 +1,7 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
 
-const fetchComponent = async (id: string): Promise<Component> => {
-    const response = await fetchAbsolute(`/components/${id}`, {
+const fetchOrder = async (id: string): Promise<Order> => {
+    const response = await fetchAbsolute(`/orders/${id}`, {
         cache: 'no-cache',
     })
     if (!response.ok) {
@@ -10,4 +10,4 @@ const fetchComponent = async (id: string): Promise<Component> => {
     return await response.json()
 }
 
-export default fetchComponent
+export default fetchOrder

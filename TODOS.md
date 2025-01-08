@@ -31,11 +31,15 @@
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
 -   [ ] BUG session cookie not deleted after account deletion
 -   [ ] Add 'recommended' (or something) sort key based on views (?)
--   [ ] Paginate admin tables
+-   [x] Paginate admin tables
 -   [ ] Change createBadRequestError to handle Missing required fields:
 -   [ ] Change validateRequestBody to validateRequestData
 -   [ ] Use bucket arg with useImages hook
 -   [ ] Create default unexpected error text constant
+-   [ ] Use numbers where necessary in form schemas
+-   [ ] Use Pick for update arg types
+-   [ ] Call useParams with <Record<string, string>>
+-   [ ] Automatically add ' \*' to form field labels if required
 
 ### Cart
 

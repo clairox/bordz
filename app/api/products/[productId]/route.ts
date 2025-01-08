@@ -34,6 +34,7 @@ export const GET = async (_: NextRequest, { params: { productId } }: Props) =>
         return NextResponse.json(product)
     })
 
+// TODO: Update product and board setup OR just product idk
 export const PATCH = async (
     request: NextRequest,
     { params: { productId } }: Props

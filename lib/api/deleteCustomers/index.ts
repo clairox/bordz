@@ -1,5 +1,6 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
 
+// TODO: Delete related users
 const deleteCustomers = async (ids: string[]): Promise<void> => {
     const response = await fetchAbsolute('/customers', {
         method: 'DELETE',

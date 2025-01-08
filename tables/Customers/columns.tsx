@@ -15,7 +15,7 @@ export const customerTableColumns: ColumnDef<Customer>[] =
                     </SortableColumnHeader>
                 ),
                 cell: ({ row }) => (
-                    <Link href={`/admin/customers/${row.original.id}`}>
+                    <Link href={`/admin/customers/${row.original.userId}`}>
                         {row.getValue('displayName')}
                     </Link>
                 ),
@@ -45,6 +45,6 @@ export const customerTableColumns: ColumnDef<Customer>[] =
                 header: 'Default Address',
             },
         ],
-        'id',
+        'userId',
         { sortable: true }
     )

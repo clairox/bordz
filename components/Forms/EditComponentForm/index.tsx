@@ -133,6 +133,7 @@ const EditComponentForm: React.FC<EditComponentFormProps> = ({ component }) => {
                     accept=".fbx"
                     select={path => form.setValue('model', path)}
                     deselect={() => form.setValue('model', undefined)}
+                    max={1}
                 />
                 <FormSelectWithAsyncOptions
                     name="category"
