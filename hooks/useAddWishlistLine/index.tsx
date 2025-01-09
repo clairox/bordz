@@ -3,18 +3,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { WishlistResponse } from '@/types/api'
+import wishlistResponseToWishlist from '@/utils/helpers/wishlistResponseToWishlist'
 
 type UseAddWishlistLineArgs = { productId: string }
 
-const addWishlistLine = async (productId: string) => {
-    const response = await fetchAbsolute(`/wishlist/lines`, {
+const addWishlistLine = async (productId: string): Promise<Wishlist> => {
+    const data = await fetchAbsolute<WishlistResponse>(`/wishlist/lines`, {
         method: 'POST',
         body: JSON.stringify({ productId }),
     })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    return wishlistResponseToWishlist(data)
 }
 
 const useAddWishlistLine = () => {

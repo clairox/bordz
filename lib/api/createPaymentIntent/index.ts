@@ -5,16 +5,10 @@ import fetchAbsolute from '@/lib/fetchAbsolute'
 const createPaymentIntent = async (
     checkout: Checkout
 ): Promise<Stripe.PaymentIntent> => {
-    const response = await fetchAbsolute('/paymentIntent', {
+    return await fetchAbsolute<Stripe.PaymentIntent>('/paymentIntent', {
         method: 'POST',
         body: JSON.stringify({ checkout }),
     })
-
-    if (!response.ok) {
-        throw response
-    }
-
-    return await response.json()
 }
 
 export default createPaymentIntent

@@ -6,6 +6,8 @@ import { User } from '@supabase/supabase-js'
 
 import { useSupabase } from '@/context/SupabaseContext'
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CustomerResponse } from '@/types/api'
+import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 
 type CreateCustomerArgs = {
     userId: string
@@ -20,15 +22,13 @@ type UseSignUpMutationArgs = Omit<CreateCustomerArgs, 'userId'> & {
     password: string
 }
 
-const createCustomer = async (args: CreateCustomerArgs) => {
-    const res = await fetchAbsolute('/customers', {
+const createCustomer = async (
+    args: CreateCustomerArgs
+): Promise<CustomerResponse> => {
+    return await fetchAbsolute<CustomerResponse>('/customers', {
         method: 'POST',
         body: JSON.stringify(args),
     })
-    if (!res.ok) {
-        throw res
-    }
-    return await res.json()
 }
 
 const useSignUp = () => {
@@ -62,11 +62,13 @@ const useSignUp = () => {
         mutationFn: async args => {
             const { email, password, ...rest } = args
             const user = await signUp(email, password)
-            const customer = await createCustomer({
+            const data = await createCustomer({
                 ...rest,
                 userId: user.id,
                 email,
             })
+            const customer = customerResponseToCustomer(data)
+
             await supabase
                 .from('profiles')
                 .update({ is_new: false })

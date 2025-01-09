@@ -1,4 +1,6 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { ComponentResponse } from '@/types/api'
+import componentResponseToComponent from '@/utils/helpers/componentResponseToComponent'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 type CreateComponentMutationVars = {
@@ -15,27 +17,20 @@ type CreateComponentMutationVars = {
     color: string
 }
 
-const createComponent = async (variables: CreateComponentMutationVars) => {
-    try {
-        const response = await fetchAbsolute('/components', {
-            method: 'POST',
-            body: JSON.stringify(variables),
-        })
-
-        if (!response.ok) {
-            throw response
-        }
-
-        return await response.json()
-    } catch (error) {
-        throw error
-    }
+const createComponent = async (
+    variables: CreateComponentMutationVars
+): Promise<Component> => {
+    const data = await fetchAbsolute<ComponentResponse>('/components', {
+        method: 'POST',
+        body: JSON.stringify(variables),
+    })
+    return componentResponseToComponent(data)
 }
 
 const useCreateComponent = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<Component[], Error, CreateComponentMutationVars>({
+    return useMutation<Component, Error, CreateComponentMutationVars>({
         mutationFn: createComponent,
         onSuccess: () =>
             queryClient.invalidateQueries({ queryKey: ['components'] }),

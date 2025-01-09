@@ -1,13 +1,10 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { ProductResponse } from '@/types/api'
 
 const fetchProduct = async (id: string) => {
-    const response = await fetchAbsolute(`/products/${id}`, {
+    return await fetchAbsolute<ProductResponse>(`/products/${id}`, {
         cache: 'no-cache',
     })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
 }
 
 export default fetchProduct

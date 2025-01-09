@@ -3,6 +3,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CartResponse } from '@/types/api'
+import cartResponseToCart from '@/utils/helpers/cartResponseToCart'
 
 const useAddCartLineMutation = () => {
     const queryClient = useQueryClient()
@@ -13,16 +15,11 @@ const useAddCartLineMutation = () => {
         mutationFn: async ({
             productId,
         }: AddCartLineVariables): Promise<Cart> => {
-            try {
-                const res = await fetchAbsolute(`/cart/lines`, {
-                    method: 'POST',
-                    body: JSON.stringify({ productId, quantity: 1 }),
-                })
-
-                return await res.json()
-            } catch (error) {
-                throw error
-            }
+            const data = await fetchAbsolute<CartResponse>(`/cart/lines`, {
+                method: 'POST',
+                body: JSON.stringify({ productId, quantity: 1 }),
+            })
+            return cartResponseToCart(data)
         },
         onSuccess: cart => {
             queryClient.invalidateQueries({ queryKey: ['cart'] })

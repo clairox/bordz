@@ -43,11 +43,7 @@ const fetchProducts = async ({
 
     const paramString = params.length ? '?' + params.join('&') : ''
     const path = '/products' + paramString
-    const response = await fetchAbsolute(path)
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    return await fetchAbsolute<Page<ProductResponse>>(path)
 }
 
 const useProducts = (args: UseProductsArgs) => {

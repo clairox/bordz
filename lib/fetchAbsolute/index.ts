@@ -1,7 +1,7 @@
-const fetchAbsolute = (
+const fetchAbsolute = async <TResponseData>(
     info: RequestInfo | URL,
     init?: RequestInit
-): Promise<Response> => {
+): Promise<TResponseData> => {
     if (typeof info === 'string') {
         const isPathname = info.startsWith('/')
         if (!isPathname && !URL.canParse(info)) {
@@ -16,7 +16,12 @@ const fetchAbsolute = (
         info = isPathname ? baseUrl + info : info
     }
 
-    return fetch(info, init)
+    const response = await fetch(info, init)
+    if (!response.ok) {
+        throw response
+    }
+
+    return await response.json()
 }
 
 export default fetchAbsolute

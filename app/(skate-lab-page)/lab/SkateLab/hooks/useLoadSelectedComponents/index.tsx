@@ -1,11 +1,10 @@
 'use client'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { CartLineResponse, CartResponse, ProductResponse } from '@/types/api'
-import { BoardSetupRecord } from '@/types/database'
-import { CartLineQueryResult } from '@/types/queries'
-import boardResponseToBoard from '@/utils/helpers/boardResponseToBoard'
 import { useSuspenseQuery } from '@tanstack/react-query'
+
+import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CartLineResponse, ProductResponse } from '@/types/api'
+import boardResponseToBoard from '@/utils/helpers/boardResponseToBoard'
 
 const defaultSelectedComponents = {
     deck: undefined,
@@ -21,29 +20,25 @@ const useLoadSelectedComponents = (
     id: string | undefined
 ) => {
     const getBoardFromCartLine = async (cartLineId: string): Promise<Board> => {
-        const response = await fetchAbsolute(`/cart/lines/${cartLineId}`)
-        if (!response.ok) {
-            throw response
-        }
-        const cartLine = (await response.json()) as CartLineResponse
-        if (!cartLine.product.boardSetup) {
+        const data = await fetchAbsolute<CartLineResponse>(
+            `/cart/lines/${cartLineId}`
+        )
+        if (!data.product.boardSetup) {
             throw new Error('Invalid board setup')
         }
 
-        return boardResponseToBoard(cartLine.product.boardSetup)
+        return boardResponseToBoard(data.product.boardSetup)
     }
 
     const getBoardFromProduct = async (productId: string) => {
-        const response = await fetchAbsolute(`/products/${productId}`)
-        if (!response.ok) {
-            throw response
-        }
-        const product = (await response.json()) as ProductResponse
-        if (!product.boardSetup) {
+        const data = await fetchAbsolute<ProductResponse>(
+            `/products/${productId}`
+        )
+        if (!data.boardSetup) {
             throw new Error('Invalid board setup')
         }
 
-        return boardResponseToBoard(product.boardSetup)
+        return boardResponseToBoard(data.boardSetup)
     }
 
     return useSuspenseQuery<

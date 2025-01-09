@@ -1,4 +1,5 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CheckoutResponse } from '@/types/api'
 import checkoutResponseToCheckout from '@/utils/helpers/checkoutResponseToCheckout'
 
 type UpdateCheckout = {
@@ -12,16 +13,10 @@ type UpdateCheckout = {
 }
 
 const updateCheckout = async (args: UpdateCheckout): Promise<Checkout> => {
-    const response = await fetchAbsolute(`/checkout`, {
+    const data = await fetchAbsolute<CheckoutResponse>(`/checkout`, {
         method: 'PATCH',
         body: JSON.stringify(args),
     })
-
-    if (!response.ok) {
-        throw response
-    }
-
-    const data = await response.json()
     return checkoutResponseToCheckout(data)
 }
 

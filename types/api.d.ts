@@ -1,3 +1,4 @@
+import { AddressRecord, WishlistRecord } from './database'
 import {
     CartLineQueryResult,
     CartQueryResult,
@@ -10,6 +11,7 @@ import {
 } from './queries'
 
 /* Responses */
+type AddressResponse = AddressRecord
 type CartResponse = CartQueryResult
 type CartLineResponse = CartLineQueryResult
 type CheckoutResponse = CheckoutQueryResult

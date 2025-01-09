@@ -33,12 +33,12 @@ const ComponentPage: React.FC = () => {
                 images: component.images || [],
                 model: component.model,
                 description: component.description,
-                specifications: component.specifictations,
+                specifications: component.specifications,
                 totalInventory: component.totalInventory.toString(),
-                category: component.componentAttributes.category.id,
-                vendor: component.componentAttributes.vendor.id,
-                size: component.componentAttributes.size.id,
-                color: component.componentAttributes.color.id,
+                category: component.category.id,
+                vendor: component.vendor.id,
+                size: component.size.id,
+                color: component.color.id,
             }}
             fieldData={[
                 {

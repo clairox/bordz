@@ -10,13 +10,9 @@ const useDeleteAddress = () => {
 
     return useMutation<void, Error, UseDeleteAddressArgs>({
         mutationFn: async ({ id }) => {
-            const response = await fetchAbsolute(`/addresses/${id}`, {
+            await fetchAbsolute(`/addresses/${id}`, {
                 method: 'DELETE',
             })
-            if (!response.ok) {
-                throw response
-            }
-            return
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['customer'] })

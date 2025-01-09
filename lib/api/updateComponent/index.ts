@@ -1,4 +1,6 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { ComponentResponse } from '@/types/api'
+import componentResponseToComponent from '@/utils/helpers/componentResponseToComponent'
 
 type UpdateComponentArgs = {
     title: string
@@ -19,14 +21,14 @@ const updateComponent = async (
     componentId: string,
     args?: UpdateComponentArgs
 ): Promise<Component> => {
-    const response = await fetchAbsolute(`/components/${componentId}`, {
-        method: 'PATCH',
-        body: JSON.stringify(args),
-    })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    const data = await fetchAbsolute<ComponentResponse>(
+        `/components/${componentId}`,
+        {
+            method: 'PATCH',
+            body: JSON.stringify(args),
+        }
+    )
+    return componentResponseToComponent(data)
 }
 
 export default updateComponent

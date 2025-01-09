@@ -12,12 +12,9 @@ import { useRouter } from 'next/navigation'
 type UseDeleteAccountArgs = { password: string }
 
 const deleteCustomer = async (userId: string) => {
-    const response = await fetchAbsolute(`/customers/${userId}`, {
+    await fetchAbsolute(`/customers/${userId}`, {
         method: 'DELETE',
     })
-    if (!response.ok) {
-        throw response
-    }
 }
 
 const useDeleteAccount = () => {

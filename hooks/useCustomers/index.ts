@@ -1,4 +1,5 @@
 import { fetchCustomers } from '@/lib/api'
+import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 import {
     InfiniteData,
     QueryKey,
@@ -16,8 +17,15 @@ const useCustomers = (args?: UseCustomersArgs) => {
         number
     >({
         queryKey: ['orders', args],
-        queryFn: async ({ pageParam }) =>
-            await fetchCustomers({ ...args, page: pageParam }),
+        queryFn: async ({ pageParam }) => {
+            const pageData = await fetchCustomers({ ...args, page: pageParam })
+            return {
+                ...pageData,
+                data: pageData.data.map(customer =>
+                    customerResponseToCustomer(customer)
+                ),
+            }
+        },
         initialPageParam: 1,
         getNextPageParam: lastPage => lastPage.nextPage,
     })

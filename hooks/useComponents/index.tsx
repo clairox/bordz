@@ -30,11 +30,7 @@ const fetchComponents = async (
         path = path.concat(buildParamString(options))
     }
 
-    const response = await fetchAbsolute(path)
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    return await fetchAbsolute<Page<ComponentResponse>>(path)
 }
 
 const useComponents = (args: UseComponentsArgs) => {

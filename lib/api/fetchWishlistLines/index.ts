@@ -28,11 +28,7 @@ const fetchWishlistLines = async ({
 
     const paramString = params.length ? '?' + params.join('&') : ''
     const path = '/wishlist/lines' + paramString
-    const response = await fetchAbsolute(path)
-    if (!response.ok) {
-        throw response
-    }
-    const data = (await response.json()) as WishlistLinesResponse
+    const data = await fetchAbsolute<WishlistLinesResponse>(path)
     return {
         data: data.data.map(line => ({
             id: line.id,

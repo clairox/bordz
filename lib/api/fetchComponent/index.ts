@@ -1,13 +1,12 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { ComponentResponse } from '@/types/api'
+import componentResponseToComponent from '@/utils/helpers/componentResponseToComponent'
 
 const fetchComponent = async (id: string): Promise<Component> => {
-    const response = await fetchAbsolute(`/components/${id}`, {
+    const data = await fetchAbsolute<ComponentResponse>(`/components/${id}`, {
         cache: 'no-cache',
     })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    return componentResponseToComponent(data)
 }
 
 export default fetchComponent

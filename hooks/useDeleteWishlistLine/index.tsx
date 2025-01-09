@@ -3,17 +3,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import wishlistResponseToWishlist from '@/utils/helpers/wishlistResponseToWishlist'
+import { WishlistResponse } from '@/types/api'
 
 type UseDeleteWishlistLineArgs = { lineId: string }
 
-const deleteWishlistLine = async (lineId: string) => {
-    const response = await fetchAbsolute(`/wishlist/lines/${lineId}`, {
-        method: 'DELETE',
-    })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+const deleteWishlistLine = async (lineId: string): Promise<Wishlist> => {
+    const data = await fetchAbsolute<WishlistResponse>(
+        `/wishlist/lines/${lineId}`,
+        {
+            method: 'DELETE',
+        }
+    )
+    return wishlistResponseToWishlist(data)
 }
 
 const useDeleteWishlistLine = () => {

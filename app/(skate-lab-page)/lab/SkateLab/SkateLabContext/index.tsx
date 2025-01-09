@@ -8,6 +8,8 @@ import { useAddCartLineMutation } from '@/hooks'
 import { useMutation } from '@tanstack/react-query'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import useAddWishlistLine from '@/hooks/useAddWishlistLine'
+import { ProductResponse } from '@/types/api'
+import productResponseToProduct from '@/utils/helpers/productResponseToProduct'
 
 type SkateLabContextValue = {
     selectedComponents: Record<ComponentType, Component | undefined>
@@ -68,7 +70,7 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         const { deck, trucks, wheels, bearings, hardware, griptape } =
             selectedComponents
 
-        const res = await fetchAbsolute('/products', {
+        const data = await fetchAbsolute<ProductResponse>('/products', {
             method: 'POST',
             body: JSON.stringify({
                 type: 'board',
@@ -81,10 +83,7 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
                 griptapeId: griptape?.id,
             }),
         })
-        if (!res.ok) {
-            throw res
-        }
-        return await res.json()
+        return productResponseToProduct(data)
     }
 
     const { mutateAsync: addCartLine } = useAddCartLineMutation()
@@ -98,22 +97,22 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
             id: string
             components: Record<ComponentType, string>
         }) => {
-            const res = await fetchAbsolute(`/products/${id}`, {
-                method: 'PATCH',
-                body: JSON.stringify({
-                    type: 'board',
-                    deckId: components.deck,
-                    trucksId: components.trucks,
-                    wheelsId: components.wheels,
-                    bearingsId: components.bearings,
-                    hardwareId: components.hardware,
-                    griptapeId: components.griptape,
-                }),
-            })
-            if (!res.ok) {
-                throw res
-            }
-            return await res.json()
+            const data = await fetchAbsolute<ProductResponse>(
+                `/products/${id}`,
+                {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        type: 'board',
+                        deckId: components.deck,
+                        trucksId: components.trucks,
+                        wheelsId: components.wheels,
+                        bearingsId: components.bearings,
+                        hardwareId: components.hardware,
+                        griptapeId: components.griptape,
+                    }),
+                }
+            )
+            return productResponseToProduct(data)
         },
     })
 

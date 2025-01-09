@@ -1,15 +1,22 @@
 import { CustomerResponse } from '@/types/api'
+import addressResponseToAddress from './addressResponseToAddress'
 
-const customerResponseToCustomer = async (
-    customerResponse: CustomerResponse
-): Promise<Customer> => {
-    const customer = customerResponse as Partial<CustomerResponse>
-    delete customer.createdAt
-    delete customer.updatedAt
-
+const customerResponseToCustomer = (data: CustomerResponse): Customer => {
     return {
-        ...(customer as Customer),
-        phone: customer.phone ?? undefined,
+        id: data.id,
+        userId: data.userId,
+        email: data.email,
+        displayName: data.displayName,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        defaultAddress: data.defaultAddress
+            ? addressResponseToAddress(data.defaultAddress)
+            : undefined,
+        addresses: data.addresses.map(address =>
+            addressResponseToAddress(address)
+        ),
+        numberOfOrders: data.numberOfOrders,
+        phone: data.phone ?? undefined,
     }
 }
 

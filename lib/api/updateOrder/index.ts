@@ -1,19 +1,17 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { OrderUpdateArgs } from '@/types/api'
+import { OrderResponse, OrderUpdateArgs } from '@/types/api'
+import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
 
 // TODO: PUT (?)
 const updateOrder = async (
     orderId: string,
     args?: OrderUpdateArgs
 ): Promise<Order> => {
-    const response = await fetchAbsolute(`/orders/${orderId}`, {
+    const data = await fetchAbsolute<OrderResponse>(`/orders/${orderId}`, {
         method: 'PATCH',
         body: JSON.stringify(args),
     })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    return orderResponseToOrder(data)
 }
 
 export default updateOrder

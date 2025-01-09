@@ -6,15 +6,11 @@ const updateCustomer = async (
     userId: string,
     args: CustomerUpdateArgs
 ): Promise<Customer> => {
-    const response = await fetchAbsolute(`/customers/${userId}`, {
+    const data = await fetchAbsolute<CustomerResponse>(`/customers/${userId}`, {
         method: 'PATCH',
         body: JSON.stringify(args),
     })
-    if (!response.ok) {
-        throw response
-    }
-    const customer = (await response.json()) as CustomerResponse
-    return customerResponseToCustomer(customer)
+    return customerResponseToCustomer(data)
 }
 
 export default updateCustomer

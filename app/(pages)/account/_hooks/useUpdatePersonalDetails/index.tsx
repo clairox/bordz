@@ -30,14 +30,10 @@ const useUpdatePersonalDetails = () => {
                 userId = user!.id
             }
 
-            const response = await fetchAbsolute(`/customers/${userId}`, {
+            await fetchAbsolute(`/customers/${userId}`, {
                 method: 'PATCH',
                 body: JSON.stringify({ firstName, lastName, phone }),
             })
-            if (!response.ok) {
-                throw response
-            }
-            return
         },
         onSuccess: async () => {
             queryClient.invalidateQueries({ queryKey: ['auth'] })

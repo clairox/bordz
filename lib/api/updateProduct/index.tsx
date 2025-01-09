@@ -1,4 +1,6 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { ProductResponse } from '@/types/api'
+import productResponseToProduct from '@/utils/helpers/productResponseToProduct'
 
 type UpdateProductArgs = {
     title?: string
@@ -12,14 +14,14 @@ const updateProduct = async (
     productId: string,
     args?: UpdateProductArgs
 ): Promise<Product> => {
-    const response = await fetchAbsolute(`/products/${productId}`, {
-        method: 'PATCH',
-        body: JSON.stringify(args),
-    })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    const data = await fetchAbsolute<ProductResponse>(
+        `/products/${productId}`,
+        {
+            method: 'PATCH',
+            body: JSON.stringify(args),
+        }
+    )
+    return productResponseToProduct(data)
 }
 
 export default updateProduct

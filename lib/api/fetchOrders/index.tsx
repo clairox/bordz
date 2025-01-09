@@ -8,11 +8,7 @@ const fetchOrders = async (
     options?: FetchOrdersOptions
 ): Promise<Page<OrderResponse>> => {
     const path = buildPathWithParams('/orders', options)
-    const response = await fetchAbsolute(path, { cache: 'no-cache' })
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
+    return await fetchAbsolute<Page<OrderResponse>>(path, { cache: 'no-cache' })
 }
 
 export default fetchOrders

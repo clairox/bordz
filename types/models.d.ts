@@ -94,11 +94,11 @@ type Customer = {
     id: string
     userId: string
     email: string
-    defaultAddress?: Address
-    addresses: Address[]
     displayName: string
     firstName: string
     lastName: string
+    defaultAddress?: Address
+    addresses: Address[]
     numberOfOrders: number
     phone?: string
 }
@@ -170,8 +170,8 @@ type SortKey = 'date-desc' | 'date-asc' | 'price-asc' | 'price-desc'
 
 type Wishlist = {
     id: string
-    lines: WishlistLine[]
     ownerId?: string
+    lines: WishlistLine[]
     quantity: number
 }
 
@@ -201,5 +201,5 @@ type Vendor = {
 
 type Category = {
     id: string
-    label: ComponentTypeAsCategory[ComponentType]
+    label: string
 }

@@ -1,21 +1,17 @@
 'use client'
 
-import {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
-} from 'react'
+import { createContext, useCallback, useContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useSupabase } from '../SupabaseContext'
 
-type Auth = {
+type AuthInfo = {
     id: string
     email: string
-} | null
+}
+
+type Auth = AuthInfo | null
 
 type AuthContextValue = UseQueryResult<Auth, Error>
 
@@ -27,22 +23,12 @@ const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const supabase = useSupabase()
 
     const storeSession = useCallback(async (token: string) => {
-        try {
-            const res = await fetchAbsolute('/session', {
-                method: 'POST',
-                body: JSON.stringify({
-                    token,
-                }),
-            })
-
-            if (!res.ok) {
-                throw res
-            }
-
-            return await res.json()
-        } catch (error) {
-            throw error
-        }
+        return await fetchAbsolute<AuthInfo>('/session', {
+            method: 'POST',
+            body: JSON.stringify({
+                token,
+            }),
+        })
     }, [])
 
     const initializeSession = useCallback(async () => {

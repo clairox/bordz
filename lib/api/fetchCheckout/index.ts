@@ -1,12 +1,9 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CheckoutResponse } from '@/types/api'
 import checkoutResponseToCheckout from '@/utils/helpers/checkoutResponseToCheckout'
 
-const fetchCheckout = async () => {
-    const response = await fetchAbsolute(`/checkout`)
-    if (!response.ok) {
-        throw response
-    }
-    const data = await response.json()
+const fetchCheckout = async (): Promise<Checkout> => {
+    const data = await fetchAbsolute<CheckoutResponse>(`/checkout`)
     return checkoutResponseToCheckout(data)
 }
 
