@@ -89,7 +89,7 @@ const WishlistLineItem: React.FC<WishlistLineItemProps> = ({
     deleteWishlistLine,
 }) => {
     const { product } = wishlistLine
-    const { boardSetup } = product
+    const { board } = product
 
     const handleDeleteButtonClick = () => {
         const { id } = wishlistLine
@@ -117,18 +117,12 @@ const WishlistLineItem: React.FC<WishlistLineItemProps> = ({
                     </div>
                 </div>
                 <ul className="text-sm">
-                    <li className="line-clamp-1">{boardSetup?.deck.title}</li>
-                    <li className="line-clamp-1">{boardSetup?.trucks.title}</li>
-                    <li className="line-clamp-1">{boardSetup?.wheels.title}</li>
-                    <li className="line-clamp-1">
-                        {boardSetup?.bearings.title}
-                    </li>
-                    <li className="line-clamp-1">
-                        {boardSetup?.hardware.title}
-                    </li>
-                    <li className="line-clamp-1">
-                        {boardSetup?.griptape.title}
-                    </li>
+                    <li className="line-clamp-1">{board?.deck.title}</li>
+                    <li className="line-clamp-1">{board?.trucks.title}</li>
+                    <li className="line-clamp-1">{board?.wheels.title}</li>
+                    <li className="line-clamp-1">{board?.bearings.title}</li>
+                    <li className="line-clamp-1">{board?.hardware.title}</li>
+                    <li className="line-clamp-1">{board?.griptape.title}</li>
                 </ul>
                 <div className="flex justify-between">
                     {/* TODO: Add wishlist item editing to edit mode */}

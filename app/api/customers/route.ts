@@ -10,19 +10,30 @@ import {
     validateRequestBody,
 } from '../shared'
 import { AddressTable } from '@/drizzle/schema/address'
+import { CustomerQueryResult } from '@/types/queries'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
         const { page, size } = getRequestOptionsParams(request)
 
-        const customers = await db.query.CustomerTable.findMany({
-            limit: size,
-            offset: (page - 1) * size,
-            with: {
-                defaultAddress: { with: { address: true } },
-                addresses: { orderBy: [desc(AddressTable.createdAt)] },
-            },
-        })
+        const customers: CustomerQueryResult[] =
+            (await db.query.CustomerTable.findMany({
+                limit: size,
+                offset: (page - 1) * size,
+                with: {
+                    defaultAddress: { with: { address: true } },
+                    addresses: { orderBy: [desc(AddressTable.createdAt)] },
+                },
+            }).then(rows => {
+                if (rows.length > 0) {
+                    return rows.map(row => {
+                        return {
+                            ...row,
+                            defaultAddress: row.defaultAddress?.address || null,
+                        }
+                    })
+                }
+            })) ?? []
 
         const nextPage = await calculateNextPageNumber(
             page,

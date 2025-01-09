@@ -1,5 +1,7 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { ComponentResponse } from '@/types/api'
 import { buildParamString } from '@/utils/helpers'
+import componentResponseToComponent from '@/utils/helpers/componentResponseToComponent'
 import {
     InfiniteData,
     QueryKey,
@@ -20,7 +22,9 @@ type UseComponentsArgs = {
     orderBy?: SortKey
 }
 
-const fetchComponents = async (options?: FetchComponentsOptions) => {
+const fetchComponents = async (
+    options?: FetchComponentsOptions
+): Promise<Page<ComponentResponse>> => {
     let path = '/components'
     if (options) {
         path = path.concat(buildParamString(options))
@@ -42,11 +46,19 @@ const useComponents = (args: UseComponentsArgs) => {
         number
     >({
         queryKey: ['components', args],
-        queryFn: async ({ pageParam }) =>
-            await fetchComponents({
+        queryFn: async ({ pageParam }) => {
+            const response = await fetchComponents({
                 ...args,
                 page: pageParam,
-            }),
+            })
+
+            return {
+                ...response,
+                data: response.data.map(component =>
+                    componentResponseToComponent(component)
+                ),
+            }
+        },
         initialPageParam: 1,
         getNextPageParam: lastPage => lastPage.nextPage,
     })

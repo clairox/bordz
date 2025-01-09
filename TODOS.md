@@ -40,6 +40,7 @@
 -   [ ] Use Pick for update arg types
 -   [ ] Call useParams with <Record<string, string>>
 -   [ ] Automatically add ' \*' to form field labels if required
+-   [ ] Return response.json() and handle error inside fetchAbsolute
 
 ### Cart
 

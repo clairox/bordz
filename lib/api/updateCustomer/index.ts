@@ -1,6 +1,11 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CustomerResponse, CustomerUpdateArgs } from '@/types/api'
+import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 
-const updateCustomer = async (userId: string, args: UpdateCustomerArgs) => {
+const updateCustomer = async (
+    userId: string,
+    args: CustomerUpdateArgs
+): Promise<Customer> => {
     const response = await fetchAbsolute(`/customers/${userId}`, {
         method: 'PATCH',
         body: JSON.stringify(args),
@@ -8,7 +13,8 @@ const updateCustomer = async (userId: string, args: UpdateCustomerArgs) => {
     if (!response.ok) {
         throw response
     }
-    return await response.json()
+    const customer = (await response.json()) as CustomerResponse
+    return customerResponseToCustomer(customer)
 }
 
 export default updateCustomer

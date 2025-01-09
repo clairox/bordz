@@ -6,6 +6,7 @@ import { db } from '@/drizzle/db'
 import { AddressTable, DefaultAddressTable } from '@/drizzle/schema/address'
 import { createNotFoundError } from '@/lib/errors'
 import { toLongUUID } from '@/lib/uuidTranslator'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ addressId: string }>
 

@@ -1,7 +1,10 @@
 'use client'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { BoardSetupRecord } from '@/types/records'
+import { CartLineResponse, CartResponse, ProductResponse } from '@/types/api'
+import { BoardSetupRecord } from '@/types/database'
+import { CartLineQueryResult } from '@/types/queries'
+import boardResponseToBoard from '@/utils/helpers/boardResponseToBoard'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
 const defaultSelectedComponents = {
@@ -17,22 +20,30 @@ const useLoadSelectedComponents = (
     mode: SkateLabMode,
     id: string | undefined
 ) => {
-    const getBoardSetupFromCartLine = async (cartLineId: string) => {
+    const getBoardFromCartLine = async (cartLineId: string): Promise<Board> => {
         const response = await fetchAbsolute(`/cart/lines/${cartLineId}`)
         if (!response.ok) {
             throw response
         }
-        const cartLine = await response.json()
-        return cartLine.product.boardSetup
+        const cartLine = (await response.json()) as CartLineResponse
+        if (!cartLine.product.boardSetup) {
+            throw new Error('Invalid board setup')
+        }
+
+        return boardResponseToBoard(cartLine.product.boardSetup)
     }
 
-    const getBoardSetupFromProduct = async (productId: string) => {
+    const getBoardFromProduct = async (productId: string) => {
         const response = await fetchAbsolute(`/products/${productId}`)
         if (!response.ok) {
             throw response
         }
-        const product = await response.json()
-        return product.boardSetup
+        const product = (await response.json()) as ProductResponse
+        if (!product.boardSetup) {
+            throw new Error('Invalid board setup')
+        }
+
+        return boardResponseToBoard(product.boardSetup)
     }
 
     return useSuspenseQuery<
@@ -50,11 +61,11 @@ const useLoadSelectedComponents = (
                 throw new Error('Invalid id param')
             }
 
-            let boardSetup: BoardSetupRecord & BoardSetup
+            let board: Board
             if (mode === 'edit') {
-                boardSetup = await getBoardSetupFromCartLine(id)
+                board = await getBoardFromCartLine(id)
             } else {
-                boardSetup = await getBoardSetupFromProduct(id)
+                board = await getBoardFromProduct(id)
             }
 
             const {
@@ -65,7 +76,7 @@ const useLoadSelectedComponents = (
                 bearings,
                 hardware,
                 griptape,
-            } = boardSetup
+            } = board
 
             return {
                 productId,

@@ -51,7 +51,7 @@ const SettingsPage: React.FC = () => {
                 </Section.Header>
                 <Section.Content>
                     <AddressesView
-                        defaultAddress={customer?.defaultAddress?.address}
+                        defaultAddress={customer?.defaultAddress}
                         addresses={customer?.addresses}
                     />
                 </Section.Content>

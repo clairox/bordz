@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { asc, desc, eq, SQL } from 'drizzle-orm'
 
 import {
+    boardSetup,
     calculateNextPageNumber,
     getProduct,
     getRequestOptionsParams,
@@ -17,7 +18,7 @@ import {
 } from '@/lib/errors'
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import { db } from '@/drizzle/db'
-import { ProductRecord } from '@/types/records'
+import { ProductRecord } from '@/types/database'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -42,16 +43,7 @@ export const GET = async (request: NextRequest) =>
             with: {
                 product: {
                     with: {
-                        boardSetup: {
-                            with: {
-                                deck: true,
-                                trucks: true,
-                                wheels: true,
-                                bearings: true,
-                                hardware: true,
-                                griptape: true,
-                            },
-                        },
+                        boardSetup,
                     },
                 },
             },
@@ -138,16 +130,7 @@ const createWishlistLine = async (
                     with: {
                         product: {
                             with: {
-                                boardSetup: {
-                                    with: {
-                                        deck: true,
-                                        trucks: true,
-                                        wheels: true,
-                                        bearings: true,
-                                        hardware: true,
-                                        griptape: true,
-                                    },
-                                },
+                                boardSetup,
                             },
                         },
                     },
@@ -163,6 +146,7 @@ const createWishlistLine = async (
         if ((error as Error).message.includes('wishlist_id_product_id_idx')) {
             throw createConflictError('Wishlist line')
         } else {
+            console.error(error)
             throw createInternalServerError('An unexpected error occurred.')
         }
     }

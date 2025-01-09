@@ -14,7 +14,8 @@ import {
     handleRoute,
     validateRequestBody,
 } from '../../shared'
-import { ComponentRecord } from '@/types/records'
+import { ComponentRecord } from '@/types/database'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ productId: string }>
 

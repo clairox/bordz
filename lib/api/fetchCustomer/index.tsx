@@ -1,11 +1,14 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { CustomerResponse } from '@/types/api'
+import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 
-const fetchCustomer = async (id: string) => {
-    const response = await fetchAbsolute(`/customers/${id}`)
+const fetchCustomer = async (userId: string): Promise<Customer> => {
+    const response = await fetchAbsolute(`/customers/${userId}`)
     if (!response.ok) {
         throw response
     }
-    return await response.json()
+    const customer = (await response.json()) as CustomerResponse
+    return customerResponseToCustomer(customer)
 }
 
 export default fetchCustomer

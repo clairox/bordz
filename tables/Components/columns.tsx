@@ -39,7 +39,7 @@ export const componentTableColumns: ColumnDef<Component>[] =
                 ),
             },
             {
-                accessorKey: 'componentAttributes.vendor.name',
+                accessorKey: 'vendor.name',
                 header: ({ column, table }) => (
                     <SortableColumnHeader column={column} table={table}>
                         Brand
@@ -47,7 +47,7 @@ export const componentTableColumns: ColumnDef<Component>[] =
                 ),
             },
             {
-                accessorKey: 'componentAttributes.category.label',
+                accessorKey: 'category.label',
                 header: ({ column, table }) => (
                     <SortableColumnHeader column={column} table={table}>
                         Category
@@ -55,7 +55,7 @@ export const componentTableColumns: ColumnDef<Component>[] =
                 ),
             },
             {
-                accessorKey: 'componentAttributes.size.label',
+                accessorKey: 'size.label',
                 header: ({ column, table }) => (
                     <SortableColumnHeader column={column} table={table}>
                         Size
@@ -63,7 +63,7 @@ export const componentTableColumns: ColumnDef<Component>[] =
                 ),
             },
             {
-                accessorKey: 'componentAttributes.color.label',
+                accessorKey: 'color.label',
                 header: ({ column, table }) => (
                     <SortableColumnHeader column={column} table={table}>
                         Color

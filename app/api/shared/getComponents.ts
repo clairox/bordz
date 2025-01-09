@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { ComponentTable } from '@/drizzle/schema/component'
-import { ComponentRecord } from '@/types/records'
+import { ComponentRecord } from '@/types/database'
 
 const getComponents = async (
     ids: Record<

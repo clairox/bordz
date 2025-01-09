@@ -39,13 +39,13 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     const id = searchParams.get('id') ?? undefined
 
     const {
-        data: { productId: associatedProductId, ...boardSetup },
+        data: { productId: associatedProductId, ...board },
     } = useLoadSelectedComponents(mode, id)
 
     const [loading, setLoading] = useState(true)
 
     const [selectedComponents, setSelectedComponents] =
-        useState<Record<ComponentType, Component | undefined>>(boardSetup)
+        useState<Record<ComponentType, Component | undefined>>(board)
     const [activeComponentType, setActiveComponentType] =
         useState<ComponentTypeOrNone>('none')
 

@@ -3,8 +3,9 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { OrderTable } from '@/drizzle/schema/order'
-import { handleRoute } from '../../shared'
+import { handleRoute, boardSetup } from '../../shared'
 import { createNotFoundError } from '@/lib/errors'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ orderId: string }>
 
@@ -13,20 +14,13 @@ export const GET = async (_: NextRequest, { params: { orderId } }: Props) =>
         const order = await db.query.OrderTable.findFirst({
             where: eq(OrderTable.id, orderId),
             with: {
+                customer: true,
+                shippingAddress: true,
                 lines: {
                     with: {
                         product: {
                             with: {
-                                boardSetup: {
-                                    with: {
-                                        deck: true,
-                                        trucks: true,
-                                        wheels: true,
-                                        bearings: true,
-                                        hardware: true,
-                                        griptape: true,
-                                    },
-                                },
+                                boardSetup,
                             },
                         },
                     },

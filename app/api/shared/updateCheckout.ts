@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 
 import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { db } from '@/drizzle/db'
-import { CartRecord } from '@/types/records'
+import { CartRecord } from '@/types/database'
 import { calculateTaxManually } from '@/utils/helpers'
 import { createInternalServerError } from '@/lib/errors'
 import getCheckout from './getCheckout'

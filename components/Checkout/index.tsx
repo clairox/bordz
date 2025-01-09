@@ -3,33 +3,14 @@
 import { useEffect } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { Appearance } from '@stripe/stripe-js'
-import { useSuspenseQuery } from '@tanstack/react-query'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { usePaymentIntentQuery, useUpdateCheckout } from '@/hooks'
+import { useCheckout, usePaymentIntentQuery, useUpdateCheckout } from '@/hooks'
 import stripe from '@/lib/stripe/client'
 import CheckoutForm from './CheckoutForm'
 import CheckoutSummary from './CheckoutSummary'
 
 const Checkout = () => {
-    const queryKey = ['checkout']
-
-    const { data: checkout } = useSuspenseQuery<Checkout>({
-        queryKey,
-        queryFn: async () => {
-            try {
-                const res = await fetchAbsolute(`/checkout`)
-
-                if (!res.ok) {
-                    throw res
-                }
-
-                return await res.json()
-            } catch (error) {
-                throw error
-            }
-        },
-    })
+    const { data: checkout } = useCheckout()
 
     const { data: paymentIntent } = usePaymentIntentQuery(checkout)
     const clientSecret = paymentIntent.client_secret

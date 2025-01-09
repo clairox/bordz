@@ -27,34 +27,25 @@ const OrderListItem: React.FC<OrderItemProps> = ({ order }) => {
                             <h3>
                                 {line.quantity} x {line.title}
                             </h3>
-                            {line.product?.boardSetup && (
+                            {line.product?.board && (
                                 <ul className="text-sm">
                                     <li className="line-clamp-1">
-                                        {line.product.boardSetup?.deck.title}
+                                        {line.product.board?.deck.title}
                                     </li>
                                     <li className="line-clamp-1">
-                                        {line.product.boardSetup?.trucks.title}
+                                        {line.product.board?.trucks.title}
                                     </li>
                                     <li className="line-clamp-1">
-                                        {line.product.boardSetup?.wheels.title}
+                                        {line.product.board?.wheels.title}
                                     </li>
                                     <li className="line-clamp-1">
-                                        {
-                                            line.product.boardSetup?.bearings
-                                                .title
-                                        }
+                                        {line.product.board?.bearings.title}
                                     </li>
                                     <li className="line-clamp-1">
-                                        {
-                                            line.product.boardSetup?.hardware
-                                                .title
-                                        }
+                                        {line.product.board?.hardware.title}
                                     </li>
                                     <li className="line-clamp-1">
-                                        {
-                                            line.product.boardSetup?.griptape
-                                                .title
-                                        }
+                                        {line.product.board?.griptape.title}
                                     </li>
                                 </ul>
                             )}

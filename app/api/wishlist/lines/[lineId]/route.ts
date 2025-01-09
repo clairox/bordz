@@ -5,11 +5,8 @@ import {
 } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
-import {
-    createBadRequestError,
-    createInternalServerError,
-    createNotFoundError,
-} from '@/lib/errors'
+import { createInternalServerError, createNotFoundError } from '@/lib/errors'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 

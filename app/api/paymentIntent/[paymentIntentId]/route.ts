@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import stripe from '@/lib/stripe/server'
 import { handleRoute } from '../../shared'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ paymentIntentId: string }>
 

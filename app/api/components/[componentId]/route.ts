@@ -8,6 +8,7 @@ import {
 } from '@/drizzle/schema/component'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { handleRoute } from '../../shared'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ componentId: string }>
 

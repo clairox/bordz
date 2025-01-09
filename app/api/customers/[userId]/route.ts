@@ -5,6 +5,7 @@ import { db } from '@/drizzle/db'
 import { CustomerTable } from '@/drizzle/schema/user'
 import { createNotFoundError } from '@/lib/errors'
 import { getCustomerByUserId, handleRoute } from '../../shared'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ userId: string }>
 

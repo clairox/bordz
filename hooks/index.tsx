@@ -1,10 +1,11 @@
 import useAddCartLineMutation from './useAddCartLineMutation'
 import useAddWishlistLine from './useAddWishlistLine'
+import useAdminListOrders from './useAdminListOrders'
 import useAssets from './useAssets'
 import useAuthSession from './useAuthSession'
+import useCheckout from './useCheckout'
 import useClearCartMutation from './useClearCartMutation'
 import useCombinedPages from './useCombinedPages'
-import useComponentModelPropsQuery from './useComponentModelPropsQuery'
 import useCreateAddress from './useCreateAddress'
 import useCustomers from './useCustomers'
 import useDeleteCartLineMutation from './useDeleteCartLineMutation'
@@ -28,11 +29,12 @@ import useWishlistLines from './useWishlistLines'
 export {
     useAddCartLineMutation,
     useAddWishlistLine,
+    useAdminListOrders,
     useAssets,
     useAuthSession,
+    useCheckout,
     useClearCartMutation,
     useCombinedPages,
-    useComponentModelPropsQuery,
     useCreateAddress,
     useCustomers,
     useDeleteCartLineMutation,

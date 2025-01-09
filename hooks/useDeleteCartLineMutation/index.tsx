@@ -24,9 +24,9 @@ const useDeleteCartLineMutation = () => {
         onSuccess: cart => {
             queryClient.invalidateQueries({ queryKey: ['cart'] })
 
-            if (cart.checkout) {
+            if (cart.checkoutId) {
                 queryClient.invalidateQueries({
-                    queryKey: ['checkout', cart.checkout.id],
+                    queryKey: ['checkout', cart.checkoutId],
                 })
             }
         },

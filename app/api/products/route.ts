@@ -6,6 +6,7 @@ import { ProductTable } from '@/drizzle/schema/product'
 import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
 import { createNotFoundError } from '@/lib/errors'
 import {
+    boardSetup,
     calculateNextPageNumber,
     getComponents,
     getComponentsOverallAvailability,
@@ -14,7 +15,7 @@ import {
     handleRoute,
     validateRequestBody,
 } from '../shared'
-import { ComponentRecord } from '@/types/records'
+import { ComponentRecord } from '@/types/database'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -39,16 +40,7 @@ export const GET = async (request: NextRequest) =>
             offset: (page - 1) * size,
             orderBy: sorts[orderBy],
             with: {
-                boardSetup: {
-                    with: {
-                        deck: true,
-                        trucks: true,
-                        wheels: true,
-                        bearings: true,
-                        hardware: true,
-                        griptape: true,
-                    },
-                },
+                boardSetup,
             },
         })
 

@@ -1,4 +1,4 @@
-import { ComponentRecord } from '@/types/records'
+import { ComponentRecord } from '@/types/database'
 
 const getComponentsTotalPrice = (
     components: Record<string, ComponentRecord>

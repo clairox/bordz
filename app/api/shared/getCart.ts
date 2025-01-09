@@ -2,8 +2,10 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { CartTable } from '@/drizzle/schema/cart'
+import { CartQueryResult } from '@/types/queries'
+import { boardSetup } from './'
 
-const getCart = async (id: string) => {
+const getCart = async (id: string): Promise<CartQueryResult | undefined> => {
     return await db.query.CartTable.findFirst({
         where: eq(CartTable.id, id),
         with: {
@@ -11,16 +13,7 @@ const getCart = async (id: string) => {
                 with: {
                     product: {
                         with: {
-                            boardSetup: {
-                                with: {
-                                    deck: true,
-                                    trucks: true,
-                                    wheels: true,
-                                    bearings: true,
-                                    hardware: true,
-                                    griptape: true,
-                                },
-                            },
+                            boardSetup,
                         },
                     },
                 },

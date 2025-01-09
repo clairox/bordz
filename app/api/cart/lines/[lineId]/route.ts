@@ -10,8 +10,9 @@ import {
 import { db } from '@/drizzle/db'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
-import { CartLineRecord } from '@/types/records'
+import { CartLineRecord } from '@/types/database'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
+import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ lineId: string }>
 

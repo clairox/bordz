@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowClockwise, HeartStraight, Trash } from '@phosphor-icons/react'
+import { ArrowClockwise, Trash } from '@phosphor-icons/react'
 
 import { useDeleteCartLineMutation, useDeleteWishlistLine } from '@/hooks'
 import { useCartQuery } from '@/context/CartContext'
@@ -99,7 +99,7 @@ const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
                         wishlistLineId={
                             wishlist?.lines.find(
                                 wishlistLine =>
-                                    wishlistLine.productId === line.productId
+                                    wishlistLine.product.id === line.product.id
                             )?.id
                         }
                         key={line.id}
@@ -124,7 +124,7 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     wishlistLineId,
 }) => {
     const { product } = cartLine
-    const { boardSetup } = product
+    const { board } = product
 
     const { mutateAsync: addWishlistLine } = useAddWishlistLine()
     const { mutateAsync: deleteWishlistLine } = useDeleteWishlistLine()
@@ -136,7 +136,7 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
 
     const moveToWishlist = async () => {
         try {
-            await addWishlistLine({ productId: cartLine.productId })
+            await addWishlistLine({ productId: cartLine.product.id })
             deleteCartLine({ lineId: cartLine.id })
         } catch (error) {
             console.error(error)
@@ -176,18 +176,12 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
                     </div>
                 </div>
                 <ul className="text-sm">
-                    <li className="line-clamp-1">{boardSetup?.deck.title}</li>
-                    <li className="line-clamp-1">{boardSetup?.trucks.title}</li>
-                    <li className="line-clamp-1">{boardSetup?.wheels.title}</li>
-                    <li className="line-clamp-1">
-                        {boardSetup?.bearings.title}
-                    </li>
-                    <li className="line-clamp-1">
-                        {boardSetup?.hardware.title}
-                    </li>
-                    <li className="line-clamp-1">
-                        {boardSetup?.griptape.title}
-                    </li>
+                    <li className="line-clamp-1">{board?.deck.title}</li>
+                    <li className="line-clamp-1">{board?.trucks.title}</li>
+                    <li className="line-clamp-1">{board?.wheels.title}</li>
+                    <li className="line-clamp-1">{board?.bearings.title}</li>
+                    <li className="line-clamp-1">{board?.hardware.title}</li>
+                    <li className="line-clamp-1">{board?.griptape.title}</li>
                 </ul>
                 <div className="flex justify-between">
                     <p>Qty: {cartLine.quantity}</p>

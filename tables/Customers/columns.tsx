@@ -41,7 +41,7 @@ export const customerTableColumns: ColumnDef<Customer>[] =
                 header: 'Phone',
             },
             {
-                accessorKey: 'defaultAddress.address.formatted',
+                accessorKey: 'defaultAddress.formatted',
                 header: 'Default Address',
             },
         ],

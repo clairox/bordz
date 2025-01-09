@@ -3,7 +3,8 @@
 import { useQuery } from '@tanstack/react-query'
 
 import PriceRepr from '@/components/PriceRepr'
-import fetchAbsolute from '@/lib/fetchAbsolute'
+import { fetchOrder } from '@/lib/api'
+import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
 
 type OrderPageProps = {
     params: { orderId: string }
@@ -19,11 +20,8 @@ const OrderPage: React.FC<OrderPageProps> = ({ params }) => {
     } = useQuery<Order>({
         queryKey: ['order', orderId],
         queryFn: async () => {
-            const response = await fetchAbsolute(`/orders/${orderId}`)
-            if (!response.ok) {
-                throw response
-            }
-            return await response.json()
+            const response = await fetchOrder(orderId)
+            return orderResponseToOrder(response)
         },
     })
 
@@ -44,25 +42,25 @@ const OrderPage: React.FC<OrderPageProps> = ({ params }) => {
                         <h3>
                             {line.quantity} x {line.title}
                         </h3>
-                        {line.product?.boardSetup && (
+                        {line.product?.board && (
                             <ul className="text-sm">
                                 <li className="line-clamp-1">
-                                    {line.product.boardSetup?.deck.title}
+                                    {line.product.board?.deck.title}
                                 </li>
                                 <li className="line-clamp-1">
-                                    {line.product.boardSetup?.trucks.title}
+                                    {line.product.board?.trucks.title}
                                 </li>
                                 <li className="line-clamp-1">
-                                    {line.product.boardSetup?.wheels.title}
+                                    {line.product.board?.wheels.title}
                                 </li>
                                 <li className="line-clamp-1">
-                                    {line.product.boardSetup?.bearings.title}
+                                    {line.product.board?.bearings.title}
                                 </li>
                                 <li className="line-clamp-1">
-                                    {line.product.boardSetup?.hardware.title}
+                                    {line.product.board?.hardware.title}
                                 </li>
                                 <li className="line-clamp-1">
-                                    {line.product.boardSetup?.griptape.title}
+                                    {line.product.board?.griptape.title}
                                 </li>
                             </ul>
                         )}

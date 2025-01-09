@@ -19,7 +19,7 @@ const AddressesPage = () => {
                 <AccountSection.Header>Update address</AccountSection.Header>
                 <AccountSection.Content>
                     <AddressesView
-                        defaultAddress={customer?.defaultAddress?.address}
+                        defaultAddress={customer?.defaultAddress}
                         addresses={customer?.addresses}
                     />
                 </AccountSection.Content>

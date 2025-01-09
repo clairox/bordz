@@ -1,9 +1,10 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { OrderUpdateArgs } from '@/types/api'
 
 // TODO: PUT (?)
 const updateOrder = async (
     orderId: string,
-    args?: UpdateOrderArgs
+    args?: OrderUpdateArgs
 ): Promise<Order> => {
     const response = await fetchAbsolute(`/orders/${orderId}`, {
         method: 'PATCH',

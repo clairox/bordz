@@ -1,4 +1,5 @@
 import { fetchOrders } from '@/lib/api'
+import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
 import {
     InfiniteData,
     QueryKey,
@@ -16,8 +17,13 @@ const useOrders = (args?: UseOrdersArgs) => {
         number
     >({
         queryKey: ['orders', args],
-        queryFn: async ({ pageParam }) =>
-            await fetchOrders({ ...args, page: pageParam }),
+        queryFn: async ({ pageParam }) => {
+            const response = await fetchOrders({ ...args, page: pageParam })
+            return {
+                ...response,
+                data: response.data.map(order => orderResponseToOrder(order)),
+            }
+        },
         initialPageParam: 1,
         getNextPageParam: lastPage => lastPage.nextPage,
     })

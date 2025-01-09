@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { WishlistTable } from '@/drizzle/schema/wishlist'
+import { boardSetup } from './'
 
 const getWishlist = async (id: string) => {
     return await db.query.WishlistTable.findFirst({
@@ -11,16 +12,7 @@ const getWishlist = async (id: string) => {
                 with: {
                     product: {
                         with: {
-                            boardSetup: {
-                                with: {
-                                    deck: true,
-                                    trucks: true,
-                                    wheels: true,
-                                    bearings: true,
-                                    hardware: true,
-                                    griptape: true,
-                                },
-                            },
+                            boardSetup,
                         },
                     },
                 },

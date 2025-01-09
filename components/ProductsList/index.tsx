@@ -1,14 +1,11 @@
 'use client'
 
 import { Fragment } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { ArrowClockwise } from '@phosphor-icons/react'
+import Link from 'next/link'
 
 import { useCartQuery } from '@/context/CartContext'
 import { useAddCartLineMutation, useDeleteWishlistLine } from '@/hooks'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import PriceRepr from '../PriceRepr'
-import Link from 'next/link'
 import useAddWishlistLine from '@/hooks/useAddWishlistLine'
 import { useWishlist } from '@/context/WishlistContext'
 import WishlistButton from '../WishlistButton'
@@ -26,11 +23,11 @@ const ProductsList: React.FC<ProductsListProps> = ({ products }) => {
         <div className="grid grid-cols-4 gap-[1px] w-full border-b border-black">
             {products.map(product => {
                 const cartLineId = cart?.lines.find(
-                    line => line.productId === product.id
+                    line => line.product.id === product.id
                 )?.id
 
                 const wishlistLineId = wishlist?.lines.find(
-                    line => line.productId === product.id
+                    line => line.product.id === product.id
                 )?.id
 
                 return (
@@ -74,26 +71,26 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
     return (
         <article className="flex flex-col gap-2 p-6 border-r border-black last:border-none">
             <h3>{product.title}</h3>
-            {product.boardSetup != undefined && (
+            {product.board != undefined && (
                 <Fragment>
                     <ul className="text-sm">
                         <li className="line-clamp-1">
-                            {product.boardSetup?.deck.title}
+                            {product.board?.deck.title}
                         </li>
                         <li className="line-clamp-1">
-                            {product.boardSetup?.trucks.title}
+                            {product.board?.trucks.title}
                         </li>
                         <li className="line-clamp-1">
-                            {product.boardSetup?.wheels.title}
+                            {product.board?.wheels.title}
                         </li>
                         <li className="line-clamp-1">
-                            {product.boardSetup?.bearings.title}
+                            {product.board?.bearings.title}
                         </li>
                         <li className="line-clamp-1">
-                            {product.boardSetup?.hardware.title}
+                            {product.board?.hardware.title}
                         </li>
                         <li className="line-clamp-1">
-                            {product.boardSetup?.griptape.title}
+                            {product.board?.griptape.title}
                         </li>
                     </ul>
                     <Link

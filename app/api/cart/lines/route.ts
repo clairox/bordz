@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
 import {
+    boardSetup,
     getCart,
     getProduct,
     getRequiredRequestCookie,
@@ -12,7 +13,7 @@ import {
 import { db } from '@/drizzle/db'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
-import { CartLineRecord, ProductRecord } from '@/types/records'
+import { CartLineRecord, ProductRecord } from '@/types/database'
 import {
     createConflictError,
     createInternalServerError,
@@ -98,16 +99,7 @@ const createCartLine = async (
                     with: {
                         product: {
                             with: {
-                                boardSetup: {
-                                    with: {
-                                        deck: true,
-                                        trucks: true,
-                                        wheels: true,
-                                        bearings: true,
-                                        hardware: true,
-                                        griptape: true,
-                                    },
-                                },
+                                boardSetup,
                             },
                         },
                     },

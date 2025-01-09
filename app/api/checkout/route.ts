@@ -13,6 +13,7 @@ import { db } from '@/drizzle/db'
 import { CheckoutLineItemTable, CheckoutTable } from '@/drizzle/schema/checkout'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG, SHIPPING_COST } from '@/utils/constants'
+import { CartQueryResult, CartQueryResultLine } from '@/types/queries'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -30,7 +31,6 @@ export const GET = async (request: NextRequest) =>
                 throw createNotFoundError('Cart')
             }
 
-            // @ts-expect-error weird type shit
             const newCheckout = await createCheckout(cart)
 
             const cookie = serialize('checkoutId', newCheckout.id, {
@@ -77,7 +77,7 @@ export const PATCH = async (request: NextRequest) =>
         return NextResponse.json(updatedCheckout)
     })
 
-const createCheckout = async (cart: Cart) => {
+const createCheckout = async (cart: CartQueryResult) => {
     const totalTax = calculateTaxManually(cart.total)
 
     const newCheckoutId = await db
@@ -105,7 +105,7 @@ const createCheckout = async (cart: Cart) => {
 
 const createCheckoutLines = async (
     newCheckoutId: string,
-    cartLines: CartLine[]
+    cartLines: CartQueryResultLine[]
 ) => {
     return await db
         .insert(CheckoutLineItemTable)

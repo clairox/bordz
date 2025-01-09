@@ -55,7 +55,7 @@ const SkateLabUIMenuListItem: React.FC<SkateLabUIMenuListItemProps> = ({
     isSelected,
     selectComponent,
 }) => {
-    const category = component.componentAttributes.category.label
+    const category = component.category.label
 
     const handleComponentSelection = () => {
         const typeFromCategory = getTypeFromCategory(category)

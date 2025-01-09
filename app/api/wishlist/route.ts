@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { and, eq, notInArray } from 'drizzle-orm'
 import { serialize } from 'cookie'
 
-import { getWishlist, handleRoute } from '../shared'
+import { boardSetup, getWishlist, handleRoute } from '../shared'
 import { db } from '@/drizzle/db'
-import { WishlistLineRecord, WishlistRecord } from '@/types/records'
+import { WishlistLineRecord, WishlistRecord } from '@/types/database'
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import { createInternalServerError } from '@/lib/errors'
 import {
@@ -112,16 +112,7 @@ const getWishlistByOwnerId = async (ownerId: string) => {
                 with: {
                     product: {
                         with: {
-                            boardSetup: {
-                                with: {
-                                    deck: true,
-                                    trucks: true,
-                                    wheels: true,
-                                    bearings: true,
-                                    hardware: true,
-                                    griptape: true,
-                                },
-                            },
+                            boardSetup,
                         },
                     },
                 },

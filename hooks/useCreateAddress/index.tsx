@@ -7,13 +7,13 @@ import fetchAbsolute from '@/lib/fetchAbsolute'
 type UseCreateAddressArgs = {
     fullName: string
     line1: string
-    line2?: string | null
+    line2?: string
     city: string
     state: string
     countryCode: string
     postalCode: string
-    phone?: string | null
-    ownerId: string | null
+    phone?: string
+    ownerId?: string
     isCustomerDefault?: boolean
 }
 

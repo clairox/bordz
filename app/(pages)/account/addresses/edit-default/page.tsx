@@ -21,8 +21,8 @@ const EditDefaultAddressPage = () => {
     )
 
     useEffect(() => {
-        if (customerStatus === 'success' && customer?.defaultAddress?.address) {
-            setDefaultAddressId(customer.defaultAddress.address.id)
+        if (customerStatus === 'success' && customer?.defaultAddress) {
+            setDefaultAddressId(customer.defaultAddress.id)
         }
     }, [customerStatus, customer])
 

@@ -16,7 +16,7 @@ import {
     CART_ID_COOKIE_MAX_AGE,
     DEFAULT_COOKIE_CONFIG,
 } from '@/utils/constants'
-import { CartLineRecord, CartRecord } from '@/types/records'
+import { CartLineRecord, CartRecord } from '@/types/database'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {

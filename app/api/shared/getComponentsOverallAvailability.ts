@@ -1,4 +1,4 @@
-import { ComponentRecord } from '@/types/records'
+import { ComponentRecord } from '@/types/database'
 
 const getComponentsOverallAvailability = (
     components: Record<string, ComponentRecord>

@@ -10,9 +10,9 @@ import {
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import { useAuth } from '../AuthContext'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useSupabase } from '../SupabaseContext'
 import { useGetAuthSession, useGetSessionUserRole } from '@/hooks'
+import { fetchCustomer } from '@/lib/api'
 
 type CustomerContextValue = UseQueryResult<Customer | null, Error>
 
@@ -20,14 +20,6 @@ const CustomerContext = createContext<CustomerContextValue>(
     {} as CustomerContextValue
 )
 const useCustomer = () => useContext(CustomerContext)
-
-const fetchCustomer = async (userId: string) => {
-    const response = await fetchAbsolute(`/customers/${userId}`)
-    if (!response.ok) {
-        throw response
-    }
-    return await response.json()
-}
 
 const useProvideCustomer = () => {
     const supabase = useSupabase()

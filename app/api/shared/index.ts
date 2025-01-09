@@ -1,3 +1,4 @@
+import boardSetup from './boardSetup'
 import calculateNextPageNumber from './calculateNextPageNumber'
 import decodeSessionToken from './decodeSessionToken'
 import handleRoute from './handleRoute'
@@ -18,6 +19,7 @@ import updateCheckout from './updateCheckout'
 import validateRequestBody from './validateRequestBody'
 
 export {
+    boardSetup,
     calculateNextPageNumber,
     decodeSessionToken,
     handleRoute,
