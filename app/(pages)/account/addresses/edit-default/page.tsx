@@ -1,11 +1,11 @@
 'use client'
 
 import { FormEvent, useEffect, useState } from 'react'
-
-import AddressDisplay from '../../_components/AddressDisplay'
-import { useUpdateAddress } from '../../_hooks'
-import ButtonAsync from '@/components/ButtonAsync'
 import { useRouter } from 'next/navigation'
+
+import { useUpdateAddress } from '@/hooks'
+import AddressDisplay from '@/components/AddressDisplay'
+import ButtonAsync from '@/components/ButtonAsync'
 import { useCustomer } from '@/context/CustomerContext'
 
 const EditDefaultAddressPage = () => {

@@ -22,7 +22,7 @@
 -   [x] Move utility functions in routes to bottom
 -   [ ] Create form password input component
 -   [x] Move all fetches to /lib/api
--   [ ] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
+-   [x] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
 -   [ ] Add 'add' button with text input to select
 -   [ ] Use Supabase for data storage
 -   [ ] Reorganize file structure
@@ -34,6 +34,7 @@
 -   [x] Paginate admin tables
 -   [ ] Change createBadRequestError to handle Missing required fields:
 -   [ ] Change validateRequestBody to validateRequestData
+-   [ ] Validate request body with zod
 -   [ ] Use bucket arg with useImages hook
 -   [ ] Create default unexpected error text constant
 -   [ ] Use numbers where necessary in form schemas

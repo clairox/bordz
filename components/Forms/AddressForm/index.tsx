@@ -11,8 +11,7 @@ import FormMessage from '@/components/FormMessage'
 import ButtonAsync from '@/components/ButtonAsync'
 import { FormInput, FormSelect } from '@/components/Form'
 import states from './states'
-import { useUpdateAddress } from '../../_hooks'
-import { useCreateAddress } from '@/hooks'
+import { useCreateAddress, useUpdateAddress } from '@/hooks'
 import { useRouter } from 'next/navigation'
 
 type FormData = z.infer<typeof AddressFormSchema>

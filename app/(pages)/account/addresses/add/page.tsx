@@ -1,7 +1,7 @@
 'use client'
 
 import { useCustomer } from '@/context/CustomerContext'
-import AddressForm from '../../_components/AddressForm'
+import AddressForm from '@/components/Forms/AddressForm'
 
 const AddAddressPage = () => {
     const { data: customer, error, isPending } = useCustomer()

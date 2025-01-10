@@ -6,11 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { AuthApiError } from '@supabase/supabase-js'
 
 import DeleteAccountFormSchema from './schema'
-import { useFormMessage } from '@/hooks'
+import { useDeleteAccount, useFormMessage } from '@/hooks'
 import FormMessage from '@/components/FormMessage'
 import { FormInput } from '@/components/Form'
 import ButtonAsync from '@/components/ButtonAsync'
-import { useDeleteAccount } from '../../_hooks'
 
 type FormData = z.infer<typeof DeleteAccountFormSchema>
 

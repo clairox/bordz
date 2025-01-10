@@ -3,14 +3,13 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AuthError } from '@supabase/supabase-js'
 
-import useUpdatePersonalDetails from '../../_hooks/useUpdatePersonalDetails'
-import { useFormMessage } from '@/hooks'
+import { useUpdatePersonalDetails, useFormMessage } from '@/hooks'
 import PersonalDetailsFormSchema from './schema'
 import FormMessage from '@/components/FormMessage'
 import { FormInput } from '@/components/Form'
 import ButtonAsync from '@/components/ButtonAsync'
-import { AuthError } from '@supabase/supabase-js'
 
 type FormData = z.infer<typeof PersonalDetailsFormSchema>
 

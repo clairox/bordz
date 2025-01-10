@@ -3,9 +3,9 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
 
-import AccountHeading from '../_components/AccountHeading'
-import { default as Section } from '../_components/AccountSection'
-import OrderList from '../_components/OrderList'
+import AccountHeading from '@/components/AccountHeading'
+import { default as Section } from '@/components/AccountSection'
+import OrderList from '@/components/OrderList'
 import { useCustomer } from '@/context/CustomerContext'
 import { useOrders } from '@/hooks'
 import InfiniteItemList from '@/components/InfiniteItemList'

@@ -135,12 +135,8 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     }
 
     const moveToWishlist = async () => {
-        try {
-            await addWishlistLine({ productId: cartLine.product.id })
-            deleteCartLine({ lineId: cartLine.id })
-        } catch (error) {
-            console.error(error)
-        }
+        await addWishlistLine({ productId: cartLine.product.id })
+        deleteCartLine({ lineId: cartLine.id })
     }
 
     const handleWishlistButtonToggle = () => {

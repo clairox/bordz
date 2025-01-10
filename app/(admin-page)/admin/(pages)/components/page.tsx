@@ -1,11 +1,11 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useComponents from '@/hooks/useComponents'
 import { DataTable } from '@/components/ShadUI/DataTable'
 import { componentTableColumns } from '@/tables/Components/columns'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteComponents } from '@/lib/api'
 
 const ComponentsPage: React.FC = () => {

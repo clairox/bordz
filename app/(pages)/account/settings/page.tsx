@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation'
 
-import AccountHeading from '../_components/AccountHeading'
-import { default as Section } from '../_components/AccountSection'
-import AddressesView from '../_components/AddressesView'
+import AccountHeading from '@/components/AccountHeading'
+import { default as Section } from '@/components/AccountSection'
+import AddressesView from '@/components/AddressesView'
 import { useAuth } from '@/context/AuthContext'
 import { useCustomer } from '@/context/CustomerContext'
 

@@ -1,8 +1,8 @@
 'use client'
 
-import AccountHeading from '../_components/AccountHeading'
-import AccountSection from '../_components/AccountSection'
-import PersonalDetailsForm from '../_components/PersonalDetailsForm'
+import AccountHeading from '@/components/AccountHeading'
+import AccountSection from '@/components/AccountSection'
+import PersonalDetailsForm from '@/components/Forms/PersonalDetailsForm'
 import { useAuth } from '@/context/AuthContext'
 import { useCustomer } from '@/context/CustomerContext'
 

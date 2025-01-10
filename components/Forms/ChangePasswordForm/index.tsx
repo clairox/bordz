@@ -5,11 +5,10 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { useFormMessage } from '@/hooks'
+import { useUpdatePassword, useFormMessage } from '@/hooks'
 import FormMessage from '@/components/FormMessage'
 import { FormInput } from '@/components/Form'
 import ButtonAsync from '@/components/ButtonAsync'
-import { useUpdatePassword } from '../../_hooks'
 import ChangePasswordFormSchema from './schema'
 import { AuthError } from '@supabase/supabase-js'
 

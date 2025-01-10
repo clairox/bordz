@@ -1,9 +1,9 @@
 'use client'
 
 import { useCustomer } from '@/context/CustomerContext'
-import DeleteAccountForm from '../_components/DeleteAccountForm'
-import AccountSection from '../_components/AccountSection'
-import AccountHeading from '../_components/AccountHeading'
+import DeleteAccountForm from '@/components/DeleteAccountForm'
+import AccountSection from '@/components/AccountSection'
+import AccountHeading from '@/components/AccountHeading'
 
 const DeleteAccountPage = () => {
     const { isPending } = useCustomer()

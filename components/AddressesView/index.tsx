@@ -1,6 +1,7 @@
 import { useRouter } from 'next/navigation'
-import AddressDisplay from '../AddressDisplay'
-import { useDeleteAddress } from '../../_hooks'
+
+import AddressDisplay from '@/components/AddressDisplay'
+import { useDeleteAddress } from '@/hooks'
 
 type AddressesViewProps = {
     defaultAddress?: Address

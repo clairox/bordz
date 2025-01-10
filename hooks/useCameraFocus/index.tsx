@@ -3,7 +3,7 @@
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Euler, Group, Matrix4, Mesh, Object3D, Vector3 } from 'three'
 
-import { useSkateLabContext } from '../../SkateLabContext'
+import { useSkateLabContext } from '../../app/(skate-lab-page)/lab/SkateLab/SkateLabContext'
 
 type ComponentFocusData = {
     focusRef: RefObject<Object3D>
