@@ -2,8 +2,8 @@
 
 import { useParams } from 'next/navigation'
 
-import { useAddress } from '@/hooks'
-import AddressForm from '@/components/Forms/AddressForm'
+import { useAddress } from '@/hooks/data/address'
+import AddressForm from '@/components/forms/AddressForm'
 
 const EditAddressPage = () => {
     const { addressId } = useParams()
@@ -19,7 +19,7 @@ const EditAddressPage = () => {
         return <div>Loading...</div>
     }
 
-    // TODO: do something about this ownerId prop thing
+    // BUG: do something about this ownerId prop thing
     return <AddressForm existingAddress={address} />
 }
 

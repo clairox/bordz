@@ -34,7 +34,7 @@ export const PATCH = async (
             })
             .where(eq(CustomerTable.userId, userId))
             .returning()
-            .then(rows => rows[0])
+            .then(async rows => await getCustomerByUserId(rows[0].userId))
 
         return NextResponse.json(customer)
     })

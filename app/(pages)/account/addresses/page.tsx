@@ -1,8 +1,7 @@
 'use client'
 
-import AccountHeading from '@/components/AccountHeading'
-import AccountSection from '@/components/AccountSection'
-import AddressesView from '@/components/AddressesView'
+import { AccountHeading, AccountSection } from '@/components/features/Account'
+import { AddressesView } from '@/components/features/Addresses'
 import { useCustomer } from '@/context/CustomerContext'
 
 const AddressesPage = () => {

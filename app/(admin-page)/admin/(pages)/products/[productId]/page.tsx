@@ -5,9 +5,9 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { fetchProduct } from '@/lib/api'
 import EditProductFormSchema from './schema'
-import AdminResourceDataForm from '@/components/AdminResourceDataForm'
-import { useUpdateProduct } from '@/hooks'
-import productResponseToProduct from '@/utils/helpers/productResponseToProduct'
+import { AdminResourceDataForm } from '@/components/features/Admin'
+import { useUpdateProduct } from '@/hooks/data/product'
+import { mapProductResponseToProduct } from '@/utils/conversions'
 
 const ProductPage: React.FC = () => {
     const params = useParams()
@@ -15,7 +15,7 @@ const ProductPage: React.FC = () => {
         queryKey: ['product', params.productId],
         queryFn: async () => {
             const data = await fetchProduct(params.productId as string)
-            return productResponseToProduct(data)
+            return mapProductResponseToProduct(data)
         },
     })
 

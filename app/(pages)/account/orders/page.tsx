@@ -3,12 +3,14 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
 
-import AccountHeading from '@/components/AccountHeading'
-import { default as Section } from '@/components/AccountSection'
-import OrderList from '@/components/OrderList'
+import {
+    AccountHeading,
+    AccountSection as Section,
+} from '@/components/features/Account'
+import { OrderList } from '@/components/features/Orders'
 import { useCustomer } from '@/context/CustomerContext'
-import { useOrders } from '@/hooks'
-import InfiniteItemList from '@/components/InfiniteItemList'
+import { useOrders } from '@/hooks/data/order'
+import InfiniteItemList from '@/components/common/InfiniteItemList'
 
 const OrdersPage = () => {
     const { data: customer, error, isPending } = useCustomer()

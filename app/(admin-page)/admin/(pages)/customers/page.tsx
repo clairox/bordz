@@ -2,8 +2,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { DataTable } from '@/components/ShadUI/DataTable'
-import { useCustomers } from '@/hooks'
+import { DataTable } from '@/components/ui/DataTable'
+import { useCustomers } from '@/hooks/data/customer'
 import { deleteCustomers } from '@/lib/api'
 import { customerTableColumns } from '@/tables/Customers/columns'
 

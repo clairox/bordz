@@ -6,6 +6,7 @@ import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
 import { ProductTable } from '@/drizzle/schema/product'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import {
+    boardSetup,
     getBoardSetup,
     getComponents,
     getComponentsOverallAvailability,
@@ -24,7 +25,7 @@ export const GET = async (_: NextRequest, { params: { productId } }: Props) =>
         const product = await db.query.ProductTable.findFirst({
             where: eq(ProductTable.id, productId),
             with: {
-                boardSetup: true,
+                boardSetup,
             },
         })
 
@@ -81,6 +82,7 @@ export const PATCH = async (
             const updatedProduct = await updateProduct(productId, {
                 price: totalPrice,
                 availableForSale: availability,
+                isPublic: data.isPublic,
             })
 
             const { deck, trucks, wheels, bearings, hardware, griptape } =
@@ -102,6 +104,7 @@ export const PATCH = async (
                 price: data.price,
                 availableForSale: data.availableForSale,
                 featuredImage: data.featuredImage,
+                isPublic: data.isPublic,
             })
 
             return NextResponse.json(updatedProduct)
@@ -115,6 +118,7 @@ const updateProduct = async (
         price?: number
         availableForSale?: boolean
         featuredImage?: string
+        isPublic?: boolean
     }
 ) => {
     const updatedProduct = await db
@@ -124,6 +128,7 @@ const updateProduct = async (
             price: values.price,
             availableForSale: values.availableForSale,
             featuredImage: values.featuredImage,
+            isPublic: values.isPublic,
             updatedAt: new Date(),
         })
         .where(eq(ProductTable.id, id))

@@ -5,10 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Trash } from '@phosphor-icons/react'
 
-import { useDeleteWishlistLine, useWishlistLines } from '@/hooks'
-import PriceRepr from '@/components/PriceRepr'
-import SortSelect from '@/components/SortSelect'
-import InfiniteItemList from '@/components/InfiniteItemList'
+import { useDeleteWishlistLine, useWishlistLines } from '@/hooks/data/wishlist'
+import PriceRepr from '@/components/common/PriceRepr'
+import SortSelect from '@/components/features/Sorting/SortSelect'
+import InfiniteItemList from '@/components/common/InfiniteItemList'
 
 const SavedItemsPage = () => {
     const searchParams = useSearchParams()

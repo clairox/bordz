@@ -8,12 +8,12 @@ import {
     getRequiredRequestCookie,
     handleRoute,
 } from '@/app/api/shared'
-import { calculateTaxManually } from '@/utils/helpers'
+import { calculateTaxManually } from '@/utils/domain'
 import { db } from '@/drizzle/db'
 import { CheckoutLineItemTable, CheckoutTable } from '@/drizzle/schema/checkout'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG, SHIPPING_COST } from '@/utils/constants'
-import { CartQueryResult, CartQueryResultLine } from '@/types/queries'
+import { CartQueryResult, CartLineQueryResult } from '@/types/queries'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -105,7 +105,7 @@ const createCheckout = async (cart: CartQueryResult) => {
 
 const createCheckoutLines = async (
     newCheckoutId: string,
-    cartLines: CartQueryResultLine[]
+    cartLines: CartLineQueryResult[]
 ) => {
     return await db
         .insert(CheckoutLineItemTable)

@@ -11,9 +11,9 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import { useAuth } from '../AuthContext'
 import { useSupabase } from '../SupabaseContext'
-import { useGetAuthSession, useGetSessionUserRole } from '@/hooks'
+import { useGetAuthSession, useGetSessionUserRole } from '@/hooks/auth'
 import { fetchCustomer } from '@/lib/api'
-import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
+import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 
 type CustomerContextValue = UseQueryResult<Customer | null, Error>
 
@@ -88,7 +88,7 @@ const useProvideCustomer = () => {
             }
 
             const data = await fetchCustomer(user.id)
-            return customerResponseToCustomer(data)
+            return mapCustomerResponseToCustomer(data)
         },
         enabled: isCustomerQueryEnabled,
     })

@@ -24,7 +24,7 @@ export const POST = async (request: NextRequest) =>
             .values({
                 fullName: data.fullName,
                 line1: data.line1,
-                line2: data.line2,
+                line2: data.line2 || null,
                 city: data.city,
                 state: data.state,
                 postalCode: data.postalCode,

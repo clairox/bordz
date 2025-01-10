@@ -4,8 +4,8 @@ import { useParams } from 'next/navigation'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { fetchCustomer } from '@/lib/api'
-import UpdateCustomerForm from '@/components/Forms/UpdateCustomerForm'
-import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
+import UpdateCustomerForm from '@/components/forms/UpdateCustomerForm'
+import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 
 const CustomerPage = () => {
     const { userId } = useParams<Record<string, string>>()
@@ -13,7 +13,7 @@ const CustomerPage = () => {
         queryKey: ['customer', userId],
         queryFn: async () => {
             const data = await fetchCustomer(userId)
-            return customerResponseToCustomer(data)
+            return mapCustomerResponseToCustomer(data)
         },
     })
 

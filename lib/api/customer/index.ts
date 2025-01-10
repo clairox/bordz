@@ -4,7 +4,7 @@ import {
     CustomerResponse,
     CustomerUpdateArgs,
 } from '@/types/api'
-import { buildPathWithParams } from '@/utils/helpers'
+import { buildPathWithParams } from '@/utils/url'
 
 export const fetchCustomer = async (
     userId: string

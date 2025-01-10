@@ -1,4 +1,4 @@
-import { createUrlHandle } from '@/utils/helpers'
+import { createUrlHandle } from '@/utils/url'
 import { db } from '.'
 import {
     CategoryTable,

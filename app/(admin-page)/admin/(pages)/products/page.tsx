@@ -2,8 +2,8 @@
 
 import { useSearchParams } from 'next/navigation'
 
-import useProducts from '@/hooks/useProducts'
-import { DataTable } from '@/components/ShadUI/DataTable'
+import { useProducts } from '@/hooks/data/product'
+import { DataTable } from '@/components/ui/DataTable'
 import { productTableColumns } from '@/tables/Products/columns'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteProducts } from '@/lib/api'

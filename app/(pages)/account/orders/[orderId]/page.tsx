@@ -2,9 +2,9 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import PriceRepr from '@/components/PriceRepr'
+import PriceRepr from '@/components/common/PriceRepr'
 import { fetchOrder } from '@/lib/api'
-import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
+import { mapOrderResponseToOrder } from '@/utils/conversions'
 
 type OrderPageProps = {
     params: { orderId: string }
@@ -21,7 +21,7 @@ const OrderPage: React.FC<OrderPageProps> = ({ params }) => {
         queryKey: ['order', orderId],
         queryFn: async () => {
             const response = await fetchOrder(orderId)
-            return orderResponseToOrder(response)
+            return mapOrderResponseToOrder(response)
         },
     })
 

@@ -1,8 +1,7 @@
 'use client'
 
-import AccountHeading from '@/components/AccountHeading'
-import AccountSection from '@/components/AccountSection'
-import ChangePasswordForm from '@/components/Forms/ChangePasswordForm'
+import { AccountHeading, AccountSection } from '@/components/features/Account'
+import ChangePasswordForm from '@/components/forms/ChangePasswordForm'
 import { useCustomer } from '@/context/CustomerContext'
 
 const ChangePasswordPage = () => {

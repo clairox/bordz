@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-import { getUserRole } from '@/utils/helpers'
+import { getUserRole } from '@/utils/session'
 
 const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY

@@ -3,9 +3,9 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { useUpdateAddress } from '@/hooks'
-import AddressDisplay from '@/components/AddressDisplay'
-import ButtonAsync from '@/components/ButtonAsync'
+import { useUpdateAddress } from '@/hooks/data/address'
+import { AddressDisplay } from '@/components/features/Addresses'
+import ButtonAsync from '@/components/ui/ButtonAsync'
 import { useCustomer } from '@/context/CustomerContext'
 
 const EditDefaultAddressPage = () => {

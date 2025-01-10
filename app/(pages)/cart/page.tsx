@@ -1,4 +1,4 @@
-import Cart from '@/components/Cart'
+import Cart from '@/components/features/Cart'
 
 const CartPage: React.FC = () => {
     return <Cart />

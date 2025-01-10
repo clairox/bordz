@@ -1,10 +1,11 @@
 'use client'
 
-import { DataTable } from '@/components/ShadUI/DataTable'
-import { useAdminListOrders } from '@/hooks'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+import { DataTable } from '@/components/ui/DataTable'
+import { useAdminListOrders } from '@/hooks/data/order'
 import { deleteOrders } from '@/lib/api'
 import { orderTableColumns } from '@/tables/Orders/columns'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 const OrdersPage = () => {
     const { data, hasNextPage, fetchNextPage } = useAdminListOrders()

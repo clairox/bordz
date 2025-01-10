@@ -4,7 +4,7 @@ import {
     ComponentResponse,
     ComponentUpdateArgs,
 } from '@/types/api'
-import { buildParamString } from '@/utils/helpers'
+import { buildParamString } from '@/utils/url'
 
 export const fetchComponent = async (
     id: string

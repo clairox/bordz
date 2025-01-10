@@ -2,10 +2,10 @@
 
 import { useSearchParams } from 'next/navigation'
 
-import ProductsList from '@/components/ProductsList'
-import useProducts from '@/hooks/useProducts'
-import SortSelect from '@/components/SortSelect'
-import InfiniteItemList from '@/components/InfiniteItemList'
+import { ProductsList } from '@/components/features/Products'
+import { useProducts } from '@/hooks/data/product'
+import SortSelect from '@/components/features/Sorting/SortSelect'
+import InfiniteItemList from '@/components/common/InfiniteItemList'
 
 const BrowsePage: React.FC = () => {
     const searchParams = useSearchParams()

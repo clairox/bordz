@@ -25,7 +25,7 @@
 -   [x] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
 -   [ ] Add 'add' button with text input to select
 -   [ ] Use Supabase for data storage
--   [ ] Reorganize file structure
+-   [x] Reorganize file structure
 -   [ ] Figure out a better naming convention for List and ListItem components
 -   [ ] Use unauthorized error for missing session token
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
@@ -42,6 +42,7 @@
 -   [ ] Call useParams with <Record<string, string>>
 -   [ ] Automatically add ' \*' to form field labels if required
 -   [x] Return response.json() and handle error inside fetchAbsolute
+-   [ ] Move id to mutation fn in data mutation hooks
 
 ### Cart
 

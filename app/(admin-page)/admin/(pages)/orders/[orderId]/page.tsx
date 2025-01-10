@@ -3,9 +3,9 @@
 import { useParams } from 'next/navigation'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
-import fetchOrder from '@/lib/api/fetchOrder'
-import UpdateOrderForm from '@/components/Forms/UpdateOrderForm'
-import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
+import { fetchOrder } from '@/lib/api'
+import UpdateOrderForm from '@/components/forms/UpdateOrderForm'
+import { mapOrderResponseToOrder } from '@/utils/conversions'
 
 const OrderPage = () => {
     const { orderId } = useParams<Record<string, string>>()
@@ -13,7 +13,7 @@ const OrderPage = () => {
         queryKey: ['order', orderId],
         queryFn: async () => {
             const response = await fetchOrder(orderId)
-            return orderResponseToOrder(response)
+            return mapOrderResponseToOrder(response)
         },
     })
 

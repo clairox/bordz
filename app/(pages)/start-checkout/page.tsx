@@ -1,6 +1,6 @@
-import ContinueAsGuestForm from '@/components/Forms/ContinueAsGuestForm'
-import LoginForm from '@/components/Forms/LoginForm'
-import SignupForm from '@/components/Forms/SignupForm'
+import ContinueAsGuestForm from '@/components/forms/ContinueAsGuestForm'
+import LoginForm from '@/components/forms/LoginForm'
+import SignupForm from '@/components/forms/SignupForm'
 
 type StartCheckoutPageProps = {
     searchParams: { register?: string }

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import '@/styles/globals.css'
 import Providers from '@/context/providers'
-import Header from '@/components/Header'
+import Header from '@/components/layout/Header'
 
 export const metadata: Metadata = {
     title: 'Skate Lab | Bordz',

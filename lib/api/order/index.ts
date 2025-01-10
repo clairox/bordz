@@ -1,6 +1,6 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { OrderResponse, OrderUpdateArgs } from '@/types/api'
-import { buildPathWithParams } from '@/utils/helpers'
+import { buildPathWithParams } from '@/utils/url'
 
 export const fetchOrder = async (id: string): Promise<OrderResponse> => {
     return await fetchAbsolute<OrderResponse>(`/orders/${id}`, {

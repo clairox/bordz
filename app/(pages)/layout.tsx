@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { Public_Sans } from 'next/font/google'
 
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import { cn } from '@/utils/helpers'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import { cn } from '@/utils'
 import Providers from '@/context/providers'
 
 import '@/styles/globals.css'

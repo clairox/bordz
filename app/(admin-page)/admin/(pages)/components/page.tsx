@@ -3,8 +3,8 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import useComponents from '@/hooks/useComponents'
-import { DataTable } from '@/components/ShadUI/DataTable'
+import { useComponents } from '@/hooks/data/component'
+import { DataTable } from '@/components/ui/DataTable'
 import { componentTableColumns } from '@/tables/Components/columns'
 import { deleteComponents } from '@/lib/api'
 

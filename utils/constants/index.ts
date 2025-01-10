@@ -11,6 +11,15 @@ export const DEFAULT_PAGE_SIZE = 40
 export const DEFAULT_PAGE_NUMBER = 1
 export const DEFAULT_SORT_KEY = 'date-desc'
 
+export const CATEGORIES: Category['label'][] = [
+    'Decks',
+    'Trucks',
+    'Wheels',
+    'Bearings',
+    'Hardware',
+    'Griptape',
+]
+
 export const DEFAULT_COOKIE_CONFIG: SerializeOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',

@@ -11,9 +11,9 @@ import {
     fetchVendors,
 } from '@/lib/api'
 import EditComponentFormSchema from './schema'
-import AdminResourceDataForm from '@/components/AdminResourceDataForm'
-import { useUpdateComponent } from '@/hooks'
-import componentResponseToComponent from '@/utils/helpers/componentResponseToComponent'
+import { AdminResourceDataForm } from '@/components/features/Admin'
+import { useUpdateComponent } from '@/hooks/data/component'
+import { mapComponentResponseToComponent } from '@/utils/conversions'
 
 const ComponentPage: React.FC = () => {
     const params = useParams()
@@ -21,7 +21,7 @@ const ComponentPage: React.FC = () => {
         queryKey: ['components', params.componentId],
         queryFn: async () => {
             const data = await fetchComponent(params.componentId as string)
-            return componentResponseToComponent(data)
+            return mapComponentResponseToComponent(data)
         },
     })
 

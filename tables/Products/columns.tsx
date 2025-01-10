@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { ColumnDef } from '@tanstack/react-table'
 
-import PriceRepr from '@/components/PriceRepr'
-import SortableColumnHeader from '@/components/SortableColumnHeader'
-import buildDataTableColumns from '@/utils/helpers/buildDataTableColumns'
+import PriceRepr from '@/components/common/PriceRepr'
+import SortableColumnHeader from '@/components/common/SortableColumnHeader'
+import { buildDataTableColumns } from '@/utils'
 
 export const productTableColumns: ColumnDef<Product>[] = buildDataTableColumns(
     [

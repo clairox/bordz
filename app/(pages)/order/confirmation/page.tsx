@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
 
-import PriceRepr from '@/components/PriceRepr'
+import PriceRepr from '@/components/common/PriceRepr'
 import { getQueryClient } from '@/lib/queryClient'
 import { fetchOrder } from '@/lib/api'
-import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
+import { mapOrderResponseToOrder } from '@/utils/conversions'
 
 const queryClient = getQueryClient()
 
@@ -23,7 +23,7 @@ const CheckoutCompletePage: React.FC<CheckoutCompletePageProps> = async ({
         queryKey: ['order', orderId],
         queryFn: async () => {
             const response = await fetchOrder(orderId)
-            return orderResponseToOrder(response)
+            return mapOrderResponseToOrder(response)
         },
     })
 

@@ -10,7 +10,7 @@ import {
     VendorTable,
 } from '@/drizzle/schema/component'
 import { count, eq, inArray } from 'drizzle-orm'
-import { createUrlHandle } from '@/utils/helpers'
+import { createUrlHandle } from '@/utils/url'
 import {
     getRequestOptionsParams,
     handleRoute,

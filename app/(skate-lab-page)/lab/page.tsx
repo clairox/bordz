@@ -1,13 +1,12 @@
-import SkateLab3DViewport from '@/app/(skate-lab-page)/lab/SkateLab/SkateLab3DViewport'
-import SkateLabUI from '@/app/(skate-lab-page)/lab/SkateLab/SkateLabUI'
-import { SkateLabProvider } from '@/app/(skate-lab-page)/lab/SkateLab/SkateLabContext'
+import { SLUserInterface, SL3DViewport } from '@/components/features/SkateLab'
+import { SkateLabProvider } from '@/context/SkateLabContext'
 
 const SkateLabPage = () => {
     return (
         <SkateLabProvider>
             <div className="relative w-full h-full">
-                <SkateLabUI />
-                <SkateLab3DViewport />
+                <SLUserInterface />
+                <SL3DViewport />
             </div>
         </SkateLabProvider>
     )
