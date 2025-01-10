@@ -25,7 +25,75 @@ type WishlistLinesResponse = {
     nextPage: number | undefined
 }
 
+/* Creating */
+type AddressCreateArgs = {
+    fullName: string
+    line1: string
+    line2?: string
+    city: string
+    state: string
+    countryCode: string
+    postalCode: string
+    phone?: string
+    ownerId?: string
+    isCustomerDefault?: boolean
+}
+type ComponentCreateArgs = {
+    title: string
+    price: number
+    images?: string[]
+    model?: string
+    description?: string
+    specifications?: string[]
+    totalInventory: number
+    category: string
+    vendor: string
+    size: string
+    color: string
+}
+type CustomerCreateArgs = {
+    userId: string
+    email: string
+    firstName: string
+    lastName: string
+    birthDate?: Date
+    phone?: string
+}
+
 /* Updating */
+type AddressUpdateArgs = Partial<{
+    fullName: string
+    line1: string
+    line2: string | null
+    city: string
+    state: string
+    countryCode: string
+    postalCode: string
+    phone: string | null
+    isCustomerDefault: boolean
+}>
+type CheckoutUpdateArgs = Partial<{
+    email: string
+    shippingAddressId: string
+    subtotal: number
+    total: number
+    totalTax: number
+    totalShipping: number
+    paymentIntentId: string
+}>
+type ComponentUpdateArgs = Partial<{
+    title: string
+    price: number
+    image: string[]
+    model: string
+    description: string
+    specifications: string[]
+    totalInventory: number
+    category: string
+    vendor: string
+    size: string
+    color: string
+}>
 type CustomerUpdateArgs = Partial<{
     email: string
     firstName: string
@@ -41,6 +109,12 @@ type OrderUpdateArgs = Partial<{
     shippingAddress: Address
     totalShipping: number
     totalTax: number
+}>
+type ProductUpdateArgs = Partial<{
+    title: string
+    price: number
+    featuredImage: string
+    isPublic: boolean
 }>
 
 type DynamicRoutePropsWithParams<T extends object> = {

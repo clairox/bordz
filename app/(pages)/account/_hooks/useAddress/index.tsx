@@ -1,21 +1,19 @@
 'use client'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { AddressResponse } from '@/types/api'
-import addressResponseToAddress from '@/utils/helpers/addressResponseToAddress'
 import { useQuery } from '@tanstack/react-query'
 
-const useAddress = (id: string | undefined, enabled: boolean = true) => {
+import { fetchAddress } from '@/lib/api'
+import addressResponseToAddress from '@/utils/helpers/addressResponseToAddress'
+
+const useAddress = (addressId: string | undefined, enabled: boolean = true) => {
     return useQuery<Address>({
-        queryKey: ['address', id],
+        queryKey: ['address', addressId],
         queryFn: async () => {
-            if (!id) {
+            if (!addressId) {
                 throw new Error('Invalid id')
             }
 
-            const data = await fetchAbsolute<AddressResponse>(
-                `/addresses/${id}`
-            )
+            const data = await fetchAddress(addressId)
             return addressResponseToAddress(data)
         },
         enabled,

@@ -1,11 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Session } from '@supabase/supabase-js'
 
 import { useAuth } from '@/context/AuthContext'
 import { useSupabase } from '@/context/SupabaseContext'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 
 const useAuthSession = () => {
     const { data: user } = useAuth()

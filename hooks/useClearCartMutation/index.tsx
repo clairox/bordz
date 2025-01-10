@@ -1,17 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { CartResponse } from '@/types/api'
 import cartResponseToCart from '@/utils/helpers/cartResponseToCart'
+import { clearCart } from '@/lib/api'
 
 const useClearCartMutation = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
         mutationFn: async (): Promise<Cart> => {
-            const data = await fetchAbsolute<CartResponse>(`/cart/lines`, {
-                method: 'DELETE',
-            })
+            const data = await clearCart()
             return cartResponseToCart(data)
         },
         onSuccess: cart => {

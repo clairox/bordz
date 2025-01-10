@@ -53,7 +53,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         error: updateAddressError,
         isPending: updateAddressPending,
         isSuccess: updateAddressSuccess,
-    } = useUpdateAddress()
+    } = useUpdateAddress(existingAddress?.id)
 
     const { message, type, showMessage, clearMessage } = useFormMessage()
 
@@ -78,13 +78,13 @@ const AddressForm: React.FC<AddressFormProps> = ({
         if (existingAddress) {
             updateAddress({
                 ...data,
-                id: existingAddress?.id,
                 countryCode: 'US',
             })
         } else {
             createAddress({
                 ...data,
-                line2: data.line2 || null,
+                line2: data.line2 ?? undefined,
+                phone: data.phone ?? undefined,
                 ownerId,
                 countryCode: 'US',
             })

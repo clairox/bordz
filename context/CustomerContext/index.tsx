@@ -13,6 +13,7 @@ import { useAuth } from '../AuthContext'
 import { useSupabase } from '../SupabaseContext'
 import { useGetAuthSession, useGetSessionUserRole } from '@/hooks'
 import { fetchCustomer } from '@/lib/api'
+import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 
 type CustomerContextValue = UseQueryResult<Customer | null, Error>
 
@@ -86,7 +87,8 @@ const useProvideCustomer = () => {
                 return null
             }
 
-            return await fetchCustomer(user.id)
+            const data = await fetchCustomer(user.id)
+            return customerResponseToCustomer(data)
         },
         enabled: isCustomerQueryEnabled,
     })

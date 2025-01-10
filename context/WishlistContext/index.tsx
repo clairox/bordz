@@ -5,6 +5,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import { useCustomer } from '../CustomerContext'
 import { fetchWishlist } from '@/lib/api'
+import wishlistResponseToWishlist from '@/utils/helpers/wishlistResponseToWishlist'
 
 type WishlistContextValue = UseQueryResult<Wishlist, Error>
 
@@ -19,7 +20,10 @@ const WishlistProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
     const wishlistQuery = useQuery<Wishlist>({
         queryKey: ['wishlist', customer?.id],
-        queryFn: async () => fetchWishlist(customer?.id),
+        queryFn: async () => {
+            const data = await fetchWishlist(customer?.id)
+            return wishlistResponseToWishlist(data)
+        },
         enabled: !isCustomerPending,
     })
 

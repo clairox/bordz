@@ -1,10 +1,11 @@
-import { fetchCustomers } from '@/lib/api'
-import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 import {
     InfiniteData,
     QueryKey,
     useSuspenseInfiniteQuery,
 } from '@tanstack/react-query'
+
+import { fetchCustomers } from '@/lib/api'
+import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
 
 type UseCustomersArgs = FetchManyOptions
 

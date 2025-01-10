@@ -7,12 +7,16 @@ import { fetchProduct } from '@/lib/api'
 import EditProductFormSchema from './schema'
 import AdminResourceDataForm from '@/components/AdminResourceDataForm'
 import { useUpdateProduct } from '@/hooks'
+import productResponseToProduct from '@/utils/helpers/productResponseToProduct'
 
 const ProductPage: React.FC = () => {
     const params = useParams()
     const { data: product } = useSuspenseQuery<Product>({
         queryKey: ['product', params.productId],
-        queryFn: () => fetchProduct(params.productId as string),
+        queryFn: async () => {
+            const data = await fetchProduct(params.productId as string)
+            return productResponseToProduct(data)
+        },
     })
 
     const { mutateAsync: updateProduct } = useUpdateProduct(product.id)

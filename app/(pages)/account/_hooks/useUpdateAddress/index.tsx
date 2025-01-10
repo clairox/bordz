@@ -2,35 +2,18 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { AddressResponse } from '@/types/api'
+import { AddressUpdateArgs } from '@/types/api'
 import addressResponseToAddress from '@/utils/helpers/addressResponseToAddress'
+import { updateAddress } from '@/lib/api'
 
-type UseUpdateAddressArgs = {
-    id: string
-    fullName?: string
-    line1?: string
-    line2?: string | null
-    city?: string
-    state?: string
-    countryCode?: string
-    postalCode?: string
-    phone?: string | null
-    isCustomerDefault?: boolean
-}
-
-const useUpdateAddress = () => {
+const useUpdateAddress = (addressId: string | null | undefined) => {
     const queryClient = useQueryClient()
-    return useMutation<Address, Error, UseUpdateAddressArgs>({
+    return useMutation<Address, Error, AddressUpdateArgs>({
         mutationFn: async args => {
-            const { id, ...rest } = args
-            const data = await fetchAbsolute<AddressResponse>(
-                `/addresses/${id}`,
-                {
-                    method: 'PATCH',
-                    body: JSON.stringify(rest),
-                }
-            )
+            if (!addressId) {
+                throw new Error('Missing addressId')
+            }
+            const data = await updateAddress(addressId, args)
             return addressResponseToAddress(data)
         },
         onSuccess: () =>

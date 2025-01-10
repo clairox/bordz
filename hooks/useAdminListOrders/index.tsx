@@ -6,9 +6,9 @@ import {
     useSuspenseInfiniteQuery,
 } from '@tanstack/react-query'
 
-type UseOrdersArgs = { customerId?: string } & FetchManyOptions
+type UseAdminListOrdersArgs = { customerId?: string } & FetchManyOptions
 
-const useAdminListOrders = (args?: UseOrdersArgs) => {
+const useAdminListOrders = (args?: UseAdminListOrdersArgs) => {
     return useSuspenseInfiniteQuery<
         Page<OrderAdminList>,
         Error,

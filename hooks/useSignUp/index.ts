@@ -5,31 +5,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { User } from '@supabase/supabase-js'
 
 import { useSupabase } from '@/context/SupabaseContext'
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { CustomerResponse } from '@/types/api'
+import { CustomerCreateArgs } from '@/types/api'
 import customerResponseToCustomer from '@/utils/helpers/customerResponseToCustomer'
-
-type CreateCustomerArgs = {
-    userId: string
-    email: string
-    firstName: string
-    lastName: string
-    birthDate?: Date
-    phone?: string
-}
-
-type UseSignUpMutationArgs = Omit<CreateCustomerArgs, 'userId'> & {
-    password: string
-}
-
-const createCustomer = async (
-    args: CreateCustomerArgs
-): Promise<CustomerResponse> => {
-    return await fetchAbsolute<CustomerResponse>('/customers', {
-        method: 'POST',
-        body: JSON.stringify(args),
-    })
-}
+import { createCustomer } from '@/lib/api'
 
 const useSignUp = () => {
     const supabase = useSupabase()
@@ -58,12 +36,14 @@ const useSignUp = () => {
         [supabase]
     )
 
-    return useMutation<Customer, Error, UseSignUpMutationArgs>({
-        mutationFn: async args => {
-            const { email, password, ...rest } = args
+    type MutationArgs = Omit<CustomerCreateArgs, 'userId'> & {
+        password: string
+    }
+    return useMutation<Customer, Error, MutationArgs>({
+        mutationFn: async ({ email, password, ...args }) => {
             const user = await signUp(email, password)
             const data = await createCustomer({
-                ...rest,
+                ...args,
                 userId: user.id,
                 email,
             })

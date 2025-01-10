@@ -1,18 +1,16 @@
 'use client'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-type UseDeleteAddressArgs = { id: string }
+import { deleteAddress } from '@/lib/api'
 
 const useDeleteAddress = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<void, Error, UseDeleteAddressArgs>({
-        mutationFn: async ({ id }) => {
-            await fetchAbsolute(`/addresses/${id}`, {
-                method: 'DELETE',
-            })
+    type MutationArgs = { addressId: string }
+    return useMutation<void, Error, MutationArgs>({
+        mutationFn: async ({ addressId }) => {
+            await deleteAddress(addressId)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['customer'] })

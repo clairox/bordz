@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { CheckoutResponse } from '@/types/api'
+import { completeCheckout } from '@/lib/api'
 
 type ProcessingStatus = 'idle' | 'loading' | 'error' | 'success'
 
@@ -12,16 +11,11 @@ const ProcessCheckoutCompletion = () => {
     const [status, setStatus] = useState<ProcessingStatus>('idle')
 
     useEffect(() => {
-        const completeCheckout = async () => {
+        const _completeCheckout = async () => {
             setStatus('loading')
 
             try {
-                const data = await fetchAbsolute<CheckoutResponse>(
-                    '/checkout/complete',
-                    {
-                        method: 'POST',
-                    }
-                )
+                const data = await completeCheckout()
                 const { orderId } = data
                 router.replace(`/order/confirmation?order=${orderId}`)
                 setStatus('success')
@@ -30,7 +24,7 @@ const ProcessCheckoutCompletion = () => {
             }
         }
         if (status === 'idle') {
-            completeCheckout()
+            _completeCheckout()
         }
     }, [status, router])
 

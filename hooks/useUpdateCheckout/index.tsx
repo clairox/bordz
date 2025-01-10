@@ -1,22 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import updateCheckout from '@/lib/api/updateCheckout'
-
-type UpdateCheckout = {
-    email?: string
-    shippingAddressId?: string
-    subtotal?: number
-    total?: number
-    totalTax?: number
-    totalShipping?: number
-    paymentIntentId?: string
-}
+import { updateCheckout } from '@/lib/api'
+import { CheckoutUpdateArgs } from '@/types/api'
+import checkoutResponseToCheckout from '@/utils/helpers/checkoutResponseToCheckout'
 
 const useUpdateCheckout = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<Checkout, Error, UpdateCheckout>({
-        mutationFn: args => updateCheckout(args),
+    return useMutation<Checkout, Error, CheckoutUpdateArgs>({
+        mutationFn: async args => {
+            const data = await updateCheckout(args)
+            return checkoutResponseToCheckout(data)
+        },
         onSuccess: checkout => queryClient.setQueryData(['checkout'], checkout),
     })
 }

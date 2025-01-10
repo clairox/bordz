@@ -13,12 +13,16 @@ import {
 import EditComponentFormSchema from './schema'
 import AdminResourceDataForm from '@/components/AdminResourceDataForm'
 import { useUpdateComponent } from '@/hooks'
+import componentResponseToComponent from '@/utils/helpers/componentResponseToComponent'
 
 const ComponentPage: React.FC = () => {
     const params = useParams()
     const { data: component } = useSuspenseQuery<Component>({
         queryKey: ['components', params.componentId],
-        queryFn: () => fetchComponent(params.componentId as string),
+        queryFn: async () => {
+            const data = await fetchComponent(params.componentId as string)
+            return componentResponseToComponent(data)
+        },
     })
 
     const { mutateAsync: updateComponent } = useUpdateComponent(component.id)

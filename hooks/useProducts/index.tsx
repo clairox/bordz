@@ -1,49 +1,14 @@
 'use client'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { ProductResponse } from '@/types/api'
-import productResponseToProduct from '@/utils/helpers/productResponseToProduct'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-type FetchProductsOptions = {
-    size?: number
-    page?: number
-    orderBy?: SortKey
-    publicOnly?: boolean
-}
+import { fetchProducts } from '@/lib/api'
+import productResponseToProduct from '@/utils/helpers/productResponseToProduct'
 
 type UseProductsArgs = {
     size?: number
     page?: number
     orderBy?: SortKey
-}
-
-const fetchProducts = async ({
-    size,
-    page,
-    orderBy,
-    publicOnly,
-}: FetchProductsOptions): Promise<Page<ProductResponse>> => {
-    const params = []
-    if (size != undefined) {
-        params.push(`size=${size}`)
-    }
-
-    if (page != undefined) {
-        params.push(`page=${page}`)
-    }
-
-    if (orderBy) {
-        params.push(`orderBy=${orderBy}`)
-    }
-
-    if (publicOnly) {
-        params.push(`publicOnly=${publicOnly}`)
-    }
-
-    const paramString = params.length ? '?' + params.join('&') : ''
-    const path = '/products' + paramString
-    return await fetchAbsolute<Page<ProductResponse>>(path)
 }
 
 const useProducts = (args: UseProductsArgs) => {

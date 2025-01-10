@@ -2,31 +2,15 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { AddressResponse } from '@/types/api'
+import { AddressCreateArgs } from '@/types/api'
 import addressResponseToAddress from '@/utils/helpers/addressResponseToAddress'
-
-type UseCreateAddressArgs = {
-    fullName: string
-    line1: string
-    line2?: string
-    city: string
-    state: string
-    countryCode: string
-    postalCode: string
-    phone?: string
-    ownerId?: string
-    isCustomerDefault?: boolean
-}
+import { createAddress } from '@/lib/api'
 
 const useCreateAddress = () => {
     const queryClient = useQueryClient()
-    return useMutation<Address, Error, UseCreateAddressArgs>({
+    return useMutation<Address, Error, AddressCreateArgs>({
         mutationFn: async args => {
-            const data = await fetchAbsolute<AddressResponse>('/addresses', {
-                method: 'POST',
-                body: JSON.stringify(args),
-            })
+            const data = await createAddress(args)
             return addressResponseToAddress(data)
         },
         onSuccess: () => {

@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 
 import PriceRepr from '@/components/PriceRepr'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import { getQueryClient } from '@/lib/queryClient'
 import { fetchOrder } from '@/lib/api'
 import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'

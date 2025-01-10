@@ -2,9 +2,8 @@
 
 import { useSuspenseQuery } from '@tanstack/react-query'
 
-import fetchAbsolute from '@/lib/fetchAbsolute'
-import { CartLineResponse, ProductResponse } from '@/types/api'
 import boardResponseToBoard from '@/utils/helpers/boardResponseToBoard'
+import { fetchCartLine, fetchProduct } from '@/lib/api'
 
 const defaultSelectedComponents = {
     deck: undefined,
@@ -19,10 +18,8 @@ const useLoadSelectedComponents = (
     mode: SkateLabMode,
     id: string | undefined
 ) => {
-    const getBoardFromCartLine = async (cartLineId: string): Promise<Board> => {
-        const data = await fetchAbsolute<CartLineResponse>(
-            `/cart/lines/${cartLineId}`
-        )
+    const getBoardFromCartLine = async (lineId: string): Promise<Board> => {
+        const data = await fetchCartLine(lineId)
         if (!data.product.boardSetup) {
             throw new Error('Invalid board setup')
         }
@@ -31,9 +28,7 @@ const useLoadSelectedComponents = (
     }
 
     const getBoardFromProduct = async (productId: string) => {
-        const data = await fetchAbsolute<ProductResponse>(
-            `/products/${productId}`
-        )
+        const data = await fetchProduct(productId)
         if (!data.boardSetup) {
             throw new Error('Invalid board setup')
         }

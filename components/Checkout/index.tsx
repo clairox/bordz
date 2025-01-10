@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { Appearance } from '@stripe/stripe-js'

@@ -13,12 +13,12 @@ const EditDefaultAddressPage = () => {
 
     const { data: customer, status: customerStatus } = useCustomer()
 
-    const { mutateAsync: updateAddress, status: updateStatus } =
-        useUpdateAddress()
-
     const [defaultAddressId, setDefaultAddressId] = useState<string | null>(
         null
     )
+
+    const { mutateAsync: updateAddress, status: updateStatus } =
+        useUpdateAddress(defaultAddressId)
 
     useEffect(() => {
         if (customerStatus === 'success' && customer?.defaultAddress) {
@@ -45,7 +45,7 @@ const EditDefaultAddressPage = () => {
         if (!defaultAddressId) {
             return
         }
-        await updateAddress({ id: defaultAddressId, isCustomerDefault: true })
+        await updateAddress({ isCustomerDefault: true })
     }
 
     return (

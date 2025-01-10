@@ -1,21 +1,15 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useAuth } from '@/context/AuthContext'
 import { useSupabase } from '@/context/SupabaseContext'
 import { useGetSessionUserRole } from '@/hooks'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 import killSession from '@/utils/helpers/killSession'
-import { useRouter } from 'next/navigation'
+import { deleteCustomer } from '@/lib/api'
 
 type UseDeleteAccountArgs = { password: string }
-
-const deleteCustomer = async (userId: string) => {
-    await fetchAbsolute(`/customers/${userId}`, {
-        method: 'DELETE',
-    })
-}
 
 const useDeleteAccount = () => {
     const supabase = useSupabase()

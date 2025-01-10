@@ -5,6 +5,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import { useCustomer } from '../CustomerContext'
 import { fetchCart } from '@/lib/api'
+import cartResponseToCart from '@/utils/helpers/cartResponseToCart'
 
 type CartContextValue = UseQueryResult<Cart, Error>
 
@@ -17,7 +18,10 @@ const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
     const cartQuery = useQuery<Cart>({
         queryKey: ['cart', customer?.id],
-        queryFn: async () => fetchCart(customer?.id),
+        queryFn: async () => {
+            const data = await fetchCart(customer?.id)
+            return cartResponseToCart(data)
+        },
         enabled: !isCustomerPending,
     })
 

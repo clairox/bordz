@@ -1,10 +1,11 @@
-import { fetchOrders } from '@/lib/api'
-import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
 import {
     InfiniteData,
     QueryKey,
     useSuspenseInfiniteQuery,
 } from '@tanstack/react-query'
+
+import { fetchOrders } from '@/lib/api'
+import orderResponseToOrder from '@/utils/helpers/orderResponseToOrder'
 
 type UseOrdersArgs = { customerId?: string } & FetchManyOptions
 
