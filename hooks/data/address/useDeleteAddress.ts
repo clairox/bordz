@@ -9,11 +9,8 @@ export const useDeleteAddress = () => {
 
     type MutationArgs = { id: string }
     return useMutation<void, Error, MutationArgs>({
-        mutationFn: async ({ id }) => {
-            await deleteAddress(id)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['customer'] })
-        },
+        mutationFn: ({ id }) => deleteAddress(id),
+        onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: ['customer'] }),
     })
 }

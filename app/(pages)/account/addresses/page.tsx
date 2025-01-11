@@ -1,7 +1,7 @@
 'use client'
 
 import { AccountHeading, AccountSection } from '@/components/features/Account'
-import { AddressesView } from '@/components/features/Addresses'
+import { AddressDashboard } from '@/components/features/Addresses'
 import { useCustomer } from '@/context/CustomerContext'
 
 const AddressesPage = () => {
@@ -15,11 +15,10 @@ const AddressesPage = () => {
         <div>
             <AccountHeading>Addresses</AccountHeading>
             <AccountSection>
-                <AccountSection.Header>Update address</AccountSection.Header>
                 <AccountSection.Content>
-                    <AddressesView
+                    <AddressDashboard
                         defaultAddress={customer?.defaultAddress}
-                        addresses={customer?.addresses}
+                        addresses={customer?.addresses ?? []}
                     />
                 </AccountSection.Content>
             </AccountSection>

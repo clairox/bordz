@@ -78,6 +78,7 @@ export const DELETE = async (
                 INSERT INTO default_addresses (owner_id, address_id)
                 SELECT ${toLongUUID(deletedAddress.ownerId)}, id
                 FROM addresses
+                WHERE owner_id = ${toLongUUID(deletedAddress.ownerId)}
                 ORDER BY created_at DESC
                 LIMIT 1
                 ON CONFLICT DO NOTHING;

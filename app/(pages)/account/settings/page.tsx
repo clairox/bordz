@@ -6,7 +6,7 @@ import {
     AccountHeading,
     AccountSection as Section,
 } from '@/components/features/Account'
-import { AddressesView } from '@/components/features/Addresses'
+import { AddressDashboard } from '@/components/features/Addresses'
 import { useAuth } from '@/context/AuthContext'
 import { useCustomer } from '@/context/CustomerContext'
 
@@ -52,9 +52,9 @@ const SettingsPage: React.FC = () => {
                     <Section.Header.Title>Addresses</Section.Header.Title>
                 </Section.Header>
                 <Section.Content>
-                    <AddressesView
+                    <AddressDashboard
                         defaultAddress={customer?.defaultAddress}
-                        addresses={customer?.addresses}
+                        addresses={customer?.addresses ?? []}
                     />
                 </Section.Content>
             </Section>

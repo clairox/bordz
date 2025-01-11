@@ -1,8 +1,8 @@
-type AddressDisplayProps = {
+type AddressCardProps = {
     address: Address
 }
 
-const AddressDisplay: React.FC<AddressDisplayProps> = ({ address }) => {
+export const AddressCard: React.FC<AddressCardProps> = ({ address }) => {
     return (
         <div>
             <p>{address.fullName}</p>
@@ -15,5 +15,3 @@ const AddressDisplay: React.FC<AddressDisplayProps> = ({ address }) => {
         </div>
     )
 }
-
-export { AddressDisplay }

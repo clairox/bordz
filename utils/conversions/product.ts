@@ -4,7 +4,6 @@ import { mapBoardResponseToBoard } from '.'
 export const mapProductResponseToProduct = (
     response: ProductResponse
 ): Product => {
-    console.log(response.isPublic)
     return {
         id: response.id,
         title: response.title,

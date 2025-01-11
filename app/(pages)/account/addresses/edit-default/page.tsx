@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import { useUpdateAddress } from '@/hooks/data/address'
-import { AddressDisplay } from '@/components/features/Addresses'
+import { AddressCard } from '@/components/features/Addresses'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { useCustomer } from '@/context/CustomerContext'
 
@@ -60,7 +60,7 @@ const EditDefaultAddressPage = () => {
                             onChange={() => setDefaultAddressId(address.id)}
                         />
                         <label htmlFor={address.id}>
-                            <AddressDisplay address={address} />
+                            <AddressCard address={address} />
                         </label>
                     </div>
                 )
