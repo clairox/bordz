@@ -6,14 +6,16 @@ import { AddressUpdateArgs } from '@/types/api'
 import { updateAddress } from '@/lib/api'
 import { mapAddressResponseToAddress } from '@/utils/conversions'
 
-export const useUpdateAddress = (addressId: string | null | undefined) => {
+export const useUpdateAddress = () => {
     const queryClient = useQueryClient()
-    return useMutation<Address, Error, AddressUpdateArgs>({
-        mutationFn: async args => {
-            if (!addressId) {
+
+    type MutationArgs = { id: string } & AddressUpdateArgs
+    return useMutation<Address, Error, MutationArgs>({
+        mutationFn: async ({ id, ...args }) => {
+            if (!id) {
                 throw new Error('Missing addressId')
             }
-            const data = await updateAddress(addressId, args)
+            const data = await updateAddress(id, args)
             return mapAddressResponseToAddress(data)
         },
         onSuccess: () =>

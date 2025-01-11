@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const AddressFormSchema = z.object({
+const UpdateAddressFormSchema = z.object({
     fullName: z
         .string()
         .min(1, 'Please enter a name.')
@@ -17,6 +17,7 @@ const AddressFormSchema = z.object({
         .min(1, 'Please enter a postal code.')
         .max(12, 'Invalid postal code.'),
     phone: z.string().max(16, 'Invalid phone number.').nullish(),
+    isDefault: z.boolean(),
 })
 
-export default AddressFormSchema
+export default UpdateAddressFormSchema

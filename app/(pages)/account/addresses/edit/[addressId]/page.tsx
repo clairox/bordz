@@ -3,24 +3,78 @@
 import { useParams } from 'next/navigation'
 
 import { useAddress } from '@/hooks/data/address'
-import AddressForm from '@/components/forms/AddressForm'
+import UpdateAddressForm from '@/components/forms/UpdateAddressForm'
+import { useCustomer } from '@/context/CustomerContext'
+import { AccountHeading, AccountSection } from '@/components/features/Account'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 const EditAddressPage = () => {
-    const { addressId } = useParams()
+    const { addressId } = useParams<Record<string, string>>()
 
-    const { data: address, error, isPending } = useAddress(addressId as string)
+    const {
+        data: address,
+        error: addressError,
+        isPending: isAddressPending,
+    } = useAddress(addressId)
+    const {
+        data: customer,
+        error: customerError,
+        isPending: isCustomerPending,
+    } = useCustomer()
 
-    if (error) {
-        // TODO: 404
-        return <div>Something went wrong</div>
+    if (addressError || customerError) {
+        throw addressError || customerError
     }
 
-    if (isPending) {
-        return <div>Loading...</div>
-    }
-
-    // BUG: do something about this ownerId prop thing
-    return <AddressForm existingAddress={address} />
+    return (
+        <div>
+            <AccountHeading>Edit Address</AccountHeading>
+            <AccountSection>
+                {isAddressPending || isCustomerPending ? (
+                    <Fallback />
+                ) : (
+                    <UpdateAddressForm
+                        address={address}
+                        defaultAddressId={customer?.defaultAddress?.id}
+                    />
+                )}
+            </AccountSection>
+        </div>
+    )
 }
+
+const Fallback = () => (
+    <div className="flex flex-col gap-8 py-2">
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[80px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[70px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[70px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[60px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[90px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[120px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <div className="flex flex-col gap-2">
+            <Skeleton className="w-[90px] h-[20px]" />
+            <Skeleton className="h-[36px]" />
+        </div>
+        <Skeleton className="w-[100px] h-[36px]" />
+    </div>
+)
 
 export default EditAddressPage

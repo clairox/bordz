@@ -2,6 +2,7 @@
 
 import { ButtonHTMLAttributes, useEffect, useState } from 'react'
 import { Check } from '@phosphor-icons/react'
+import { Button } from '../Button'
 
 type ButtonAsyncProps = React.PropsWithChildren<{
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type']
@@ -29,18 +30,14 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
 
     useEffect(() => {
         if (loading) {
-            setContent(<div className="flex justify-center">Loading...</div>)
+            setContent(<div>Loading...</div>)
             setDisabled(true)
         }
     }, [loading])
 
     useEffect(() => {
         if (success) {
-            setContent(
-                <div className="flex justify-center">
-                    <Check size={28} weight={'light'} />
-                </div>
-            )
+            setContent(<Check size={20} weight="bold" />)
 
             if (shouldReset) {
                 setTimeout(() => {
@@ -52,9 +49,9 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
     }, [success, children, shouldReset])
 
     return (
-        <button type={type} disabled={disabled}>
+        <Button type={type} disabled={disabled} className="w-fit">
             {content}
-        </button>
+        </Button>
     )
 }
 

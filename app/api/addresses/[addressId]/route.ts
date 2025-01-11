@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 
 import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
@@ -43,7 +43,7 @@ export const PATCH = async (
             .returning()
             .then(rows => rows[0])
 
-        if (updatedAddress.ownerId && data.isCustomerDefault) {
+        if (updatedAddress.ownerId && data.isCustomerDefault === true) {
             await db
                 .insert(DefaultAddressTable)
                 .values({
@@ -54,8 +54,15 @@ export const PATCH = async (
                     target: DefaultAddressTable.ownerId,
                     set: { addressId: updatedAddress.id },
                 })
-                .returning()
-                .then(rows => rows[0])
+        } else if (updatedAddress.ownerId && data.isCustomerDefault === false) {
+            await db
+                .delete(DefaultAddressTable)
+                .where(
+                    and(
+                        eq(DefaultAddressTable.ownerId, updatedAddress.ownerId),
+                        eq(DefaultAddressTable.addressId, updatedAddress.id)
+                    )
+                )
         }
 
         return NextResponse.json(updatedAddress)
