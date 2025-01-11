@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const EditComponentFormSchema = z.object({
+const AdminUpdateComponentFormSchema = z.object({
     title: z
         .string()
         .min(1, 'Please enter a title.')
@@ -17,4 +17,4 @@ const EditComponentFormSchema = z.object({
     color: z.string().min(1, 'Please enter a color.'),
 })
 
-export default EditComponentFormSchema
+export default AdminUpdateComponentFormSchema

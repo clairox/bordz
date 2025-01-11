@@ -19,18 +19,19 @@ import {
 import { z } from 'zod'
 import { FormLabelWithIndicator } from '../ui/FormLabelWithIndicator'
 import { getZodSchemaShape } from '@/utils'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
-type FormSelectFieldProps<
+type FormAsyncSelectFieldProps<
     TFieldValues extends FieldValues = FieldValues,
     TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = UseControllerProps<TFieldValues, TName> & {
     schema: z.ZodTypeAny
     label?: string
     placeholder?: string
-    options: FormSelectOption[]
+    fetchOptions: () => Promise<FormSelectOption[]>
 }
 
-const FormSelectField = <
+const FormAsyncSelectField = <
     TShape extends z.ZodRawShape,
     TFieldValues extends FieldValues = FieldValues,
     TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -40,9 +41,14 @@ const FormSelectField = <
     schema,
     label,
     placeholder,
-    options,
-}: FormSelectFieldProps<TFieldValues, TName>) => {
+    fetchOptions,
+}: FormAsyncSelectFieldProps<TFieldValues, TName>) => {
     const shape = getZodSchemaShape<TShape>(schema)
+
+    const { data: options } = useSuspenseQuery<FormSelectOption[]>({
+        queryKey: [name],
+        queryFn: fetchOptions,
+    })
 
     return (
         <FormField
@@ -84,4 +90,4 @@ const FormSelectField = <
     )
 }
 
-export { FormSelectField }
+export { FormAsyncSelectField }

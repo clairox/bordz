@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const PersonalDetailsFormSchema = z.object({
+const UpdatePersonalDetailsFormSchema = z.object({
     email: z
         .string()
         .min(1, 'Please enter an email address.')
@@ -18,4 +18,4 @@ const PersonalDetailsFormSchema = z.object({
     phone: z.string().optional(),
 })
 
-export default PersonalDetailsFormSchema
+export default UpdatePersonalDetailsFormSchema

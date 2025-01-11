@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     DefaultValues,
     FieldPath,
@@ -11,10 +11,12 @@ import {
 } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { omit } from 'lodash'
 
 import { useFormMessage } from '@/hooks/forms'
 import {
     FormCheckboxField,
+    FormDateSelectField,
     FormInputField,
     FormSelectField,
 } from '@/components/formControls'
@@ -22,6 +24,9 @@ import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
+import { FormPasswordField } from '@/components/formControls/FormPasswordField'
+import { FormAsyncSelectField } from '@/components/formControls/FormAsyncSelectField'
+import { FormTextareaField } from '@/components/formControls/FormTextareaField'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -38,7 +43,14 @@ type FieldDataDef<TFieldValues extends object, TName = Path<TFieldValues>> =
           autoFocus?: boolean
       }
     | {
-          type: 'textArea'
+          type: 'password'
+          name: TName
+          label: string
+          placeholder?: string
+          autoFocus?: boolean
+      }
+    | {
+          type: 'textarea'
           name: TName
           label: string
           placeholder?: string
@@ -57,11 +69,16 @@ type FieldDataDef<TFieldValues extends object, TName = Path<TFieldValues>> =
           options: FormSelectOption[]
       }
     | {
+          type: 'dateSelect'
+          name: TName
+          label: string
+      }
+    | {
           type: 'selectAsync'
           name: TName
           label: string
           placeholder?: string
-          fetch: () => Promise<FormSelectOption[]>
+          fetchOptions: () => Promise<FormSelectOption[]>
       }
     | {
           type: 'assets'
@@ -77,13 +94,15 @@ type DataFormProps<
     TSchema extends UnknownZodObject,
     TFieldValues extends z.infer<TSchema>,
 > = {
-    Schema: TSchema
+    Schema: TSchema | z.ZodEffects<TSchema>
     header?: string
     defaultValues?: DefaultValues<TFieldValues>
     fieldData: FieldDataDef<TFieldValues>[]
     onSubmit: (data: TFieldValues) => Promise<unknown>
     successMessage?: string
     submitButtonContent?: React.ReactNode
+    getErrorMessage?: (error: unknown) => string | undefined
+    resetOnSuccess?: boolean
 }
 
 const DataForm = <
@@ -96,6 +115,8 @@ const DataForm = <
     onSubmit,
     successMessage,
     submitButtonContent,
+    getErrorMessage,
+    resetOnSuccess,
 }: DataFormProps<TSchema, TFieldValues>) => {
     const form = useForm<TFieldValues>({
         resolver: zodResolver(Schema),
@@ -112,6 +133,12 @@ const DataForm = <
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
+    useEffect(() => {
+        if (resetOnSuccess && form.formState.isSubmitSuccessful) {
+            form.reset()
+        }
+    }, [resetOnSuccess, form])
+
     const handleSubmit: SubmitHandler<TFieldValues> = async (
         data: TFieldValues
     ) => {
@@ -121,12 +148,21 @@ const DataForm = <
         try {
             await onSubmit(data)
             if (successMessage) {
-                showMessage(successMessage)
+                showMessage(successMessage, 'success')
             }
             setSuccess(true)
         } catch (error) {
             console.error(error)
-            showMessage('An unexpected error has occurred.')
+            if (getErrorMessage) {
+                const errorMessage = getErrorMessage(error)
+                if (errorMessage) {
+                    showMessage(errorMessage)
+                } else {
+                    showMessage('An unexpected error has occurred.')
+                }
+            } else {
+                showMessage('An unexpected error has occurred.')
+            }
         }
 
         setLoading(false)
@@ -168,7 +204,7 @@ const DataForm = <
                                                 )
                                             )
                                         }}
-                                        {...field}
+                                        {...omit(field, ['type'])}
                                     />
                                 )
                             } else {
@@ -190,7 +226,7 @@ const DataForm = <
                                                 undefined as TFieldPathValue
                                             )
                                         }
-                                        {...field}
+                                        {...omit(field, ['type'])}
                                     />
                                 )
                             }
@@ -202,9 +238,17 @@ const DataForm = <
                                             key={field.name}
                                             control={form.control}
                                             schema={Schema}
-                                            name={field.name}
-                                            label={field.label}
-                                            placeholder={field.placeholder}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
+
+                                case 'password':
+                                    return (
+                                        <FormPasswordField
+                                            key={field.name}
+                                            control={form.control}
+                                            schema={Schema}
+                                            {...omit(field, ['type'])}
                                         />
                                     )
                                 case 'checkbox':
@@ -212,8 +256,16 @@ const DataForm = <
                                         <FormCheckboxField
                                             key={field.name}
                                             control={form.control}
-                                            name={field.name}
-                                            label={field.label}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
+                                case 'textarea':
+                                    return (
+                                        <FormTextareaField
+                                            key={field.name}
+                                            control={form.control}
+                                            schema={Schema}
+                                            {...omit(field, ['type'])}
                                         />
                                     )
                                 case 'select':
@@ -222,10 +274,25 @@ const DataForm = <
                                             key={field.name}
                                             control={form.control}
                                             schema={Schema}
-                                            name={field.name}
-                                            label={field.label}
-                                            placeholder={field.placeholder}
-                                            options={field.options}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
+                                case 'dateSelect':
+                                    return (
+                                        <FormDateSelectField
+                                            key={field.name}
+                                            control={form.control}
+                                            schema={Schema}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
+                                case 'selectAsync':
+                                    return (
+                                        <FormAsyncSelectField
+                                            key={field.name}
+                                            control={form.control}
+                                            schema={Schema}
+                                            {...omit(field, ['type'])}
                                         />
                                     )
                             }

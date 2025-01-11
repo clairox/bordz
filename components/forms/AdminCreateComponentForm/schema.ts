@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const NewComponentFormSchema = z.object({
+const AdminCreateComponentFormSchema = z.object({
     title: z
         .string()
         .min(1, 'Please enter a title.')
@@ -17,4 +17,4 @@ const NewComponentFormSchema = z.object({
     color: z.string().min(1, 'Please enter a color.'),
 })
 
-export default NewComponentFormSchema
+export default AdminCreateComponentFormSchema

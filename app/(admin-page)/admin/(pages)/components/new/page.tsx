@@ -1,7 +1,7 @@
-import NewComponentForm from '@/components/forms/NewComponentForm'
+import AdminCreateComponentForm from '@/components/forms/AdminCreateComponentForm'
 
 const NewComponentPage: React.FC = () => {
-    return <NewComponentForm />
+    return <AdminCreateComponentForm />
 }
 
 export default NewComponentPage

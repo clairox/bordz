@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const EditProductFormSchema = z.object({
+const AdminUpdateProductFormSchema = z.object({
     title: z
         .string()
         .min(1, 'Please enter a title.')
@@ -10,4 +10,4 @@ const EditProductFormSchema = z.object({
     isPublic: z.boolean(),
 })
 
-export default EditProductFormSchema
+export default AdminUpdateProductFormSchema

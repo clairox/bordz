@@ -1,6 +1,6 @@
 import z from 'zod'
 
-const ChangePasswordFormSchema = z
+const UpdatePasswordFormSchema = z
     .object({
         password: z
             .string()
@@ -17,4 +17,4 @@ const ChangePasswordFormSchema = z
         { message: 'Passwords do not match.', path: ['passwordConfirmation'] }
     )
 
-export default ChangePasswordFormSchema
+export default UpdatePasswordFormSchema

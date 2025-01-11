@@ -24,34 +24,25 @@ const passwordSchema = z
     .string()
     .min(8, 'Password should be at least 8 characters.')
 
-const birthDateSchema = z
-    .date()
-    .nullish()
-    .refine(
-        data => {
-            return data != undefined
-        },
-        { message: 'Invalid date.' }
-    )
-    .refine(
-        data => {
-            const date = data!
-            const age = new Date().getFullYear() - date.getFullYear()
-            const today = new Date()
-            const birthDateThisYear = new Date(
-                today.getFullYear(),
-                date.getMonth(),
-                date.getDate()
-            )
-            return (
-                age > MIN_ALLOWED_CUSTOMER_AGE ||
-                (age === MIN_ALLOWED_CUSTOMER_AGE && birthDateThisYear <= today)
-            )
-        },
-        {
-            message: `You must be at least ${MIN_ALLOWED_CUSTOMER_AGE} years old.`,
-        }
-    )
+const birthDateSchema = z.date({ required_error: 'Invalid date.' }).refine(
+    data => {
+        const date = data!
+        const age = new Date().getFullYear() - date.getFullYear()
+        const today = new Date()
+        const birthDateThisYear = new Date(
+            today.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        )
+        return (
+            age > MIN_ALLOWED_CUSTOMER_AGE ||
+            (age === MIN_ALLOWED_CUSTOMER_AGE && birthDateThisYear <= today)
+        )
+    },
+    {
+        message: `You must be at least ${MIN_ALLOWED_CUSTOMER_AGE} years old.`,
+    }
+)
 
 const SignupFormSchema = z.object({
     firstName: firstNameSchema,

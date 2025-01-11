@@ -71,6 +71,7 @@
 ### Authentication
 
 -   [x] When Auth is implemented, requests to /api/cart should get cartId from user if cartId cookie does not exist
+-   [ ] Prevent customer sign in through admin login form, and admin sign in through customer login form
 
 ### Skate Lab
 
@@ -96,3 +97,7 @@
 -   [x] Add unique index to wishlist wishlist_id_product_id
 -   [ ] Change saved to wishlist
 -   [ ] Add price to wishlist line
+
+### Order
+
+-   [ ] Use text shipping address for orders, in case shipping address is deleted

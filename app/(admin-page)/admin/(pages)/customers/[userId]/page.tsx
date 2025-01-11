@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { fetchCustomer } from '@/lib/api'
-import UpdateCustomerForm from '@/components/forms/UpdateCustomerForm'
+import AdminUpdateCustomerForm from '@/components/forms/AdminUpdateCustomerForm'
 import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 
 const CustomerPage = () => {
@@ -17,7 +17,7 @@ const CustomerPage = () => {
         },
     })
 
-    return <UpdateCustomerForm customer={customer} />
+    return <AdminUpdateCustomerForm customer={customer} />
 }
 
 export default CustomerPage

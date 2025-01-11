@@ -1,20 +1,21 @@
 import { useUpdateCustomer } from '@/hooks/data/customer'
-import UpdateCustomerFormSchema from './schema'
-import { AdminResourceDataForm } from '@/components/features/Admin'
+import AdminUpdateCustomerFormSchema from './schema'
+import DataForm from '@/components/common/DataForm'
+import { useRouter } from 'next/navigation'
 
-type UpdateCustomerFormProps = {
+type AdminUpdateCustomerFormProps = {
     customer: Customer
 }
 
-const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
+const AdminUpdateCustomerForm: React.FC<AdminUpdateCustomerFormProps> = ({
     customer,
 }) => {
     const { mutateAsync: updateCustomer } = useUpdateCustomer(customer.userId)
+    const router = useRouter()
 
     return (
-        <AdminResourceDataForm
-            Schema={UpdateCustomerFormSchema}
-            header={`Update customer`}
+        <DataForm
+            Schema={AdminUpdateCustomerFormSchema}
             defaultValues={{
                 email: customer.email,
                 addresses: customer.addresses,
@@ -26,17 +27,17 @@ const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                 {
                     type: 'text',
                     name: 'email',
-                    label: 'Email *',
+                    label: 'Email',
                 },
                 {
                     type: 'text',
                     name: 'firstName',
-                    label: 'First name *',
+                    label: 'First name',
                 },
                 {
                     type: 'text',
                     name: 'lastName',
-                    label: 'Last name *',
+                    label: 'Last name',
                 },
                 {
                     type: 'text',
@@ -44,9 +45,12 @@ const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                     label: 'Phone',
                 },
             ]}
-            onSubmit={data => updateCustomer(data)}
+            onSubmit={async data => {
+                await updateCustomer(data)
+                router.push('/admin/customers')
+            }}
         />
     )
 }
 
-export default UpdateCustomerForm
+export default AdminUpdateCustomerForm

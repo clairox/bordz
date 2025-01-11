@@ -1,20 +1,23 @@
 'use client'
 
-import { AdminResourceDataForm } from '@/components/features/Admin'
 import { useUpdateOrder } from '@/hooks/data/order'
 import UpdateOrderSchema from './schema'
+import { useRouter } from 'next/navigation'
+import DataForm from '@/components/common/DataForm'
 
-type UpdateOrderFormProps = {
+type AdminUpdateOrderFormProps = {
     order: Order
 }
 
-const UpdateOrderForm: React.FC<UpdateOrderFormProps> = ({ order }) => {
+const AdminUpdateOrderForm: React.FC<AdminUpdateOrderFormProps> = ({
+    order,
+}) => {
     const { mutateAsync: updateOrder } = useUpdateOrder(order.id)
+    const router = useRouter()
 
     return (
-        <AdminResourceDataForm
+        <DataForm
             Schema={UpdateOrderSchema}
-            header={'Edit order no: ' + order.id}
             defaultValues={{
                 email: order.email,
                 phone: order.phone,
@@ -25,7 +28,7 @@ const UpdateOrderForm: React.FC<UpdateOrderFormProps> = ({ order }) => {
                 {
                     type: 'text',
                     name: 'email',
-                    label: 'Email *',
+                    label: 'Email',
                     autoFocus: true,
                 },
                 {
@@ -36,23 +39,24 @@ const UpdateOrderForm: React.FC<UpdateOrderFormProps> = ({ order }) => {
                 {
                     type: 'text',
                     name: 'totalShipping',
-                    label: 'Total shipping (without decimal) *',
+                    label: 'Total shipping (without decimal)',
                 },
                 {
                     type: 'text',
                     name: 'totalTax',
-                    label: 'Total tax (without decimal) *',
+                    label: 'Total tax (without decimal)',
                 },
             ]}
-            onSubmit={data =>
-                updateOrder({
+            onSubmit={async data => {
+                await updateOrder({
                     ...data,
                     totalShipping: parseInt(data.totalShipping),
                     totalTax: parseInt(data.totalTax),
                 })
-            }
+                router.push('/admin/orders')
+            }}
         />
     )
 }
 
-export default UpdateOrderForm
+export default AdminUpdateOrderForm

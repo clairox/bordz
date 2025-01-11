@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { FieldPath, FieldValues, UseControllerProps } from 'react-hook-form'
 
 import {
@@ -12,9 +12,10 @@ import {
 import { Input } from '../ui/Input'
 import { z } from 'zod'
 import { FormLabelWithIndicator } from '../ui/FormLabelWithIndicator'
+import { Eye, EyeSlash } from '@phosphor-icons/react'
 import { getZodSchemaShape } from '@/utils'
 
-type FormInputFieldProps<
+type FormPasswordFieldProps<
     TFieldValues extends FieldValues = FieldValues,
     TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = UseControllerProps<TFieldValues, TName> & {
@@ -23,7 +24,7 @@ type FormInputFieldProps<
     placeholder?: string
 }
 
-const FormInputField = <
+const FormPasswordField = <
     TShape extends z.ZodRawShape,
     TFieldValues extends FieldValues = FieldValues,
     TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -33,8 +34,18 @@ const FormInputField = <
     schema,
     label,
     placeholder,
-}: FormInputFieldProps<TFieldValues, TName>) => {
+}: FormPasswordFieldProps<TFieldValues, TName>) => {
     const shape = getZodSchemaShape<TShape>(schema)
+
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+    const togglePasswordVisibility = () => {
+        if (isPasswordVisible) {
+            return setIsPasswordVisible(false)
+        } else {
+            return setIsPasswordVisible(true)
+        }
+    }
 
     return (
         <FormField
@@ -49,8 +60,26 @@ const FormInputField = <
                             {label}
                         </FormLabelWithIndicator>
                     )}
+
                     <FormControl>
-                        <Input placeholder={placeholder} {...field} />
+                        <div className="relative flex items-center">
+                            <Input
+                                type={isPasswordVisible ? 'text' : 'password'}
+                                placeholder={placeholder}
+                                {...field}
+                            />
+                            <span
+                                className="absolute right-[18px]  text-gray-700 cursor-pointer"
+                                onClick={togglePasswordVisibility}
+                                data-testid="showHideButton"
+                            >
+                                {isPasswordVisible ? (
+                                    <Eye size={20} weight="fill" />
+                                ) : (
+                                    <EyeSlash size={20} weight="fill" />
+                                )}
+                            </span>
+                        </div>
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -59,4 +88,4 @@ const FormInputField = <
     )
 }
 
-export { FormInputField }
+export { FormPasswordField }

@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { fetchOrder } from '@/lib/api'
-import UpdateOrderForm from '@/components/forms/UpdateOrderForm'
+import AdminUpdateOrderForm from '@/components/forms/AdminUpdateOrderForm'
 import { mapOrderResponseToOrder } from '@/utils/conversions'
 
 const OrderPage = () => {
@@ -17,7 +17,7 @@ const OrderPage = () => {
         },
     })
 
-    return <UpdateOrderForm order={order} />
+    return <AdminUpdateOrderForm order={order} />
 }
 
 export default OrderPage
