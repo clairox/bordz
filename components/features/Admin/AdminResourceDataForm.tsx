@@ -14,11 +14,11 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useFormMessage } from '@/hooks/forms'
-import FormMessage from '../../ui/FormMessage'
-import { FormInput, FormTextArea } from '../../formControls'
-import FormSelectWithAsyncOptions from '../../formControls/FormSelectWithAsyncOptions'
+import { FormInput, FormTextArea } from '@/components/formControls'
+import FormSelectWithAsyncOptions from '@/components/formControls/FormSelectWithAsyncOptions'
+import FormMessage from '@/components/ui/FormMessage'
+import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '../Assets'
-import ButtonAsync from '../../ui/ButtonAsync'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -26,36 +26,33 @@ type UnknownZodObject = z.ZodObject<
     z.ZodTypeAny
 >
 
-type FieldDataDef<
-    TFieldValues extends object,
-    FieldValuesKey = Path<TFieldValues>,
-> =
+type FieldDataDef<TFieldValues extends object, TName = Path<TFieldValues>> =
     | {
           type: 'text'
-          name: FieldValuesKey
+          name: TName
           label: string
           autoFocus?: boolean
       }
     | {
           type: 'textArea'
-          name: FieldValuesKey
+          name: TName
           label: string
           autoFocus?: boolean
       }
     | {
           type: 'checkbox'
-          name: FieldValuesKey
+          name: TName
           label: string
       }
     | {
           type: 'selectAsync'
-          name: FieldValuesKey
+          name: TName
           label: string
           fetch: () => Promise<FormSelectOption[]>
       }
     | {
           type: 'assets'
-          name: FieldValuesKey
+          name: TName
           label: string
           bucket: string
           folder?: string

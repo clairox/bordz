@@ -1,7 +1,8 @@
 'use client'
 
 import { useCustomer } from '@/context/CustomerContext'
-import AddressForm from '@/components/forms/AddressForm'
+import { AccountHeading, AccountSection } from '@/components/features/Account'
+import CreateAddressForm from '@/components/forms/CreateAddressForm'
 
 const AddAddressPage = () => {
     const { data: customer, error, isPending } = useCustomer()
@@ -14,7 +15,14 @@ const AddAddressPage = () => {
         return <div>Loading...</div>
     }
 
-    return <AddressForm ownerId={customer!.id} />
+    return (
+        <div>
+            <AccountHeading>New Address</AccountHeading>
+            <AccountSection>
+                <CreateAddressForm ownerId={customer!.id} />
+            </AccountSection>
+        </div>
+    )
 }
 
 export default AddAddressPage
