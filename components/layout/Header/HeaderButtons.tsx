@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { BagSimple, HeartStraight, User } from '@phosphor-icons/react/dist/ssr'
+import { BagSimple, HeartStraight, User } from '@phosphor-icons/react'
 
 import { useCartQuery } from '@/context/CartContext'
 import { useCustomer } from '@/context/CustomerContext'
