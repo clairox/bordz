@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useCustomer } from '@/context/CustomerContext'
 import { useRouter } from 'next/navigation'
@@ -23,13 +24,13 @@ export const CartCheckoutButton: React.FC<CartCheckoutButtonProps> = ({
     }
 
     return (
-        <button
+        <Button
             disabled={disabled}
             onClick={() =>
                 router.push(customer ? '/checkout' : '/start-checkout')
             }
         >
             Checkout
-        </button>
+        </Button>
     )
 }

@@ -38,24 +38,26 @@ export const CartLineList: React.FC<CartLineListProps> = ({ lines }) => {
     }
 
     return (
-        <div className="flex flex-col gap-[1px] bg-black">
+        <div>
             {lines.length > 0 ? (
-                lines.map(line => {
-                    const wishlistLineId = wishlist?.lines.find(
-                        wishlistLine =>
-                            wishlistLine.product.id === line.product.id
-                    )?.id
-                    return (
-                        <CartLineCard
-                            cartLine={line}
-                            deleteCartLine={handleDeleteCartLine}
-                            addWishlistLine={handleAddWishlistLine}
-                            deleteWishlistLine={handleDeleteWishlistLine}
-                            wishlistLineId={wishlistLineId}
-                            key={line.id}
-                        />
-                    )
-                })
+                <div className="flex flex-col gap-[1px] bg-black">
+                    {lines.map(line => {
+                        const wishlistLineId = wishlist?.lines.find(
+                            wishlistLine =>
+                                wishlistLine.product.id === line.product.id
+                        )?.id
+                        return (
+                            <CartLineCard
+                                cartLine={line}
+                                deleteCartLine={handleDeleteCartLine}
+                                addWishlistLine={handleAddWishlistLine}
+                                deleteWishlistLine={handleDeleteWishlistLine}
+                                wishlistLineId={wishlistLineId}
+                                key={line.id}
+                            />
+                        )
+                    })}
+                </div>
             ) : (
                 <p>Your cart is empty.</p>
             )}

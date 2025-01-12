@@ -26,11 +26,11 @@ export const Cart: React.FC = () => {
     }
 
     return (
-        <div className="flex">
-            <div className="w-3/4">
+        <div className="flex gap-[1px] bg-black">
+            <div className="w-full bg-white">
                 <CartLineList lines={cart!.lines} />
             </div>
-            <div className="flex flex-col w-1/4">
+            <div className="w-[400px] bg-white">
                 <CartSummary cart={cart!} />
             </div>
         </div>
