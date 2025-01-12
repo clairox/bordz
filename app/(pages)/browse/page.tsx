@@ -1,3 +1,4 @@
+import PageHeading from '@/components/common/PageHeading'
 import { ProductList } from '@/components/features/Products'
 import SortSelect from '@/components/features/Sorting/SortSelect'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -14,7 +15,7 @@ const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
 
     return (
         <div>
-            <h1>Browse Completes</h1>
+            <PageHeading>Browse Completes</PageHeading>
             <div className="flex justify-end items-center px-4 py-4 w-full border-b border-black">
                 <SortSelect
                     value={orderBy}

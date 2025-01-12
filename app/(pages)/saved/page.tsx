@@ -1,3 +1,4 @@
+import PageHeading from '@/components/common/PageHeading'
 import SortSelect from '@/components/features/Sorting/SortSelect'
 import { Wishlist } from '@/components/features/Wishlist'
 
@@ -12,7 +13,7 @@ const SavedItemsPage: React.FC<SavedItemsPageProps> = ({ searchParams }) => {
 
     return (
         <div>
-            <h1>Saved Items</h1>
+            <PageHeading>Wishlist</PageHeading>
             <div className="flex justify-end px-4 py-4 w-full border-b border-black">
                 <SortSelect
                     value={orderBy}
