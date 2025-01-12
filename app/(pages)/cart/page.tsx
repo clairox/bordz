@@ -1,7 +1,12 @@
-import Cart from '@/components/features/Cart'
+import { Cart } from '@/components/features/Cart'
 
 const CartPage: React.FC = () => {
-    return <Cart />
+    return (
+        <section>
+            <h1>Your Cart</h1>
+            <Cart />
+        </section>
+    )
 }
 
 export default CartPage
