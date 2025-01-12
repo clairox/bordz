@@ -17,29 +17,32 @@ import {
 import { Checkbox } from '@/components/ui/Checkbox'
 import { Label } from '@/components/ui/Label'
 import { Button } from '@/components/ui/Button'
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/Sheet'
 
 const SLUserInterface: React.FC = () => {
     const { mode, isComplete, isTouched, finishEditing, reset } =
         useSkateLabContext()
 
-    const [confirm, setConfirm] = useState(false)
-
-    if (confirm) {
-        return <SLConfirmation />
-    }
-
     return (
         <div className="z-10 absolute w-full h-full pointer-events-none">
             <SLMenu />
             <div className="fixed top-24 right-10 flex flex-col gap-4">
-                <Dialog>
-                    <DialogTrigger>
-                        <SLButton disabled={!isComplete}>Done</SLButton>
-                    </DialogTrigger>
-                    <DialogContent>
+                <Sheet>
+                    <SheetTrigger>
+                        <SLButton disabled={!isComplete} onClick={() => {}}>
+                            Done
+                        </SLButton>
+                    </SheetTrigger>
+                    <SheetContent>
                         {mode === 'edit' ? <></> : <SLConfirmation />}
-                    </DialogContent>
-                </Dialog>
+                    </SheetContent>
+                </Sheet>
                 <SLButton disabled={!isTouched} onClick={reset}>
                     Reset
                 </SLButton>
@@ -68,10 +71,10 @@ const SLConfirmation: React.FC = () => {
 
     return (
         <div className="w-full h-full">
-            <DialogHeader className="mb-2 text-lg">
-                Your custom complete
-            </DialogHeader>
-            <div className="flex flex-col gap-3 mb-3">
+            <SheetHeader className="mb-2 text-lg">
+                <SheetTitle>Your custom complete</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-3 mb-6">
                 <ul className="flex flex-col gap-2">
                     <CompletedBoardDetails
                         componentType="deck"
