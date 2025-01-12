@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import SignupFormSchema from './schema'
 import { useSignUp } from '@/hooks/auth'
 import DataForm from '@/components/common/DataForm'
+import { CURRENT_YEAR, MIN_ALLOWED_CUSTOMER_AGE } from '@/utils/constants'
 
 type SignupFormProps = {
     redirectTo?: string
@@ -41,6 +42,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/' }) => {
                     type: 'dateSelect',
                     name: 'birthDate',
                     label: 'Date of Birth',
+                    maxYear: CURRENT_YEAR - MIN_ALLOWED_CUSTOMER_AGE,
                 },
                 {
                     type: 'text',

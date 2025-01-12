@@ -20,6 +20,8 @@ type FormDateSelectFieldProps<
 > = UseControllerProps<TFieldValues, TName> & {
     schema: z.ZodTypeAny
     label?: string
+    minYear?: number
+    maxYear?: number
 }
 
 const FormDateSelectField = <
@@ -31,6 +33,8 @@ const FormDateSelectField = <
     name,
     schema,
     label,
+    minYear,
+    maxYear,
 }: FormDateSelectFieldProps<TFieldValues, TName>) => {
     const shape = getZodSchemaShape<TShape>(schema)
 
@@ -48,7 +52,11 @@ const FormDateSelectField = <
                         </FormLabelWithIndicator>
                     )}
                     <FormControl>
-                        <DateSelect {...field} />
+                        <DateSelect
+                            {...field}
+                            minYear={minYear}
+                            maxYear={maxYear}
+                        />
                     </FormControl>
                     <FormMessage />
                 </FormItem>

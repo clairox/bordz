@@ -2,11 +2,21 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { capitalize } from 'lodash'
 
 import PriceRepr from '@/components/common/PriceRepr'
 import { useSkateLabContext } from '../../../../context/SkateLabContext'
 import SLButton from './SLButton'
 import SLMenu from './SLMenu'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTrigger,
+} from '@/components/ui/Dialog'
+import { Checkbox } from '@/components/ui/Checkbox'
+import { Label } from '@/components/ui/Label'
+import { Button } from '@/components/ui/Button'
 
 const SLUserInterface: React.FC = () => {
     const { mode, isComplete, isTouched, finishEditing, reset } =
@@ -22,18 +32,14 @@ const SLUserInterface: React.FC = () => {
         <div className="z-10 absolute w-full h-full pointer-events-none">
             <SLMenu />
             <div className="fixed top-24 right-10 flex flex-col gap-4">
-                <SLButton
-                    disabled={!isComplete}
-                    onClick={() => {
-                        if (mode === 'edit') {
-                            finishEditing()
-                        } else {
-                            setConfirm(true)
-                        }
-                    }}
-                >
-                    Done
-                </SLButton>
+                <Dialog>
+                    <DialogTrigger>
+                        <SLButton disabled={!isComplete}>Done</SLButton>
+                    </DialogTrigger>
+                    <DialogContent>
+                        {mode === 'edit' ? <></> : <SLConfirmation />}
+                    </DialogContent>
+                </Dialog>
                 <SLButton disabled={!isTouched} onClick={reset}>
                     Reset
                 </SLButton>
@@ -62,88 +68,96 @@ const SLConfirmation: React.FC = () => {
 
     return (
         <div className="w-full h-full">
-            <h2 className="text-lg">Your custom complete</h2>
-            <ul>
-                <li className="flex">
-                    <div>
-                        <span className="font-semibold">{'Deck: '}</span>
-                        {selectedComponents.deck!.title}
-                    </div>
-                    <div>
-                        <PriceRepr value={selectedComponents.deck!.price} />
-                    </div>
-                </li>
-                <li className="flex">
-                    <div>
-                        <span className="font-semibold">{'Trucks: '}</span>
-                        {selectedComponents.trucks!.title}
-                    </div>
-                    <div>
-                        <PriceRepr value={selectedComponents.trucks!.price} />
-                    </div>
-                </li>
-                <li className="flex">
-                    <div>
-                        <span className="font-semibold">{'Wheels: '}</span>
-                        {selectedComponents.wheels!.title}
-                    </div>
-                    <div>
-                        <PriceRepr value={selectedComponents.wheels!.price} />
-                    </div>
-                </li>
-                <li className="flex">
-                    <div>
-                        <span className="font-semibold">{'Bearings: '}</span>
-                        {selectedComponents.bearings!.title}
-                    </div>
-                    <div>
-                        <PriceRepr value={selectedComponents.bearings!.price} />
-                    </div>
-                </li>
-                <li className="flex">
-                    <div>
-                        <span className="font-semibold">{'Hardware: '}</span>
-                        {selectedComponents.hardware!.title}
-                    </div>
-                    <div>
-                        <PriceRepr value={selectedComponents.hardware!.price} />
-                    </div>
-                </li>
-                <li className="flex">
-                    <div>
-                        <span className="font-semibold">{'Griptape: '}</span>
-                        {selectedComponents.griptape!.title}
-                    </div>
-                    <div>
-                        <PriceRepr value={selectedComponents.griptape!.price} />
-                    </div>
-                </li>
-            </ul>
-            <div>
-                <span className="font-semibold">{'Subtotal: '}</span>
-                <PriceRepr
-                    value={Object.values(selectedComponents).reduce(
-                        (price, component) => {
-                            return price + component!.price
-                        },
-                        0
-                    )}
-                />
+            <DialogHeader className="mb-2 text-lg">
+                Your custom complete
+            </DialogHeader>
+            <div className="flex flex-col gap-3 mb-3">
+                <ul className="flex flex-col gap-2">
+                    <CompletedBoardDetails
+                        componentType="deck"
+                        component={selectedComponents.deck!}
+                    />
+                    <CompletedBoardDetails
+                        componentType="trucks"
+                        component={selectedComponents.trucks!}
+                    />
+                    <CompletedBoardDetails
+                        componentType="wheels"
+                        component={selectedComponents.wheels!}
+                    />
+                    <CompletedBoardDetails
+                        componentType="bearings"
+                        component={selectedComponents.bearings!}
+                    />
+                    <CompletedBoardDetails
+                        componentType="hardware"
+                        component={selectedComponents.hardware!}
+                    />
+                    <CompletedBoardDetails
+                        componentType="griptape"
+                        component={selectedComponents.griptape!}
+                    />
+                </ul>
+                <div className="flex justify-between">
+                    <span className="font-semibold text-2xl">
+                        {'Subtotal '}
+                    </span>
+                    <p className="text-xl">
+                        <PriceRepr
+                            value={Object.values(selectedComponents).reduce(
+                                (price, component) => {
+                                    return price + component!.price
+                                },
+                                0
+                            )}
+                        />
+                    </p>
+                </div>
             </div>
             <div>
-                <input
-                    id="shouldPublish"
-                    type="checkbox"
-                    checked={shouldPublish}
-                    onChange={e => setShouldPublish(e.target.checked)}
-                />
-                <label htmlFor="shouldPublish">
-                    Would you like to publish your complete?
-                </label>
+                <div className="flex flex-row gap-4 items-start mb-8">
+                    <Checkbox
+                        id="shouldPublish"
+                        checked={shouldPublish}
+                        onCheckedChange={checked =>
+                            setShouldPublish(checked ? true : false)
+                        }
+                    />
+                    <Label
+                        htmlFor="shouldPublish"
+                        className="hover:cursor-pointer"
+                    >
+                        Would you like to publish your complete?
+                    </Label>
+                </div>
             </div>
-            <button onClick={addToCart}>Add to cart</button>
-            <button onClick={addToWishlist}>Save for later</button>
+            <div className="flex justify-end gap-4">
+                <Button onClick={addToCart}>Add to cart</Button>
+                <Button onClick={addToWishlist}>Save for later</Button>
+            </div>
         </div>
+    )
+}
+
+type CompletedBoardDetailsProps = {
+    componentType: ComponentType
+    component: Component
+}
+
+const CompletedBoardDetails: React.FC<CompletedBoardDetailsProps> = ({
+    componentType,
+    component,
+}) => {
+    return (
+        <li>
+            <p className="font-semibold text-lg">{capitalize(componentType)}</p>
+            <div className="flex justify-between">
+                <p className="w-[600px] line-clamp-2">{component.title}</p>
+                <p>
+                    <PriceRepr value={component.price} />
+                </p>
+            </div>
+        </li>
     )
 }
 

@@ -7,6 +7,7 @@ import PriceRepr from '@/components/common/PriceRepr'
 import { useSkateLabContext } from '@/context/SkateLabContext'
 import { useSupabase } from '@/context/SupabaseContext'
 import { getTypeFromCategory } from '@/utils/domain'
+import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 
 type SLMenuListProps = {
     components: Component[]
@@ -66,12 +67,12 @@ const SLMenuListItem: React.FC<SLMenuListItemProps> = ({
             onClick={handleComponentSelection}
             className={`flex flex-col w-full border-b border-black last:border-none ${isSelected ? 'bg-sky-100 hover:bg-sky-200' : 'bg-white hover:bg-gray-100'}`}
         >
-            {component.images && (
-                <StoredImage
-                    path={component.images[0]}
+            <div className="w-full h-[339.983px]">
+                <StoredPreviewImage
+                    path={component.images?.[0]}
                     alt={`Skateboard ${getTypeFromCategory(category)}`}
                 />
-            )}
+            </div>
             <div className="flex flex-col gap-[1px] px-4 pt-3 pb-4 border-t border-gray-300 text-left">
                 <h3 className="line-clamp-2 text-sm">{component.title}</h3>
                 <div className="font-bold text-lg">
@@ -93,44 +94,6 @@ const SLMenuListItem: React.FC<SLMenuListItemProps> = ({
                 </div>
             </div>
         </div>
-    )
-}
-
-type StoredImageProps = {
-    path: string
-    alt: string
-}
-
-const StoredImage: React.FC<StoredImageProps> = ({ path, alt }) => {
-    const supabase = useSupabase()
-
-    const [src, setSrc] = useState<string | undefined>(undefined)
-
-    useEffect(() => {
-        const {
-            data: { publicUrl },
-        } = supabase.storage
-            .from('images')
-            .getPublicUrl(path, { download: true })
-
-        if (publicUrl) {
-            setSrc(publicUrl)
-        }
-    }, [path, supabase])
-
-    if (!src) {
-        return <div>Loading...</div>
-    }
-
-    return (
-        <Image
-            src={src}
-            alt={alt}
-            sizes="100vw"
-            width="650"
-            height="770"
-            style={{ width: '100%', height: 'auto' }}
-        />
     )
 }
 

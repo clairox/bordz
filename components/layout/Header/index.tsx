@@ -13,22 +13,26 @@ const Header: React.FC = () => {
     return (
         <header className="z-50 fixed top-0 left-0 flex justify-between w-full h-14 border-b border-black bg-white">
             <div className="flex gap-[1px] bg-black border-r border-black">
-                <div className="flex items-center px-4 bg-white">
-                    <Link href="/">
-                        <Image
-                            src="/bordz-brand-black.svg"
-                            alt="bordz"
-                            width="122"
-                            height="42"
-                        />
-                    </Link>
-                </div>
-                <div className="flex justify-center items-center w-24 bg-white">
-                    <Link href="/lab">Lab</Link>
-                </div>
-                <div className="flex justify-center items-center w-24 bg-white">
-                    <Link href="/browse">Browse</Link>
-                </div>
+                <Link href="/" className="flex items-center px-4 bg-white">
+                    <Image
+                        src="/bordz-brand-black.svg"
+                        alt="bordz"
+                        width="122"
+                        height="42"
+                    />
+                </Link>
+                <Link
+                    href="/lab"
+                    className="flex justify-center items-center w-24 bg-white"
+                >
+                    Lab
+                </Link>
+                <Link
+                    href="/browse"
+                    className="flex justify-center items-center w-24 bg-white"
+                >
+                    Browse
+                </Link>
             </div>
             <div className="flex gap-[1px] bg-black border-l border-black">
                 <AccountHeaderButton />
@@ -65,11 +69,13 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
     }
 
     return (
-        <div className="flex justify-center items-center px-5 bg-white">
-            <Link href={href} onClick={handleClick}>
-                <button disabled={disabled}>{icon}</button>
-            </Link>
-        </div>
+        <Link
+            href={href}
+            onClick={handleClick}
+            className="flex justify-center items-center px-5 bg-white"
+        >
+            <button disabled={disabled}>{icon}</button>
+        </Link>
     )
 }
 
@@ -82,7 +88,7 @@ const AccountHeaderButton: React.FC = () => {
             icon={
                 <div className="flex items-center gap-3">
                     <User
-                        size={28}
+                        size={26}
                         weight="light"
                         color={isCustomerPending ? '#999' : '#000'}
                     />
@@ -102,7 +108,7 @@ const WishlistHeaderButton: React.FC = () => {
             href="/saved"
             icon={
                 <div className="flex items-center gap-2">
-                    <HeartStraight size={28} weight="light" />
+                    <HeartStraight size={26} weight="light" />
                     {wishlist && (
                         <span className="w-4 text-2xl font-[200]">
                             {wishlist.quantity}
@@ -122,7 +128,7 @@ const CartHeaderButton: React.FC = () => {
             href="/cart"
             icon={
                 <div className="flex items-center gap-2">
-                    <BagSimple size={28} weight="light" />
+                    <BagSimple size={26} weight="light" />
                     {cart && (
                         <span className="w-4 text-2xl font-[200]">
                             {cart.totalQuantity}

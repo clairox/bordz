@@ -3,6 +3,7 @@
 import { useSkateLabContext } from '@/context/SkateLabContext'
 import { CATEGORIES } from '@/utils/constants'
 import { getTypeFromCategory } from '@/utils/domain'
+import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 
 type SLMenuNavProps = {
     currentSection: Category['label']
@@ -14,8 +15,8 @@ const SLMenuNav: React.FC<SLMenuNavProps> = ({ currentSection }) => {
     const isLastSection =
         CATEGORIES.indexOf(currentSection) === CATEGORIES.length - 1
 
-    const prevButtonColorClass = isFirstSection ? 'text-gray-500' : 'text-black'
-    const nextButtonColorClass = isLastSection ? 'text-gray-500' : 'text-black'
+    const prevButtonColorClass = isFirstSection ? 'text-gray-300' : 'text-black'
+    const nextButtonColorClass = isLastSection ? 'text-gray-300' : 'text-black'
 
     const navigate = (direction: 'prev' | 'next') => {
         let sectionToNavigateTo: Category['label']
@@ -42,22 +43,24 @@ const SLMenuNav: React.FC<SLMenuNavProps> = ({ currentSection }) => {
     }
 
     return (
-        <div className="z-10 fixed px-2 flex justify-between items-center w-[inherit] h-12 border-b border-black">
-            <h2 className="text-2xl">{currentSection}</h2>
-            <div className="flex items-center gap-2 text-2xl">
+        <div className="z-10 fixed flex justify-between items-center w-[inherit] h-12 border-b border-black">
+            <div className="flex items-end pl-2 pb-1 h-full">
+                <h2 className="font-semibold text-2xl">{currentSection}</h2>
+            </div>
+            <div className="flex items-center h-full text-2xl">
                 <button
                     disabled={isFirstSection}
                     onClick={() => navigate('prev')}
-                    className={`${prevButtonColorClass}`}
+                    className={`flex justify-center items-center w-12 h-full border-l border-black ${prevButtonColorClass}`}
                 >
-                    Prev
+                    <CaretLeft size={28} weight="regular" />
                 </button>
                 <button
                     disabled={isLastSection}
                     onClick={() => navigate('next')}
-                    className={`${nextButtonColorClass}`}
+                    className={`flex justify-center items-center w-12 h-full border-l border-black ${nextButtonColorClass}`}
                 >
-                    Next
+                    <CaretRight size={28} weight="regular" />
                 </button>
             </div>
         </div>

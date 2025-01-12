@@ -15,18 +15,18 @@ import { omit } from 'lodash'
 
 import { useFormMessage } from '@/hooks/forms'
 import {
+    FormAsyncSelectField,
     FormCheckboxField,
     FormDateSelectField,
     FormInputField,
+    FormPasswordField,
     FormSelectField,
+    FormTextareaField,
 } from '@/components/formControls'
 import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
-import { FormPasswordField } from '@/components/formControls/FormPasswordField'
-import { FormAsyncSelectField } from '@/components/formControls/FormAsyncSelectField'
-import { FormTextareaField } from '@/components/formControls/FormTextareaField'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -72,6 +72,8 @@ type FieldDataDef<TFieldValues extends object, TName = Path<TFieldValues>> =
           type: 'dateSelect'
           name: TName
           label: string
+          minYear?: number
+          maxYear?: number
       }
     | {
           type: 'selectAsync'
