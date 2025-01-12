@@ -1,35 +1,17 @@
-'use client'
+import { Suspense } from 'react'
 
-import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Trash } from '@phosphor-icons/react'
-
-import { useDeleteWishlistLine, useWishlistLines } from '@/hooks/data/wishlist'
-import PriceRepr from '@/components/common/PriceRepr'
 import SortSelect from '@/components/features/Sorting/SortSelect'
-import InfiniteItemList from '@/components/common/InfiniteItemList'
+import { Wishlist } from '@/components/features/Wishlist'
+import { Skeleton } from '@/components/ui/Skeleton'
 
-const SavedItemsPage = () => {
-    const searchParams = useSearchParams()
-    const page = Number(searchParams.get('page')) || 1
-    const pageSize = Number(searchParams.get('size')) || 40
-    const orderBy = (searchParams.get('orderBy') as SortKey) || 'date-desc'
+type SavedItemsPageProps = {
+    searchParams: { size?: string; orderBy?: string; cols?: string }
+}
 
-    const { data, error, status, hasNextPage, fetchNextPage } =
-        useWishlistLines({
-            page,
-            size: pageSize,
-            orderBy,
-        })
-
-    if (error) {
-        throw error
-    }
-
-    if (status === 'pending') {
-        return <div>Loading...</div>
-    }
+const SavedItemsPage: React.FC<SavedItemsPageProps> = ({ searchParams }) => {
+    const pageSize = Number(searchParams.size) || 40
+    const orderBy = (searchParams.orderBy as SortKey) || 'date-desc'
+    const cols = Number(searchParams.cols) || 4
 
     return (
         <div>
@@ -40,107 +22,28 @@ const SavedItemsPage = () => {
                     availableOptions={['date-desc', 'date-asc']}
                 />
             </div>
-            <InfiniteItemList
-                pages={data.pages}
-                hasNextPage={hasNextPage}
-                fetchNextPage={fetchNextPage}
-                render={items => <Wishlist items={items} />}
-            />
+            <Suspense fallback={<Fallback />}>
+                <Wishlist pageSize={pageSize} orderBy={orderBy} cols={cols} />
+            </Suspense>
         </div>
     )
 }
 
-type WishlistProps = {
-    items: WishlistLine[]
-}
-
-const Wishlist: React.FC<WishlistProps> = ({ items }) => {
-    const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
-
-    const handleDeleteWishlistLine = (id: string) =>
-        deleteWishlistLine({ lineId: id })
-
-    return (
-        <div className="grid grid-cols-4 gap-[1px] w-full border-b border-black">
-            {items?.length ? (
-                items.map(item => (
-                    <WishlistLineItem
-                        wishlistLine={item}
-                        deleteWishlistLine={handleDeleteWishlistLine}
-                        key={item.id}
-                    />
-                ))
-            ) : (
-                <p>No saved items</p>
-            )}
-        </div>
-    )
-}
-
-type WishlistLineItemProps = {
-    wishlistLine: WishlistLine
-    deleteWishlistLine: (lineId: string) => void
-}
-
-const WishlistLineItem: React.FC<WishlistLineItemProps> = ({
-    wishlistLine,
-    deleteWishlistLine,
-}) => {
-    const { product } = wishlistLine
-    const { board } = product
-
-    const handleDeleteButtonClick = () => {
-        const { id } = wishlistLine
-        deleteWishlistLine(id)
-    }
-
-    return (
-        <article className="flex flex-col gap-2 p-6 border-r border-black last:border-none">
-            {product.featuredImage && (
-                <Image
-                    src={product.featuredImage.src}
-                    alt={product.featuredImage.alt}
-                    width={product.featuredImage.width}
-                    height={product.featuredImage.height}
-                />
-            )}
-            <div className="flex flex-col gap-4">
-                <div className="flex justify-between">
-                    <h1>{product.title}</h1>
-
-                    <div>
-                        <button onClick={handleDeleteButtonClick}>
-                            <Trash size={28} weight="light" />
-                        </button>
+const Fallback = () => (
+    <div className="grid grid-cols-4 gap-[1px] w-full bg-black">
+        {Array(8)
+            .fill('x')
+            .map((_, idx) => (
+                <div key={idx} className="h-[448px] bg-white">
+                    <Skeleton className="w-full h-80 rounded-none border-b border-gray-400" />
+                    <div className="w-full h-full px-6 pt-5 pb-5">
+                        <Skeleton className="w-[160px] h-[24px] mb-4" />
+                        <Skeleton className="w-[60px] h-[18px] mb-2" />
+                        <Skeleton className="w-[90px] h-[18px]" />
                     </div>
                 </div>
-                <ul className="text-sm">
-                    <li className="line-clamp-1">{board?.deck.title}</li>
-                    <li className="line-clamp-1">{board?.trucks.title}</li>
-                    <li className="line-clamp-1">{board?.wheels.title}</li>
-                    <li className="line-clamp-1">{board?.bearings.title}</li>
-                    <li className="line-clamp-1">{board?.hardware.title}</li>
-                    <li className="line-clamp-1">{board?.griptape.title}</li>
-                </ul>
-                <div className="flex justify-between">
-                    {/* TODO: Add wishlist item editing to edit mode */}
-                    <div>
-                        <Link
-                            href={`/lab?mode=edit&id=${wishlistLine.id}`}
-                            className="hover:underline"
-                        >
-                            Edit
-                        </Link>
-                    </div>
-                    <div>
-                        <p>
-                            <PriceRepr value={wishlistLine.product.price} />
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </article>
-    )
-}
+            ))}
+    </div>
+)
 
 export default SavedItemsPage

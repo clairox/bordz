@@ -43,6 +43,7 @@
 -   [ ] Automatically add ' \*' to form field labels if required
 -   [x] Return response.json() and handle error inside fetchAbsolute
 -   [ ] Move id to mutation fn in data mutation hooks
+-   [ ] BUG: api calls that require cookies don't work with suspense
 
 ### Cart
 

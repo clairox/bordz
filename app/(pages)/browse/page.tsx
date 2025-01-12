@@ -4,12 +4,13 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { Suspense } from 'react'
 
 type BrowsePageProps = {
-    searchParams: { size: string; orderBy: string }
+    searchParams: { size?: string; orderBy?: string; cols?: string }
 }
 
 const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
     const pageSize = Number(searchParams.size) || 40
     const orderBy = (searchParams.orderBy as SortKey) || 'date-desc'
+    const cols = Number(searchParams.cols) || 4
 
     return (
         <div>
@@ -25,7 +26,11 @@ const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
                 />
             </div>
             <Suspense fallback={<Fallback />}>
-                <ProductList pageSize={pageSize} orderBy={orderBy} />
+                <ProductList
+                    pageSize={pageSize}
+                    orderBy={orderBy}
+                    cols={cols}
+                />
             </Suspense>
         </div>
     )

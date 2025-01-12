@@ -1,5 +1,6 @@
 'use client'
 
+import { Fragment } from 'react'
 import Link from 'next/link'
 
 import { useCartQuery } from '@/context/CartContext'
@@ -16,13 +17,19 @@ import { useProducts } from '@/hooks/data/product'
 import InfiniteItemList from '@/components/common/InfiniteItemList'
 import { ProductBoardPopover } from './ProductBoardPopover'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
+import GridFiller from '@/components/common/GridFiller'
 
 type ProductListProps = {
     pageSize: number
     orderBy: SortKey
+    cols: number
 }
 
-const ProductList: React.FC<ProductListProps> = ({ pageSize, orderBy }) => {
+export const ProductList: React.FC<ProductListProps> = ({
+    pageSize,
+    orderBy,
+    cols = 4,
+}) => {
     const { data, hasNextPage, fetchNextPage } = useProducts({
         size: pageSize,
         orderBy,
@@ -31,18 +38,24 @@ const ProductList: React.FC<ProductListProps> = ({ pageSize, orderBy }) => {
     const { data: cart } = useCartQuery()
     const { data: wishlist } = useWishlist()
 
-    return (
-        <InfiniteItemList
-            pages={data.pages}
-            hasNextPage={hasNextPage}
-            fetchNextPage={fetchNextPage}
-            render={products => {
-                const productCount = products.length
-                console.log(products[0])
+    const gridColsClasses: Record<number, string> = {
+        3: 'grid-cols-3',
+        4: 'grid-cols-4',
+        5: 'grid-cols-5',
+        6: 'grid-cols-6',
+    }
 
-                return (
-                    <div className="grid grid-cols-4 gap-[1px] w-full bg-black">
-                        {products.map(product => {
+    return (
+        <div
+            className={`grid ${gridColsClasses[cols]} gap-[1px] w-full bg-black`}
+        >
+            <InfiniteItemList
+                pages={data.pages}
+                hasNextPage={hasNextPage}
+                fetchNextPage={fetchNextPage}
+                render={products => (
+                    <Fragment>
+                        {products.map((product, idx) => {
                             const cartLineId = cart?.lines.find(
                                 line => line.product.id === product.id
                             )?.id
@@ -56,17 +69,18 @@ const ProductList: React.FC<ProductListProps> = ({ pageSize, orderBy }) => {
                                     product={product}
                                     cartLineId={cartLineId}
                                     wishlistLineId={wishlistLineId}
-                                    key={product.id}
+                                    key={product.id + idx}
                                 />
                             )
                         })}
-                        <div
-                            className={`${'col-span-' + (productCount % 4)} w-full h-full bg-white`}
+                        <GridFiller
+                            itemCount={products.length}
+                            gridTrackSize={cols}
                         />
-                    </div>
-                )
-            }}
-        />
+                    </Fragment>
+                )}
+            />
+        </div>
     )
 }
 
@@ -139,5 +153,3 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </article>
     )
 }
-
-export { ProductList }
