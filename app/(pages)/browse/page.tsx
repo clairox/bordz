@@ -1,8 +1,9 @@
+import { Suspense } from 'react'
+
 import PageHeading from '@/components/common/PageHeading'
 import { ProductList } from '@/components/features/Products'
 import SortSelect from '@/components/features/Sorting/SortSelect'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { Suspense } from 'react'
 
 type BrowsePageProps = {
     searchParams: { size?: string; orderBy?: string; cols?: string }

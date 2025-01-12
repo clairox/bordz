@@ -11,20 +11,26 @@ import { useWishlist } from '@/context/WishlistContext'
 
 const Header: React.FC = () => {
     return (
-        <header className="z-50 fixed top-0 left-0 flex justify-between px-2 w-full h-14 border-b border-black bg-white">
-            <div className="flex gap-4">
-                <Link href="/">
-                    <Image
-                        src="/bordz-brand-black.svg"
-                        alt="bordz"
-                        width="122"
-                        height="42"
-                    />
-                </Link>
-                <Link href="/lab">Skate Lab</Link>
-                <Link href="/browse">Browse</Link>
+        <header className="z-50 fixed top-0 left-0 flex justify-between w-full h-14 border-b border-black bg-white">
+            <div className="flex gap-[1px] bg-black border-r border-black">
+                <div className="flex items-center px-4 bg-white">
+                    <Link href="/">
+                        <Image
+                            src="/bordz-brand-black.svg"
+                            alt="bordz"
+                            width="122"
+                            height="42"
+                        />
+                    </Link>
+                </div>
+                <div className="flex justify-center items-center w-24 bg-white">
+                    <Link href="/lab">Lab</Link>
+                </div>
+                <div className="flex justify-center items-center w-24 bg-white">
+                    <Link href="/browse">Browse</Link>
+                </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-[1px] bg-black border-l border-black">
                 <AccountHeaderButton />
                 <WishlistHeaderButton />
                 <CartHeaderButton />
@@ -59,9 +65,11 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
     }
 
     return (
-        <Link href={href} onClick={handleClick}>
-            <button disabled={disabled}>{icon}</button>
-        </Link>
+        <div className="flex justify-center items-center px-5 bg-white">
+            <Link href={href} onClick={handleClick}>
+                <button disabled={disabled}>{icon}</button>
+            </Link>
+        </div>
     )
 }
 
@@ -72,7 +80,7 @@ const AccountHeaderButton: React.FC = () => {
         <HeaderButton
             href={customer ? '/account' : '/login'}
             icon={
-                <div className="flex gap-2">
+                <div className="flex items-center gap-3">
                     <User
                         size={28}
                         weight="light"
@@ -93,9 +101,13 @@ const WishlistHeaderButton: React.FC = () => {
         <HeaderButton
             href="/saved"
             icon={
-                <div className="flex">
+                <div className="flex items-center gap-2">
                     <HeartStraight size={28} weight="light" />
-                    {wishlist && <span>{wishlist.quantity}</span>}
+                    {wishlist && (
+                        <span className="w-4 text-2xl font-[200]">
+                            {wishlist.quantity}
+                        </span>
+                    )}
                 </div>
             }
         />
@@ -109,9 +121,13 @@ const CartHeaderButton: React.FC = () => {
         <HeaderButton
             href="/cart"
             icon={
-                <div className="flex">
+                <div className="flex items-center gap-2">
                     <BagSimple size={28} weight="light" />
-                    {cart && <span>{cart.totalQuantity}</span>}
+                    {cart && (
+                        <span className="w-4 text-2xl font-[200]">
+                            {cart.totalQuantity}
+                        </span>
+                    )}
                 </div>
             }
         />
