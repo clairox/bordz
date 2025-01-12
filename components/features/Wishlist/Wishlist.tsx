@@ -10,6 +10,7 @@ import { useDeleteWishlistLine, useWishlistLines } from '@/hooks/data/wishlist'
 import { ProductBoardPopover } from '../Products'
 import PriceRepr from '@/components/common/PriceRepr'
 import GridFiller from '@/components/common/GridFiller'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 type WishlistProps = {
     pageSize: number
@@ -17,23 +18,32 @@ type WishlistProps = {
     cols: number
 }
 
+const gridColsClasses: Record<number, string> = {
+    3: 'grid-cols-3',
+    4: 'grid-cols-4',
+    5: 'grid-cols-5',
+    6: 'grid-cols-6',
+}
+
 export const Wishlist: React.FC<WishlistProps> = ({
     pageSize,
     orderBy,
     cols,
 }) => {
-    const { data, hasNextPage, fetchNextPage } = useWishlistLines({
-        size: pageSize,
-        orderBy,
-    })
+    const { data, error, isPending, hasNextPage, fetchNextPage } =
+        useWishlistLines({
+            size: pageSize,
+            orderBy,
+        })
 
     const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
 
-    const gridColsClasses: Record<number, string> = {
-        3: 'grid-cols-3',
-        4: 'grid-cols-4',
-        5: 'grid-cols-5',
-        6: 'grid-cols-6',
+    if (error) {
+        throw error
+    }
+
+    if (isPending) {
+        return <Fallback />
     }
 
     return (
@@ -46,21 +56,27 @@ export const Wishlist: React.FC<WishlistProps> = ({
                 fetchNextPage={fetchNextPage}
                 render={wishlist => (
                     <Fragment>
-                        {wishlist.map(item => {
-                            return (
-                                <WishlistItemCard
-                                    item={item}
-                                    deleteItem={lineId =>
-                                        deleteWishlistLine({ lineId })
-                                    }
-                                    key={item.id}
-                                />
-                            )
-                        })}
-                        <GridFiller
-                            itemCount={wishlist.length}
-                            gridTrackSize={cols}
-                        />
+                        {wishlist.length > 0 ? (
+                            <Fragment>
+                                {wishlist.map(item => {
+                                    return (
+                                        <WishlistItemCard
+                                            item={item}
+                                            deleteItem={lineId =>
+                                                deleteWishlistLine({ lineId })
+                                            }
+                                            key={item.id}
+                                        />
+                                    )
+                                })}
+                                <GridFiller
+                                    itemCount={wishlist.length}
+                                    gridTrackSize={cols}
+                                />{' '}
+                            </Fragment>
+                        ) : (
+                            <p>Your wishlist is empty.</p>
+                        )}
                     </Fragment>
                 )}
             />
@@ -116,3 +132,20 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
         </article>
     )
 }
+
+const Fallback = () => (
+    <div className="grid grid-cols-4 gap-[1px] w-full bg-black">
+        {Array(8)
+            .fill('x')
+            .map((_, idx) => (
+                <div key={idx} className="h-[448px] bg-white">
+                    <Skeleton className="w-full h-80 rounded-none border-b border-gray-400" />
+                    <div className="w-full h-full px-6 pt-5 pb-5">
+                        <Skeleton className="w-[160px] h-[24px] mb-4" />
+                        <Skeleton className="w-[60px] h-[18px] mb-2" />
+                        <Skeleton className="w-[90px] h-[18px]" />
+                    </div>
+                </div>
+            ))}
+    </div>
+)

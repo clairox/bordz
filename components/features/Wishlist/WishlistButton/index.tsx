@@ -25,7 +25,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
 
     return (
         <button disabled={loading} onClick={handleClick}>
-            <HeartStraight size={28} weight={isInWishlist ? 'fill' : 'light'} />
+            <HeartStraight size={26} weight={isInWishlist ? 'fill' : 'light'} />
         </button>
     )
 }

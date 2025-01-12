@@ -25,6 +25,13 @@ type ProductListProps = {
     cols: number
 }
 
+const gridColsClasses: Record<number, string> = {
+    3: 'grid-cols-3',
+    4: 'grid-cols-4',
+    5: 'grid-cols-5',
+    6: 'grid-cols-6',
+}
+
 export const ProductList: React.FC<ProductListProps> = ({
     pageSize,
     orderBy,
@@ -37,13 +44,6 @@ export const ProductList: React.FC<ProductListProps> = ({
 
     const { data: cart } = useCartQuery()
     const { data: wishlist } = useWishlist()
-
-    const gridColsClasses: Record<number, string> = {
-        3: 'grid-cols-3',
-        4: 'grid-cols-4',
-        5: 'grid-cols-5',
-        6: 'grid-cols-6',
-    }
 
     return (
         <div

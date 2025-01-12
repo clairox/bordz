@@ -1,9 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowClockwise, Trash } from '@phosphor-icons/react'
+import { ArrowClockwise, Trash, X } from '@phosphor-icons/react'
 
 import { useDeleteCartLineMutation } from '@/hooks/data/cart'
 import {
@@ -15,6 +14,8 @@ import PriceRepr from '../../common/PriceRepr'
 import { useCustomer } from '@/context/CustomerContext'
 import WishlistButton from '../Wishlist/WishlistButton'
 import { useWishlist } from '@/context/WishlistContext'
+import StoredPreviewImage from '@/components/common/StoredPreviewImage'
+import { ProductBoardPopover } from '../Products'
 
 const Cart: React.FC = () => {
     const { data: cart, status, refetch } = useCartQuery()
@@ -93,10 +94,10 @@ const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-[1px] bg-black">
             {lines?.length ? (
                 lines.map(line => (
-                    <CartLinesListItem
+                    <CartLineCard
                         cartLine={line}
                         deleteCartLine={deleteCartLine}
                         wishlistLineId={
@@ -115,13 +116,13 @@ const CartLinesList: React.FC<CartLinesListProps> = ({ lines }) => {
     )
 }
 
-type CartLinesListItemProps = {
+type CartLineCardProps = {
     cartLine: CartLine
     deleteCartLine: ({ lineId }: { lineId: string }) => void
     wishlistLineId?: string
 }
 
-const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
+const CartLineCard: React.FC<CartLineCardProps> = ({
     cartLine,
     deleteCartLine,
     wishlistLineId,
@@ -133,8 +134,7 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     const { mutateAsync: deleteWishlistLine } = useDeleteWishlistLine()
 
     const handleDeleteButtonClick = () => {
-        const { id } = cartLine
-        deleteCartLine({ lineId: id })
+        deleteCartLine({ lineId: cartLine.id })
     }
 
     const moveToWishlist = async () => {
@@ -151,51 +151,55 @@ const CartLinesListItem: React.FC<CartLinesListItemProps> = ({
     }
 
     return (
-        <article className="flex gap-2">
-            {product.featuredImage && (
-                <Image
-                    src={product.featuredImage.src}
-                    alt={product.featuredImage.alt}
-                    width={product.featuredImage.width}
-                    height={product.featuredImage.height}
+        <article className="flex h-48 bg-white">
+            <div className="w-52 border-r border-black">
+                <StoredPreviewImage
+                    path={product.featuredImage}
+                    alt="product image"
                 />
-            )}
-            <div className="flex flex-col gap-4">
-                <div className="flex justify-between">
-                    <h1>{product.title}</h1>
-
-                    <div>
-                        <button onClick={handleDeleteButtonClick}>
-                            <Trash size={28} weight="light" />
-                        </button>
+            </div>
+            <div className="w-full flex flex-col justify-between gap-4 px-6 pt-5 pb-4">
+                <div className="flex flex-col items-start gap-1">
+                    <div className="flex justify-between items-center w-full">
+                        <div className="flex justify-start items-center gap-2">
+                            <h1 className="text-lg">{product.title}</h1>
+                            {product.board && (
+                                <ProductBoardPopover board={product.board} />
+                            )}
+                        </div>
                         <WishlistButton
                             isInWishlist={!!wishlistLineId}
                             onToggle={handleWishlistButtonToggle}
                         />
                     </div>
+                    <Link
+                        href={`/lab?mode=edit&id=${cartLine.id}`}
+                        className="hover:underline"
+                    >
+                        Edit
+                    </Link>
                 </div>
-                <ul className="text-sm">
-                    <li className="line-clamp-1">{board?.deck.title}</li>
-                    <li className="line-clamp-1">{board?.trucks.title}</li>
-                    <li className="line-clamp-1">{board?.wheels.title}</li>
-                    <li className="line-clamp-1">{board?.bearings.title}</li>
-                    <li className="line-clamp-1">{board?.hardware.title}</li>
-                    <li className="line-clamp-1">{board?.griptape.title}</li>
-                </ul>
-                <div className="flex justify-between">
-                    <p>Qty: {cartLine.quantity}</p>
-                    <div>
-                        <Link
-                            href={`/lab?mode=edit&id=${cartLine.id}`}
-                            className="hover:underline"
-                        >
-                            Edit
-                        </Link>
-                    </div>
-                    <div>
-                        <p>
-                            <PriceRepr value={cartLine.subtotal} />
-                        </p>
+                <div className="flex flex-col gap-4">
+                    <p>
+                        Qty:{' '}
+                        <span className="font-semibold">
+                            {cartLine.quantity}
+                        </span>
+                    </p>
+                    <div className="flex justify-between">
+                        <div>
+                            <button
+                                onClick={handleDeleteButtonClick}
+                                className="hover:underline"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                        <div>
+                            <p className="text-lg">
+                                <PriceRepr value={cartLine.subtotal} />
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
