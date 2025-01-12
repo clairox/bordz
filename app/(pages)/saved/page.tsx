@@ -14,16 +14,17 @@ const SavedItemsPage = () => {
     const searchParams = useSearchParams()
     const page = Number(searchParams.get('page')) || 1
     const pageSize = Number(searchParams.get('size')) || 40
-    const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
+    const orderBy = (searchParams.get('orderBy') as SortKey) || 'date-desc'
 
-    const { data, status, hasNextPage, fetchNextPage } = useWishlistLines({
-        page,
-        size: pageSize,
-        orderBy,
-    })
+    const { data, error, status, hasNextPage, fetchNextPage } =
+        useWishlistLines({
+            page,
+            size: pageSize,
+            orderBy,
+        })
 
-    if (status === 'error') {
-        return <div>Error</div>
+    if (error) {
+        throw error
     }
 
     if (status === 'pending') {
@@ -32,15 +33,12 @@ const SavedItemsPage = () => {
 
     return (
         <div>
-            <div className="pl-4 py-4 w-full border-b border-black">
-                <h1>Saved Items</h1>
-                <div className="flex">
-                    <label htmlFor="sortSelect">Sort by</label>
-                    <SortSelect
-                        value={orderBy}
-                        availableOptions={['date-desc', 'date-asc']}
-                    />
-                </div>
+            <h1>Saved Items</h1>
+            <div className="flex justify-end px-4 py-4 w-full border-b border-black">
+                <SortSelect
+                    value={orderBy}
+                    availableOptions={['date-desc', 'date-asc']}
+                />
             </div>
             <InfiniteItemList
                 pages={data.pages}

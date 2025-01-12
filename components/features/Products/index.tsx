@@ -1,1 +1,2 @@
-export * from './ProductsList'
+export * from './ProductBoardPopover'
+export * from './ProductList'

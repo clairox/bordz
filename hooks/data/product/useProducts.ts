@@ -1,6 +1,6 @@
 'use client'
 
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
 import { fetchProducts } from '@/lib/api'
 import { mapProductResponseToProduct } from '@/utils/conversions'
@@ -13,7 +13,7 @@ type UseProductsArgs = {
 }
 
 export const useProducts = (args: UseProductsArgs) => {
-    return useInfiniteQuery<Page<Product>>({
+    return useSuspenseInfiniteQuery<Page<Product>>({
         queryKey: ['products', args],
         queryFn: async ({ pageParam }) => {
             const response = await fetchProducts({

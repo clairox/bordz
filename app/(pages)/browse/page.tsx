@@ -1,56 +1,51 @@
-'use client'
-
-import { useSearchParams } from 'next/navigation'
-
-import { ProductsList } from '@/components/features/Products'
-import { useProducts } from '@/hooks/data/product'
+import { ProductList } from '@/components/features/Products'
 import SortSelect from '@/components/features/Sorting/SortSelect'
-import InfiniteItemList from '@/components/common/InfiniteItemList'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Suspense } from 'react'
 
-const BrowsePage: React.FC = () => {
-    const searchParams = useSearchParams()
-    const page = Number(searchParams.get('page')) || 1
-    const pageSize = Number(searchParams.get('size')) || 40
-    const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
+type BrowsePageProps = {
+    searchParams: { size: string; orderBy: string }
+}
 
-    const { data, status, fetchNextPage, hasNextPage } = useProducts({
-        page,
-        size: pageSize,
-        orderBy,
-    })
-
-    if (status === 'error') {
-        return <div>Error</div>
-    }
-
-    if (status === 'pending') {
-        return <div>Loading...</div>
-    }
+const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
+    const pageSize = Number(searchParams.size) || 40
+    const orderBy = (searchParams.orderBy as SortKey) || 'date-desc'
 
     return (
         <div>
-            <div className="pl-4 py-4 w-full border-b border-black">
-                <div className="flex">
-                    <label htmlFor="sortSelect">Sort by</label>
-                    <SortSelect
-                        value={orderBy}
-                        availableOptions={[
-                            'date-desc',
-                            'date-asc',
-                            'price-desc',
-                            'price-asc',
-                        ]}
-                    />
-                </div>
+            <div className="flex justify-end items-center px-4 py-4 w-full border-b border-black">
+                <SortSelect
+                    value={orderBy}
+                    availableOptions={[
+                        'date-desc',
+                        'date-asc',
+                        'price-desc',
+                        'price-asc',
+                    ]}
+                />
             </div>
-            <InfiniteItemList
-                pages={data.pages}
-                hasNextPage={hasNextPage}
-                fetchNextPage={fetchNextPage}
-                render={items => <ProductsList products={items} />}
-            />
+            <Suspense fallback={<Fallback />}>
+                <ProductList pageSize={pageSize} orderBy={orderBy} />
+            </Suspense>
         </div>
     )
 }
+
+const Fallback = () => (
+    <div className="grid grid-cols-4 gap-[1px] w-full bg-black">
+        {Array(8)
+            .fill('x')
+            .map((_, idx) => (
+                <div key={idx} className="h-[448px] bg-white">
+                    <Skeleton className="w-full h-80 rounded-none border-b border-gray-400" />
+                    <div className="w-full h-full px-6 pt-5 pb-5">
+                        <Skeleton className="w-[160px] h-[24px] mb-4" />
+                        <Skeleton className="w-[60px] h-[18px] mb-2" />
+                        <Skeleton className="w-[90px] h-[18px]" />
+                    </div>
+                </div>
+            ))}
+    </div>
+)
 
 export default BrowsePage

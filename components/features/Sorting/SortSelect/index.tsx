@@ -1,4 +1,14 @@
+'use client'
+
 import { usePathname, useRouter } from 'next/navigation'
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/Select'
 
 type SortSelectProps = {
     value: SortKey
@@ -16,21 +26,24 @@ const SortSelect: React.FC<SortSelectProps> = ({ value, availableOptions }) => {
         'price-desc': 'Price (high to low)',
     }
 
+    const handleValueChange = (value: SortKey) => {
+        router.push(pathname + `?orderBy=${value}`)
+    }
+
     // TODO: Be aware of existing search params
     return (
-        <select
-            id="sortSelect"
-            value={value}
-            onChange={e => router.push(pathname + `?orderBy=${e.target.value}`)}
-        >
-            {availableOptions.map(opt => {
-                return (
-                    <option value={opt} key={opt}>
-                        {sort[opt]}
-                    </option>
-                )
-            })}
-        </select>
+        <Select defaultValue={value} onValueChange={handleValueChange}>
+            <SelectTrigger className="w-52">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+                {availableOptions.map(option => (
+                    <SelectItem value={option} key={option}>
+                        {sort[option]}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     )
 }
 

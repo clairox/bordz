@@ -101,3 +101,7 @@
 ### Order
 
 -   [ ] Use text shipping address for orders, in case shipping address is deleted
+
+### Future ideas
+
+-   [ ] Component page for each component, button to start a new board with component

@@ -34,7 +34,9 @@ export const fetchProducts = async ({
 
     const paramString = params.length ? '?' + params.join('&') : ''
     const path = '/products' + paramString
-    return await fetchAbsolute<Page<ProductResponse>>(path)
+    return await fetchAbsolute<Page<ProductResponse>>(path, {
+        cache: 'no-cache',
+    })
 }
 
 export const updateProduct = async (

@@ -14,21 +14,13 @@ const ProductsPage = () => {
     const pageSize = Number(searchParams.get('size')) || 40
     const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
 
-    const { data, status, fetchNextPage, hasNextPage } = useProducts({
+    const { data, fetchNextPage, hasNextPage } = useProducts({
         page,
         size: pageSize,
         orderBy,
     })
 
     const { mutateAsync: deleteProducts } = useDeleteProducts()
-
-    if (status === 'error') {
-        return <div>Error</div>
-    }
-
-    if (status === 'pending') {
-        return <div>Loading...</div>
-    }
 
     return (
         <div>
