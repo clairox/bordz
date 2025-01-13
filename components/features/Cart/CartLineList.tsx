@@ -103,7 +103,7 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
         <article className="flex h-48 bg-white">
             <div className="w-52 border-r border-black">
                 <StoredPreviewImage
-                    path={product.featuredImage}
+                    path={product.board?.deck.images?.[0]}
                     alt="product image"
                 />
             </div>

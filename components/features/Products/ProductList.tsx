@@ -111,9 +111,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
     return (
         <article className="flex flex-col gap-2 bg-white">
-            <div className="w-full h-80 border-b border-gray-400">
+            <div className="border-b border-gray-400">
                 <StoredPreviewImage
-                    path={product.featuredImage}
+                    path={product.board?.deck.images?.[0]}
                     alt="product image"
                 />
             </div>

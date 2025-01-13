@@ -22,11 +22,13 @@ import {
     FormPasswordField,
     FormSelectField,
     FormTextareaField,
+    FormTextListField,
 } from '@/components/formControls'
 import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
+import { FormCustomAsyncSelectField } from '@/components/formControls/FormCustomAsyncSelectField'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -81,6 +83,21 @@ type FieldDataDef<TFieldValues extends object, TName = Path<TFieldValues>> =
           label: string
           placeholder?: string
           fetchOptions: () => Promise<FormSelectOption[]>
+      }
+    | {
+          type: 'customSelectAsync'
+          name: TName
+          label: string
+          placeholder?: string
+          fetchOptions: () => Promise<FormSelectOption[]>
+          addOption: (value: string) => Promise<FormSelectOption>
+      }
+    | {
+          type: 'textlist'
+          name: TName
+          label: string
+          placeholder?: string
+          limit?: number
       }
     | {
           type: 'assets'
@@ -270,6 +287,14 @@ const DataForm = <
                                             {...omit(field, ['type'])}
                                         />
                                     )
+                                case 'textlist':
+                                    return (
+                                        <FormTextListField
+                                            key={field.name}
+                                            control={form.control}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
                                 case 'select':
                                     return (
                                         <FormSelectField
@@ -291,6 +316,15 @@ const DataForm = <
                                 case 'selectAsync':
                                     return (
                                         <FormAsyncSelectField
+                                            key={field.name}
+                                            control={form.control}
+                                            schema={Schema}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
+                                case 'customSelectAsync':
+                                    return (
+                                        <FormCustomAsyncSelectField
                                             key={field.name}
                                             control={form.control}
                                             schema={Schema}

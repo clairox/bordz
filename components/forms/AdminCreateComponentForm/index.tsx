@@ -3,6 +3,8 @@
 import { useCreateComponent } from '@/hooks/data/component'
 import AdminCreateComponentFormSchema from './schema'
 import {
+    createSize,
+    createVendor,
     fetchCategories,
     fetchColors,
     fetchSizes,
@@ -70,6 +72,13 @@ const AdminCreateComponentForm: React.FC = () => {
                     label: 'Quantity',
                 },
                 {
+                    type: 'textlist',
+                    name: 'specifications',
+                    label: 'Specifications',
+                    placeholder: 'Enter component specifications...',
+                    limit: 15,
+                },
+                {
                     type: 'selectAsync',
                     name: 'category',
                     label: 'Category',
@@ -83,7 +92,7 @@ const AdminCreateComponentForm: React.FC = () => {
                     },
                 },
                 {
-                    type: 'selectAsync',
+                    type: 'customSelectAsync',
                     name: 'vendor',
                     label: 'Vendor',
                     placeholder: 'Select a vendor...',
@@ -94,9 +103,13 @@ const AdminCreateComponentForm: React.FC = () => {
                             name: vendor.name,
                         }))
                     },
+                    addOption: async (value: string) => {
+                        const vendor = await createVendor(value)
+                        return { value: vendor.id, name: vendor.name }
+                    },
                 },
                 {
-                    type: 'selectAsync',
+                    type: 'customSelectAsync',
                     name: 'size',
                     label: 'Size',
                     placeholder: 'Select a size...',
@@ -106,6 +119,10 @@ const AdminCreateComponentForm: React.FC = () => {
                             value: size.id,
                             name: size.label,
                         }))
+                    },
+                    addOption: async (value: string) => {
+                        const size = await createSize(value)
+                        return { value: size.id, name: size.label }
                     },
                 },
                 {

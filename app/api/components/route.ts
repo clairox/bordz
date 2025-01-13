@@ -9,7 +9,7 @@ import {
     SizeTable,
     VendorTable,
 } from '@/drizzle/schema/component'
-import { count, eq, inArray } from 'drizzle-orm'
+import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
 import { createUrlHandle } from '@/utils/url'
 import {
     getRequestOptionsParams,
@@ -18,13 +18,18 @@ import {
 } from '../shared'
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants'
 
+const orders: Partial<Record<SortKey, SQL>> = {
+    'alpha-asc': asc(ComponentTable.title),
+}
+
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const { page, size } = getRequestOptionsParams(request)
+        const { page, size, orderBy } = getRequestOptionsParams(request)
         const category = request.nextUrl.searchParams.get('category')
         const components = await getComponents(category, {
             limit: size,
             offset: (page - 1) * size,
+            orderBy,
         })
 
         const componentCount = await getComponentCount(category)
@@ -72,7 +77,21 @@ export const POST = async (request: NextRequest) =>
             colorId: data.color,
         })
 
-        return NextResponse.json(component)
+        const newComponent = await db.query.ComponentTable.findFirst({
+            where: eq(ComponentTable.id, component.id),
+            with: {
+                componentAttributes: {
+                    with: {
+                        category: true,
+                        size: true,
+                        color: true,
+                        vendor: true,
+                    },
+                },
+            },
+        })
+
+        return NextResponse.json(newComponent)
     })
 
 export const DELETE = async (request: NextRequest) =>
@@ -120,8 +139,9 @@ const getComponents = async (
             eq(ComponentAttributesTable.vendorId, VendorTable.id)
         )
         .where(category ? eq(CategoryTable.label, category) : undefined)
-        .limit(options?.limit || DEFAULT_PAGE_SIZE)
         .offset(options?.offset || 0)
+        .orderBy(desc(ComponentTable.createdAt))
+        .limit(options?.limit || DEFAULT_PAGE_SIZE)
         .then(rows => {
             return rows.map(row => {
                 return {

@@ -9,7 +9,7 @@ const AdminUpdateComponentFormSchema = z.object({
     images: z.array(z.string()),
     model: z.string().optional(),
     description: z.string().optional(),
-    specifications: z.array(z.string()).optional(),
+    specifications: z.array(z.string()),
     totalInventory: z.string().min(1, 'Please enter a quantity.'),
     category: z.string().min(1, 'Please enter a category.'),
     vendor: z.string().min(1, 'Please enter a vendor.'),

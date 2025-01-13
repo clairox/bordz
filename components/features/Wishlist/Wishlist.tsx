@@ -97,9 +97,9 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
 
     return (
         <article className="flex flex-col gap-2 bg-white">
-            <div className="w-full h-80 border-b border-gray-400">
+            <div className="border-b border-gray-400">
                 <StoredPreviewImage
-                    path={product.featuredImage}
+                    path={product.board?.deck.images?.[0]}
                     alt="wishlist item image"
                 />
             </div>

@@ -16,7 +16,7 @@ const SLMenuSection: React.FC<SLMenuSectionProps> = ({ section }) => {
     })
 
     return (
-        <div className="relative pt-12 h-full">
+        <div className="relative pt-10 h-full">
             <div className="flex flex-col w-full h-full overflow-auto">
                 <InfiniteItemList
                     pages={data.pages}

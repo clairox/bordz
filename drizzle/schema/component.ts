@@ -13,9 +13,9 @@ import { BoardSetupTable } from './boardSetup'
 import { MAX_HANDLE_LENGTH } from '@/utils/constants'
 
 export const ComponentTable = pgTableWithAutoFields('components', {
-    title: varchar('title', { length: 100 }).notNull(),
+    title: varchar('title', { length: 200 }).notNull(),
     handle: varchar('handle', { length: MAX_HANDLE_LENGTH }).notNull(),
-    images: varchar('images', { length: 100 }).array(),
+    images: varchar('images', { length: 200 }).array(),
     model: varchar('model', { length: 300 }),
     compareAtPrice: integer('compare_at_price'),
     price: integer('price').default(0).notNull(),

@@ -28,7 +28,7 @@ const SLMenu: React.FC = () => {
     }, [activeComponentType])
 
     return (
-        <div className="absolute left-0 w-72 h-full border-r border-black pointer-events-auto">
+        <div className="absolute left-0 w-56 h-full border-r border-black pointer-events-auto">
             <SLMenuNav currentSection={currentSection} />
             <SLMenuSection section={currentSection} />
         </div>

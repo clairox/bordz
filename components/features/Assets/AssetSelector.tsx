@@ -12,6 +12,7 @@ import Image from 'next/image'
 import { useAssets, useUploadFile } from '@/hooks/data/asset'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/Tabs'
 import { DialogContent, DialogTitle } from '../../ui/Dialog'
+import { ScrollArea } from '@/components/ui/ScrollArea'
 
 type AssetSelectorContextValue = {
     bucket: string
@@ -84,7 +85,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
     toggleAsset,
 }) => {
     return (
-        <DialogContent>
+        <DialogContent className="w-[500px] h-full max-h-[600px]">
             <AssetSelectorContext.Provider
                 value={{ bucket, folder, accept, selectedAssets, toggleAsset }}
             >
@@ -100,13 +101,13 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
 const AssetSelectorContainer = () => {
     const { assets } = useAssetSelector()
     return (
-        <div>
+        <div className="w-full h-full">
             <Tabs defaultValue="select">
                 <TabsList>
                     <TabsTrigger value="select">Select</TabsTrigger>
                     <TabsTrigger value="upload">Upload</TabsTrigger>
                 </TabsList>
-                <TabsContent value="select">
+                <TabsContent value="select" className="w-full h-full">
                     {assets.length > 0 ? (
                         <AssetSelectorGrid assets={assets} />
                     ) : (
@@ -128,15 +129,17 @@ const AssetSelectorGrid: React.FC<AssetSelectorGridProps> = ({ assets }) => {
     const { toggleAsset } = useAssetSelector()
 
     return (
-        <div className="flex flex-wrap gap-8">
-            {assets.map(asset => (
-                <AssetSelectorGridItem
-                    asset={asset}
-                    toggleAsset={toggleAsset}
-                    key={asset.path}
-                />
-            ))}
-        </div>
+        <ScrollArea className="w-[400px] h-[500px]">
+            <div className="flex flex-wrap gap-8">
+                {assets.map(asset => (
+                    <AssetSelectorGridItem
+                        asset={asset}
+                        toggleAsset={toggleAsset}
+                        key={asset.path}
+                    />
+                ))}
+            </div>
+        </ScrollArea>
     )
 }
 

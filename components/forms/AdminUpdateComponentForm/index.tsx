@@ -3,6 +3,8 @@
 import { useUpdateComponent } from '@/hooks/data/component'
 import AdminUpdateComponentFormSchema from './schema'
 import {
+    createSize,
+    createVendor,
     fetchCategories,
     fetchColors,
     fetchSizes,
@@ -30,7 +32,7 @@ const AdminUpdateComponentForm: React.FC<AdminUpdateComponentFormProps> = ({
                 images: component.images || [],
                 model: component.model,
                 description: component.description,
-                specifications: component.specifications,
+                specifications: component.specifications ?? [],
                 totalInventory: component.totalInventory.toString(),
                 category: component.category.id,
                 vendor: component.vendor.id,
@@ -76,6 +78,13 @@ const AdminUpdateComponentForm: React.FC<AdminUpdateComponentFormProps> = ({
                     label: 'Quantity',
                 },
                 {
+                    type: 'textlist',
+                    name: 'specifications',
+                    label: 'Specifications',
+                    placeholder: 'Enter component specifications...',
+                    limit: 15,
+                },
+                {
                     type: 'selectAsync',
                     name: 'category',
                     label: 'Category',
@@ -89,7 +98,7 @@ const AdminUpdateComponentForm: React.FC<AdminUpdateComponentFormProps> = ({
                     },
                 },
                 {
-                    type: 'selectAsync',
+                    type: 'customSelectAsync',
                     name: 'vendor',
                     label: 'Vendor',
                     placeholder: 'Select a vendor...',
@@ -100,9 +109,13 @@ const AdminUpdateComponentForm: React.FC<AdminUpdateComponentFormProps> = ({
                             name: vendor.name,
                         }))
                     },
+                    addOption: async (value: string) => {
+                        const vendor = await createVendor(value)
+                        return { value: vendor.id, name: vendor.name }
+                    },
                 },
                 {
-                    type: 'selectAsync',
+                    type: 'customSelectAsync',
                     name: 'size',
                     label: 'Size',
                     placeholder: 'Select a size...',
@@ -112,6 +125,10 @@ const AdminUpdateComponentForm: React.FC<AdminUpdateComponentFormProps> = ({
                             value: size.id,
                             name: size.label,
                         }))
+                    },
+                    addOption: async (value: string) => {
+                        const size = await createSize(value)
+                        return { value: size.id, name: size.label }
                     },
                 },
                 {

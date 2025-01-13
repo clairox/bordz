@@ -1,13 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-
 import PriceRepr from '@/components/common/PriceRepr'
 import { useSkateLabContext } from '@/context/SkateLabContext'
-import { useSupabase } from '@/context/SupabaseContext'
 import { getTypeFromCategory } from '@/utils/domain'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
+import { ComponentDialog } from '@/components/features/Component/ComponentDialog'
+import { ArrowsOutSimple } from '@phosphor-icons/react'
 
 type SLMenuListProps = {
     components: Component[]
@@ -31,7 +29,7 @@ const SLMenuList: React.FC<SLMenuListProps> = ({ components }) => {
                 }
 
                 return (
-                    <SLMenuListItem
+                    <SLComponentCard
                         component={component}
                         selectComponent={selectComponent}
                         isSelected={isSelected}
@@ -43,13 +41,13 @@ const SLMenuList: React.FC<SLMenuListProps> = ({ components }) => {
     )
 }
 
-type SLMenuListItemProps = {
+type SLComponentCardProps = {
     component: Component
     isSelected: boolean
     selectComponent: (type: ComponentType, component: Component) => void
 }
 
-const SLMenuListItem: React.FC<SLMenuListItemProps> = ({
+const SLComponentCard: React.FC<SLComponentCardProps> = ({
     component,
     isSelected,
     selectComponent,
@@ -67,30 +65,37 @@ const SLMenuListItem: React.FC<SLMenuListItemProps> = ({
             onClick={handleComponentSelection}
             className={`flex flex-col w-full border-b border-black last:border-none ${isSelected ? 'bg-sky-100 hover:bg-sky-200' : 'bg-white hover:bg-gray-100'}`}
         >
-            <div className="w-full h-[339.983px]">
+            <div className="border-b border-gray-400">
                 <StoredPreviewImage
                     path={component.images?.[0]}
                     alt={`Skateboard ${getTypeFromCategory(category)}`}
                 />
             </div>
-            <div className="flex flex-col gap-[1px] px-4 pt-3 pb-4 border-t border-gray-300 text-left">
+            <div className="flex flex-col gap-[1px] px-4 pt-3 pb-2 text-left">
                 <h3 className="line-clamp-2 text-sm">{component.title}</h3>
-                <div className="font-bold text-lg">
-                    <span
-                        className={`${component.compareAtPrice && 'font-normal text-base text-red-500'}`}
-                    >
-                        <PriceRepr
-                            isPreSalePrice={
-                                component.compareAtPrice != undefined
-                            }
-                            value={component.price}
-                        />
-                    </span>
-                    {component.compareAtPrice && (
-                        <span className="ml-1">
-                            <PriceRepr value={component.price / 5} />
+                <div className="flex justify-between items-center">
+                    <div className="font-bold text-lg">
+                        <span
+                            className={`${component.compareAtPrice && 'font-normal text-base text-red-500'}`}
+                        >
+                            <PriceRepr
+                                isPreSalePrice={
+                                    component.compareAtPrice != undefined
+                                }
+                                value={component.price}
+                            />
                         </span>
-                    )}
+
+                        {component.compareAtPrice && (
+                            <span className="ml-1">
+                                <PriceRepr value={component.price / 5} />
+                            </span>
+                        )}
+                    </div>
+                    <ComponentDialog
+                        trigger={<ArrowsOutSimple size={22} weight="light" />}
+                        component={component}
+                    />
                 </div>
             </div>
         </div>

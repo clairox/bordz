@@ -11,7 +11,7 @@ import { deleteComponents } from '@/lib/api'
 const ComponentsPage: React.FC = () => {
     const searchParams = useSearchParams()
     const pageSize = Number(searchParams.get('size')) || 40
-    const orderBy = (searchParams.get('orderBy') as SortKey) || undefined
+    const orderBy = (searchParams.get('orderBy') as SortKey) || 'alpha-asc'
 
     const { data, fetchNextPage, hasNextPage } = useComponents({
         size: pageSize,

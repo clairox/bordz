@@ -166,7 +166,13 @@ type Product = {
 
 type SkateLabMode = 'edit' | 'customize' | 'default'
 
-type SortKey = 'date-desc' | 'date-asc' | 'price-asc' | 'price-desc'
+type SortKey =
+    | 'date-desc'
+    | 'date-asc'
+    | 'price-asc'
+    | 'price-desc'
+    | 'alpha-asc'
+    | 'alpha-desc'
 
 type Wishlist = {
     id: string
