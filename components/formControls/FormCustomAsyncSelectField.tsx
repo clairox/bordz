@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/Form'
 import { FormLabelWithIndicator } from '../ui/FormLabelWithIndicator'
 import { getZodSchemaShape } from '@/utils'
-import { CustomOptionSelect } from '../ui/CustomOptionSelect'
+import { CustomAsyncSelect } from '../ui/CustomAsyncSelect'
 
 type FormCustomAsyncSelectFieldProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -54,7 +54,7 @@ const FormCustomAsyncSelectField = <
                         </FormLabelWithIndicator>
                     )}
                     <FormControl>
-                        <CustomOptionSelect
+                        <CustomAsyncSelect
                             {...field}
                             id={name}
                             placeholder={placeholder}

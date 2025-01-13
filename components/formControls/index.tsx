@@ -1,5 +1,6 @@
 export * from './FormAsyncSelectField'
 export * from './FormCheckboxField'
+export * from './FormCustomAsyncSelectField'
 export * from './FormDateSelectField'
 export * from './FormInputField'
 export * from './FormPasswordField'

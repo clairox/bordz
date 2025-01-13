@@ -1,2 +1,2 @@
 export * from './ProductBoardPopover'
-export * from './ProductList'
+export * from './ProductGrid'

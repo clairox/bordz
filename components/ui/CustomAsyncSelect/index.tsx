@@ -1,7 +1,7 @@
-import { Popover, PopoverContent, PopoverTrigger } from '../Popover'
-import { Button } from '../Button'
 import React, { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CaretUpDown, Check } from '@phosphor-icons/react'
+
 import {
     Command,
     CommandEmpty,
@@ -10,9 +10,10 @@ import {
     CommandItem,
     CommandList,
 } from '../Command'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Button } from '../Button'
+import { Popover, PopoverContent, PopoverTrigger } from '../Popover'
 
-type CustomOptionSelectProps = {
+type CustomAsyncSelectProps = {
     id: string
     value: string
     placeholder?: string
@@ -22,9 +23,9 @@ type CustomOptionSelectProps = {
     addOption: (value: string) => Promise<FormSelectOption>
 }
 
-export const CustomOptionSelect = React.forwardRef<
+export const CustomAsyncSelect = React.forwardRef<
     HTMLDivElement,
-    CustomOptionSelectProps
+    CustomAsyncSelectProps
 >(
     (
         {
@@ -62,7 +63,7 @@ export const CustomOptionSelect = React.forwardRef<
         return (
             <div ref={ref}>
                 <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
+                    <PopoverTrigger id={id + '-select'} asChild>
                         <Button
                             type="button"
                             variant="outline"
@@ -84,9 +85,9 @@ export const CustomOptionSelect = React.forwardRef<
                             <CaretUpDown size={18} weight="light" />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent asChild>
                         {options && (
-                            <SelectContent
+                            <CustomAsyncSelectContent
                                 id={id}
                                 selectedValue={value}
                                 options={options}
@@ -101,9 +102,9 @@ export const CustomOptionSelect = React.forwardRef<
     }
 )
 
-CustomOptionSelect.displayName = 'CustomOptionSelect'
+CustomAsyncSelect.displayName = 'CustomAsyncSelect'
 
-type SelectContentProps = {
+type CustomAsyncSelectContentProps = {
     id: string
     selectedValue: string
     options: FormSelectOption[]
@@ -111,7 +112,7 @@ type SelectContentProps = {
     onSelect: (value: string) => void
 }
 
-const SelectContent: React.FC<SelectContentProps> = ({
+const CustomAsyncSelectContent: React.FC<CustomAsyncSelectContentProps> = ({
     id,
     selectedValue,
     options,
@@ -162,14 +163,7 @@ const SelectContent: React.FC<SelectContentProps> = ({
             </div>
             <CommandList>
                 <CommandEmpty>
-                    {/* <Button */}
-                    {/*     type="button" */}
-                    {/*     disabled={!searchValue} */}
-                    {/*     className="w-full" */}
-                    {/*     onClick={() => handleAddOption(searchValue)} */}
-                    {/* > */}
-                    {/*     {`Add "${searchValue}"`} */}
-                    {/* </Button> */}
+                    <p>No results.</p>
                 </CommandEmpty>
                 <CommandGroup>
                     {options.map(option => (

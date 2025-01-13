@@ -3,14 +3,14 @@
 import { useMemo } from 'react'
 import { MutationStatus } from '@tanstack/react-query'
 
-type CartButtonProps = {
+type AddToCartButtonProps = {
     isInCart: boolean
     addCartLineStatus: MutationStatus
     isInStock: boolean
     onClick: () => void
 }
 
-const CartButton: React.FC<CartButtonProps> = ({
+const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     isInCart,
     addCartLineStatus,
     isInStock,
@@ -54,4 +54,4 @@ const CartButton: React.FC<CartButtonProps> = ({
     )
 }
 
-export { CartButton }
+export { AddToCartButton }

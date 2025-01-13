@@ -9,7 +9,7 @@ import {
 import { useCombinedPages } from '@/hooks/common'
 import { Fragment } from 'react'
 
-type InfiniteItemListProps<T> = {
+type InfiniteListProps<T> = {
     pages: Page<T>[]
     hasNextPage: boolean
     fetchNextPage: (
@@ -21,13 +21,13 @@ type InfiniteItemListProps<T> = {
     autoFetch?: boolean
 }
 
-const InfiniteItemList = <T extends object>({
+const InfiniteList = <T extends object>({
     pages,
     hasNextPage,
     fetchNextPage,
     render,
     autoFetch = false, // TODO: automatically fetchNextPage upon scrolling to bottom
-}: InfiniteItemListProps<T>) => {
+}: InfiniteListProps<T>) => {
     const items = useCombinedPages(pages)
 
     return (
@@ -40,4 +40,4 @@ const InfiniteItemList = <T extends object>({
     )
 }
 
-export default InfiniteItemList
+export default InfiniteList

@@ -1,5 +1,9 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { WishlistLinesResponse, WishlistResponse } from '@/types/api'
+import {
+    PaginatedQueryOptions,
+    WishlistLinesResponse,
+    WishlistResponse,
+} from '@/types/api'
 
 export const fetchWishlist = async (
     customerId?: string
@@ -14,7 +18,7 @@ export const fetchWishlistLines = async ({
     size,
     page,
     orderBy,
-}: FetchManyOptions): Promise<WishlistLinesResponse> => {
+}: PaginatedQueryOptions): Promise<WishlistLinesResponse> => {
     const params = []
     if (size != undefined) {
         params.push(`size=${size}`)

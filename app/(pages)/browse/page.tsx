@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 
 import PageHeading from '@/components/common/PageHeading'
-import { ProductList } from '@/components/features/Products'
+import { ProductGrid } from '@/components/features/Products'
 import SortSelect from '@/components/features/Sorting/SortSelect'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -29,7 +29,7 @@ const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
                 />
             </div>
             <Suspense fallback={<Fallback />}>
-                <ProductList
+                <ProductGrid
                     pageSize={pageSize}
                     orderBy={orderBy}
                     cols={cols}

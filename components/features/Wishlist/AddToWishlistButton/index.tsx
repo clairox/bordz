@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react'
 import { HeartStraight } from '@phosphor-icons/react'
 
-type WishlistButtonProps = {
+type AddToWishlistButtonProps = {
     isInWishlist: boolean
     onToggle: () => void
 }
 
-const WishlistButton: React.FC<WishlistButtonProps> = ({
+const AddToWishlistButton: React.FC<AddToWishlistButtonProps> = ({
     isInWishlist,
     onToggle,
 }) => {
@@ -30,4 +30,4 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
     )
 }
 
-export default WishlistButton
+export { AddToWishlistButton }

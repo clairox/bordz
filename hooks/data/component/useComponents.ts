@@ -6,12 +6,10 @@ import {
 
 import { fetchComponents } from '@/lib/api'
 import { mapComponentResponseToComponent } from '@/utils/conversions'
+import { PaginatedQueryOptions } from '@/types/api'
 
-type UseComponentsArgs = {
+type UseComponentsArgs = PaginatedQueryOptions & {
     category?: string
-    size?: number
-    page?: number
-    orderBy?: SortKey
 }
 
 export const useComponents = (args: UseComponentsArgs) => {

@@ -1,12 +1,16 @@
-import { fetchOrders } from '@/lib/api'
-import { mapOrderResponseToOrderAdminList } from '@/utils/conversions'
+'use client'
+
 import {
     InfiniteData,
     QueryKey,
     useSuspenseInfiniteQuery,
 } from '@tanstack/react-query'
 
-type UseAdminListOrdersArgs = { customerId?: string } & FetchManyOptions
+import { fetchOrders } from '@/lib/api'
+import { PaginatedQueryOptions } from '@/types/api'
+import { mapOrderResponseToOrderAdminList } from '@/utils/conversions'
+
+type UseAdminListOrdersArgs = PaginatedQueryOptions & { customerId?: string }
 
 export const useAdminListOrders = (args?: UseAdminListOrdersArgs) => {
     return useSuspenseInfiniteQuery<

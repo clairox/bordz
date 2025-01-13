@@ -1,8 +1,8 @@
 'use client'
 
-import SLMenuList from '../SLMenuList'
+import SLComponentList from '../SLComponentList'
 import { useComponents } from '@/hooks/data/component'
-import InfiniteItemList from '@/components/common/InfiniteItemList'
+import InfiniteList from '@/components/common/InfiniteList'
 import { Fragment } from 'react'
 
 type SLMenuSectionProps = {
@@ -18,13 +18,13 @@ const SLMenuSection: React.FC<SLMenuSectionProps> = ({ section }) => {
     return (
         <div className="relative pt-10 h-full">
             <div className="flex flex-col w-full h-full overflow-auto">
-                <InfiniteItemList
+                <InfiniteList
                     pages={data.pages}
                     hasNextPage={hasNextPage}
                     fetchNextPage={fetchNextPage}
                     render={items => (
                         <Fragment>
-                            <SLMenuList components={items} />
+                            <SLComponentList components={items} />
                             <div className="h-full border-t border-black">
                                 <p className="py-2 text-center text-gray-700">
                                     Showing {items.length} of {items.length}

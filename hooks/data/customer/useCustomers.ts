@@ -6,8 +6,9 @@ import {
 
 import { fetchCustomers } from '@/lib/api'
 import { mapCustomerResponseToCustomer } from '@/utils/conversions'
+import { PaginatedQueryOptions } from '@/types/api'
 
-type UseCustomersArgs = FetchManyOptions
+type UseCustomersArgs = PaginatedQueryOptions
 
 export const useCustomers = (args?: UseCustomersArgs) => {
     return useSuspenseInfiniteQuery<

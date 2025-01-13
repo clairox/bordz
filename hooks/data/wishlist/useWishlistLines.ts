@@ -3,12 +3,9 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { fetchWishlistLines } from '@/lib/api'
 import { mapProductResponseToProduct } from '@/utils/conversions'
 import { useWishlist } from '@/context/WishlistContext'
+import { PaginatedQueryOptions } from '@/types/api'
 
-type UseWishlistLinesArgs = {
-    size?: number
-    page?: number
-    orderBy?: SortKey
-}
+type UseWishlistLinesArgs = PaginatedQueryOptions
 
 export const useWishlistLines = (args: UseWishlistLinesArgs) => {
     const { data: wishlist } = useWishlist()

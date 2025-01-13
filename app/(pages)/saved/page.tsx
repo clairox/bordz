@@ -1,6 +1,6 @@
 import PageHeading from '@/components/common/PageHeading'
 import SortSelect from '@/components/features/Sorting/SortSelect'
-import { Wishlist } from '@/components/features/Wishlist'
+import { WishlistGrid } from '@/components/features/Wishlist'
 
 type SavedItemsPageProps = {
     searchParams: { size?: string; orderBy?: string; cols?: string }
@@ -20,7 +20,7 @@ const SavedItemsPage: React.FC<SavedItemsPageProps> = ({ searchParams }) => {
                     availableOptions={['date-desc', 'date-asc']}
                 />
             </div>
-            <Wishlist pageSize={pageSize} orderBy={orderBy} cols={cols} />
+            <WishlistGrid pageSize={pageSize} orderBy={orderBy} cols={cols} />
         </div>
     )
 }

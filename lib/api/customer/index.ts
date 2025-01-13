@@ -3,6 +3,7 @@ import {
     CustomerCreateArgs,
     CustomerResponse,
     CustomerUpdateArgs,
+    PaginatedQueryOptions,
 } from '@/types/api'
 import { buildPathWithParams } from '@/utils/url'
 
@@ -12,7 +13,9 @@ export const fetchCustomer = async (
     return await fetchAbsolute<CustomerResponse>(`/customers/${userId}`)
 }
 
-export const fetchCustomers = async (options?: FetchManyOptions) => {
+type FetchCustomersOptions = PaginatedQueryOptions
+
+export const fetchCustomers = async (options?: FetchCustomersOptions) => {
     const path = buildPathWithParams('/customers', options)
     return await fetchAbsolute<Page<CustomerResponse>>(path)
 }

@@ -3,6 +3,7 @@ import {
     ComponentCreateArgs,
     ComponentResponse,
     ComponentUpdateArgs,
+    PaginatedQueryOptions,
 } from '@/types/api'
 import { buildParamString } from '@/utils/url'
 
@@ -14,10 +15,10 @@ export const fetchComponent = async (
     })
 }
 
-type FetchManyComponentsOptions = { category?: string } & FetchManyOptions
+type FetchComponentsOptions = PaginatedQueryOptions & { category?: string }
 
 export const fetchComponents = async (
-    options?: FetchManyComponentsOptions
+    options?: FetchComponentsOptions
 ): Promise<Page<ComponentResponse>> => {
     let path = '/components'
     if (options) {

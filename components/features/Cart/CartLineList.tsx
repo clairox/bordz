@@ -10,7 +10,7 @@ import {
     useDeleteWishlistLine,
 } from '@/hooks/data/wishlist'
 import { ProductBoardPopover } from '../Products'
-import WishlistButton from '../Wishlist/WishlistButton'
+import { AddToWishlistButton } from '../Wishlist'
 import PriceRepr from '@/components/common/PriceRepr'
 
 type CartLineListProps = {
@@ -116,7 +116,7 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
                                 <ProductBoardPopover board={product.board} />
                             )}
                         </div>
-                        <WishlistButton
+                        <AddToWishlistButton
                             isInWishlist={!!wishlistLineId}
                             onToggle={handleWishlistButtonToggle}
                         />

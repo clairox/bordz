@@ -1,5 +1,9 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { ProductResponse, ProductUpdateArgs } from '@/types/api'
+import {
+    PaginatedQueryOptions,
+    ProductResponse,
+    ProductUpdateArgs,
+} from '@/types/api'
 
 export const fetchProduct = async (id: string) => {
     return await fetchAbsolute<ProductResponse>(`/products/${id}`, {
@@ -7,14 +11,14 @@ export const fetchProduct = async (id: string) => {
     })
 }
 
-type FetchManyProductsOptions = FetchManyOptions & { publicOnly?: boolean }
+type FetchProductsOptions = PaginatedQueryOptions & { publicOnly?: boolean }
 
 export const fetchProducts = async ({
     size,
     page,
     orderBy,
     publicOnly,
-}: FetchManyProductsOptions): Promise<Page<ProductResponse>> => {
+}: FetchProductsOptions): Promise<Page<ProductResponse>> => {
     const params = []
     if (size != undefined) {
         params.push(`size=${size}`)

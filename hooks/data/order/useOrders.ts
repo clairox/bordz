@@ -6,8 +6,9 @@ import {
 
 import { fetchOrders } from '@/lib/api'
 import { mapOrderResponseToOrder } from '@/utils/conversions'
+import { PaginatedQueryOptions } from '@/types/api'
 
-type UseOrdersArgs = { customerId?: string } & FetchManyOptions
+type UseOrdersArgs = PaginatedQueryOptions & { customerId?: string }
 
 export const useOrders = (args?: UseOrdersArgs) => {
     return useSuspenseInfiniteQuery<

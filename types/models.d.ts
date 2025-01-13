@@ -103,12 +103,6 @@ type Customer = {
     phone?: string
 }
 
-type FetchManyOptions = {
-    size?: number
-    page?: number
-    orderBy?: SortKey
-}
-
 type FormMessageType = 'error' | 'success'
 
 type FormSelectOption = {
@@ -165,14 +159,6 @@ type Product = {
 }
 
 type SkateLabMode = 'edit' | 'customize' | 'default'
-
-type SortKey =
-    | 'date-desc'
-    | 'date-asc'
-    | 'price-asc'
-    | 'price-desc'
-    | 'alpha-asc'
-    | 'alpha-desc'
 
 type Wishlist = {
     id: string

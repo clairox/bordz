@@ -11,15 +11,15 @@ import {
 } from '@/hooks/data/wishlist'
 import { useWishlist } from '@/context/WishlistContext'
 import PriceRepr from '@/components/common/PriceRepr'
-import WishlistButton from '@/components/features/Wishlist/WishlistButton'
-import { CartButton } from '@/components/features/Cart'
+import { AddToWishlistButton } from '@/components/features/Wishlist'
+import { AddToCartButton } from '@/components/features/Cart'
 import { useProducts } from '@/hooks/data/product'
-import InfiniteItemList from '@/components/common/InfiniteItemList'
+import InfiniteList from '@/components/common/InfiniteList'
 import { ProductBoardPopover } from './ProductBoardPopover'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import GridFiller from '@/components/common/GridFiller'
 
-type ProductListProps = {
+type ProductGridProps = {
     pageSize: number
     orderBy: SortKey
     cols: number
@@ -32,7 +32,7 @@ const gridColsClasses: Record<number, string> = {
     6: 'grid-cols-6',
 }
 
-export const ProductList: React.FC<ProductListProps> = ({
+export const ProductGrid: React.FC<ProductGridProps> = ({
     pageSize,
     orderBy,
     cols = 4,
@@ -49,7 +49,7 @@ export const ProductList: React.FC<ProductListProps> = ({
         <div
             className={`grid ${gridColsClasses[cols]} gap-[1px] w-full bg-black`}
         >
-            <InfiniteItemList
+            <InfiniteList
                 pages={data.pages}
                 hasNextPage={hasNextPage}
                 fetchNextPage={fetchNextPage}
@@ -138,13 +138,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     )}
                 </div>
                 <div className="flex justify-between">
-                    <CartButton
+                    <AddToCartButton
                         isInCart={!!cartLineId}
                         addCartLineStatus={addCartLineStatus}
                         isInStock={product.availableForSale}
                         onClick={() => addCartLine({ productId: product.id })}
                     />
-                    <WishlistButton
+                    <AddToWishlistButton
                         isInWishlist={!!wishlistLineId}
                         onToggle={handleWishlistButtonToggle}
                     />

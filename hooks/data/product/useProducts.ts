@@ -4,13 +4,9 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
 import { fetchProducts } from '@/lib/api'
 import { mapProductResponseToProduct } from '@/utils/conversions'
+import { PaginatedQueryOptions } from '@/types/api'
 
-type UseProductsArgs = {
-    size?: number
-    page?: number
-    orderBy?: SortKey
-    publicOnly?: boolean
-}
+type UseProductsArgs = PaginatedQueryOptions & { publicOnly?: boolean }
 
 export const useProducts = (args: UseProductsArgs) => {
     return useSuspenseInfiniteQuery<Page<Product>>({

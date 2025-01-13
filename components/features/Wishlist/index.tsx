@@ -1,1 +1,2 @@
-export * from './Wishlist'
+export * from './AddToWishlistButton'
+export * from './WishlistGrid'

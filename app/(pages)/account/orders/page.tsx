@@ -10,7 +10,7 @@ import {
 import { OrderList } from '@/components/features/Orders'
 import { useCustomer } from '@/context/CustomerContext'
 import { useOrders } from '@/hooks/data/order'
-import InfiniteItemList from '@/components/common/InfiniteItemList'
+import InfiniteList from '@/components/common/InfiniteList'
 
 const OrdersPage = () => {
     const { data: customer, error, isPending } = useCustomer()
@@ -40,7 +40,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ customer }) => {
             <AccountHeading>Orders</AccountHeading>
             <Section>
                 <Section.Content>
-                    <InfiniteItemList
+                    <InfiniteList
                         pages={data.pages}
                         hasNextPage={hasNextPage}
                         fetchNextPage={fetchNextPage}

@@ -9,6 +9,7 @@ import {
     ProductQueryResult,
     WishlistLineQueryResult,
 } from './queries'
+import { SortKey } from './sorting'
 
 /* Responses */
 type AddressResponse = AddressRecord
@@ -115,6 +116,14 @@ type ProductUpdateArgs = Partial<{
     price: number
     featuredImage: string
     isPublic: boolean
+}>
+
+/* Other */
+
+type PaginatedQueryOptions = Partial<{
+    page: number
+    size: number
+    orderBy: SortKey
 }>
 
 type DynamicRoutePropsWithParams<T extends object> = {

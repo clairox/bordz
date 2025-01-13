@@ -17,6 +17,7 @@ import { useFormMessage } from '@/hooks/forms'
 import {
     FormAsyncSelectField,
     FormCheckboxField,
+    FormCustomAsyncSelectField,
     FormDateSelectField,
     FormInputField,
     FormPasswordField,
@@ -28,7 +29,6 @@ import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
-import { FormCustomAsyncSelectField } from '@/components/formControls/FormCustomAsyncSelectField'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,

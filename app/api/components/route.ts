@@ -9,7 +9,7 @@ import {
     SizeTable,
     VendorTable,
 } from '@/drizzle/schema/component'
-import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
+import { count, desc, eq, inArray } from 'drizzle-orm'
 import { createUrlHandle } from '@/utils/url'
 import {
     getRequestOptionsParams,
@@ -17,10 +17,6 @@ import {
     validateRequestBody,
 } from '../shared'
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants'
-
-const orders: Partial<Record<SortKey, SQL>> = {
-    'alpha-asc': asc(ComponentTable.title),
-}
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {

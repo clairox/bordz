@@ -7,11 +7,11 @@ import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import { ComponentDialog } from '@/components/features/Component/ComponentDialog'
 import { ArrowsOutSimple } from '@phosphor-icons/react'
 
-type SLMenuListProps = {
+type SLComponentListProps = {
     components: Component[]
 }
 
-const SLMenuList: React.FC<SLMenuListProps> = ({ components }) => {
+const SLComponentList: React.FC<SLComponentListProps> = ({ components }) => {
     const { selectedComponents, selectComponent } = useSkateLabContext()
 
     return (
@@ -102,4 +102,4 @@ const SLComponentCard: React.FC<SLComponentCardProps> = ({
     )
 }
 
-export default SLMenuList
+export default SLComponentList

@@ -1,5 +1,9 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { OrderResponse, OrderUpdateArgs } from '@/types/api'
+import {
+    OrderResponse,
+    OrderUpdateArgs,
+    PaginatedQueryOptions,
+} from '@/types/api'
 import { buildPathWithParams } from '@/utils/url'
 
 export const fetchOrder = async (id: string): Promise<OrderResponse> => {
@@ -8,7 +12,7 @@ export const fetchOrder = async (id: string): Promise<OrderResponse> => {
     })
 }
 
-type FetchOrdersOptions = { customerId?: string } & FetchManyOptions
+type FetchOrdersOptions = PaginatedQueryOptions & { customerId?: string }
 
 export const fetchOrders = async (
     options?: FetchOrdersOptions

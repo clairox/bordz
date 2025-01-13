@@ -4,7 +4,7 @@ import { Fragment } from 'react'
 import Link from 'next/link'
 import { Trash } from '@phosphor-icons/react'
 
-import InfiniteItemList from '@/components/common/InfiniteItemList'
+import InfiniteList from '@/components/common/InfiniteList'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import { useDeleteWishlistLine, useWishlistLines } from '@/hooks/data/wishlist'
 import { ProductBoardPopover } from '../Products'
@@ -12,7 +12,7 @@ import PriceRepr from '@/components/common/PriceRepr'
 import GridFiller from '@/components/common/GridFiller'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-type WishlistProps = {
+type WishlistGridProps = {
     pageSize: number
     orderBy: SortKey
     cols: number
@@ -25,7 +25,7 @@ const gridColsClasses: Record<number, string> = {
     6: 'grid-cols-6',
 }
 
-export const Wishlist: React.FC<WishlistProps> = ({
+export const WishlistGrid: React.FC<WishlistGridProps> = ({
     pageSize,
     orderBy,
     cols,
@@ -50,7 +50,7 @@ export const Wishlist: React.FC<WishlistProps> = ({
         <div
             className={`grid ${gridColsClasses[cols]} gap-[1px] w-full bg-black`}
         >
-            <InfiniteItemList
+            <InfiniteList
                 pages={data.pages}
                 hasNextPage={hasNextPage}
                 fetchNextPage={fetchNextPage}
