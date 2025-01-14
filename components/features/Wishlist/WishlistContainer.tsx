@@ -34,19 +34,9 @@ export const WishlistContainer = () => {
             pages={data.pages}
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
-            render={items => {
-                if (items.length > 0) {
-                    return (
-                        <WishlistGrid items={items} columnCount={columnCount} />
-                    )
-                } else {
-                    return (
-                        <div className="flex justify-center items-center w-full h-[300px]">
-                            <p>Your wishlist is empty.</p>
-                        </div>
-                    )
-                }
-            }}
+            render={items => (
+                <WishlistGrid items={items} columnCount={columnCount} />
+            )}
         />
     )
 }

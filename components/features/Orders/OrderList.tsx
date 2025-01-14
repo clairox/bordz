@@ -7,9 +7,24 @@ type OrderListProps = {
 }
 
 const OrderList: React.FC<OrderListProps> = ({ orders }) => {
-    return orders.map(order => {
-        return <OrderListItem key={order.id} order={order} />
-    })
+    if (orders.length === 0) {
+        return (
+            <div className="flex justify-center items-center w-full h-full">
+                <p>
+                    You have not yet placed an order. Go to your{' '}
+                    <Link href="/cart">cart</Link>?
+                </p>
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex flex-col gap-[1px] bg-gray-400">
+            {orders.map(order => (
+                <OrderListItem key={order.id} order={order} />
+            ))}
+        </div>
+    )
 }
 
 type OrderItemProps = {
@@ -19,7 +34,7 @@ type OrderItemProps = {
 const OrderListItem: React.FC<OrderItemProps> = ({ order }) => {
     return (
         <Link href={`/account/orders/${order.id}`}>
-            <div className="mb-3 hover:bg-gray-100">
+            <div className="p-6 bg-white hover:bg-gray-100">
                 <p className="font-semibold">Order No: {order.id}</p>
                 {order.lines.map(line => {
                     return (

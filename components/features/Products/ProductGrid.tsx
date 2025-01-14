@@ -1,10 +1,8 @@
 'use client'
 
-import { Fragment } from 'react'
 import Link from 'next/link'
 
-import { useCart } from '@/hooks/data/cart'
-import { useAddCartLineMutation } from '@/hooks/data/cart'
+import { useCart, useAddCartLineMutation } from '@/hooks/data/cart'
 import {
     useAddWishlistLine,
     useDeleteWishlistLine,
@@ -13,17 +11,13 @@ import { useWishlist } from '@/context/WishlistContext'
 import PriceRepr from '@/components/common/PriceRepr'
 import { AddToWishlistButton } from '@/components/features/Wishlist'
 import { AddToCartButton } from '@/components/features/Cart'
-import { useProducts } from '@/hooks/data/product'
-import InfiniteList from '@/components/common/InfiniteList'
 import { ProductBoardPopover } from './ProductBoardPopover'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import GridFiller from '@/components/common/GridFiller'
-import { SortKey } from '@/types/sorting'
 
 type ProductGridProps = {
-    pageSize: number
-    orderBy: SortKey
-    cols: number
+    products: Product[]
+    columnCount: number
 }
 
 const gridColsClasses: Record<number, string> = {
@@ -34,52 +28,37 @@ const gridColsClasses: Record<number, string> = {
 }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({
-    pageSize,
-    orderBy,
-    cols = 4,
+    products,
+    columnCount = 4,
 }) => {
-    const { data, hasNextPage, fetchNextPage } = useProducts({
-        size: pageSize,
-        orderBy,
-    })
-
     const { data: cart } = useCart()
     const { data: wishlist } = useWishlist()
 
     return (
         <div
-            className={`grid ${gridColsClasses[cols]} gap-[1px] w-full bg-black`}
+            className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-black`}
         >
-            <InfiniteList
-                pages={data.pages}
-                hasNextPage={hasNextPage}
-                fetchNextPage={fetchNextPage}
-                render={products => (
-                    <Fragment>
-                        {products.map((product, idx) => {
-                            const cartLineId = cart?.lines.find(
-                                line => line.product.id === product.id
-                            )?.id
+            {products.map((product, idx) => {
+                const cartLineId = cart?.lines.find(
+                    line => line.product.id === product.id
+                )?.id
 
-                            const wishlistLineId = wishlist?.lines.find(
-                                line => line.product.id === product.id
-                            )?.id
+                const wishlistLineId = wishlist?.lines.find(
+                    line => line.product.id === product.id
+                )?.id
 
-                            return (
-                                <ProductCard
-                                    product={product}
-                                    cartLineId={cartLineId}
-                                    wishlistLineId={wishlistLineId}
-                                    key={product.id + idx}
-                                />
-                            )
-                        })}
-                        <GridFiller
-                            itemCount={products.length}
-                            gridTrackSize={cols}
-                        />
-                    </Fragment>
-                )}
+                return (
+                    <ProductCard
+                        product={product}
+                        cartLineId={cartLineId}
+                        wishlistLineId={wishlistLineId}
+                        key={product.id + idx}
+                    />
+                )
+            })}
+            <GridFiller
+                itemCount={products.length}
+                gridTrackSize={columnCount}
             />
         </div>
     )

@@ -20,7 +20,6 @@ type InfiniteListProps<T> = {
     render: (items: T[]) => JSX.Element
     autoFetch?: boolean
 }
-
 const InfiniteList = <T extends object>({
     pages,
     hasNextPage,
@@ -33,7 +32,8 @@ const InfiniteList = <T extends object>({
     return (
         <Fragment>
             {render(items)}
-            {hasNextPage && (
+            {/* TODO: items.length && <p>Showing {items.length} of {totalCount} items</p> */}
+            {items.length > 0 && hasNextPage && (
                 <button onClick={() => fetchNextPage()}>Load more</button>
             )}
         </Fragment>

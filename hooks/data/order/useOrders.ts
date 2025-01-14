@@ -1,17 +1,16 @@
-import {
-    InfiniteData,
-    QueryKey,
-    useSuspenseInfiniteQuery,
-} from '@tanstack/react-query'
+import { InfiniteData, QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 
 import { fetchOrders } from '@/lib/api'
 import { mapOrderResponseToOrder } from '@/utils/conversions'
 import { PaginatedQueryOptions } from '@/types/api'
+import { useCustomer } from '@/context/CustomerContext'
 
-type UseOrdersArgs = PaginatedQueryOptions & { customerId?: string }
+type UseOrdersArgs = PaginatedQueryOptions
 
 export const useOrders = (args?: UseOrdersArgs) => {
-    return useSuspenseInfiniteQuery<
+    const { data: customer } = useCustomer()
+
+    return useInfiniteQuery<
         Page<Order>,
         Error,
         InfiniteData<Page<Order>, unknown>,
@@ -20,7 +19,11 @@ export const useOrders = (args?: UseOrdersArgs) => {
     >({
         queryKey: ['orders', args],
         queryFn: async ({ pageParam }) => {
-            const response = await fetchOrders({ ...args, page: pageParam })
+            const response = await fetchOrders({
+                ...args,
+                customerId: customer!.id,
+                page: pageParam,
+            })
             return {
                 ...response,
                 data: response.data.map(order =>
@@ -30,5 +33,6 @@ export const useOrders = (args?: UseOrdersArgs) => {
         },
         initialPageParam: 1,
         getNextPageParam: lastPage => lastPage.nextPage,
+        enabled: !!customer,
     })
 }

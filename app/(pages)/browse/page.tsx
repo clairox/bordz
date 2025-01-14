@@ -1,19 +1,17 @@
 import { Suspense } from 'react'
 
 import PageHeading from '@/components/common/PageHeading'
-import { ProductGrid } from '@/components/features/Products'
 import SortSelect from '@/components/features/Sorting/SortSelect'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { SortKey } from '@/types/sorting'
+import { ProductGridContainer } from '@/components/features/Products'
 
 type BrowsePageProps = {
-    searchParams: { size?: string; orderBy?: string; cols?: string }
+    searchParams: { orderBy?: string }
 }
 
 const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
-    const pageSize = Number(searchParams.size) || 40
     const orderBy = (searchParams.orderBy as SortKey) || 'date-desc'
-    const cols = Number(searchParams.cols) || 4
 
     return (
         <div>
@@ -30,18 +28,14 @@ const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
                 />
             </div>
             <Suspense fallback={<Fallback />}>
-                <ProductGrid
-                    pageSize={pageSize}
-                    orderBy={orderBy}
-                    cols={cols}
-                />
+                <ProductGridContainer />
             </Suspense>
         </div>
     )
 }
 
 const Fallback = () => (
-    <div className="grid grid-cols-4 gap-[1px] w-full bg-black">
+    <div className="grid grid-cols-4 gap-[1px] w-full bg-gray-400">
         {Array(8)
             .fill('x')
             .map((_, idx) => (

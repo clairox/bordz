@@ -27,6 +27,14 @@ export const WishlistGrid: React.FC<WishlistGridProps> = ({
 }) => {
     const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
 
+    if (items.length === 0) {
+        return (
+            <div className="flex justify-center items-center w-full h-[300px]">
+                <p>Your wishlist is empty.</p>
+            </div>
+        )
+    }
+
     return (
         <div
             className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-black`}

@@ -1,18 +1,25 @@
+'use client'
+
+import { useCustomer } from '@/context/CustomerContext'
 import { AddressManagementList, DefaultAddressCard } from '.'
 
-type AddressDashboardProps = {
-    defaultAddress?: Address
-    addresses: Address[]
-}
+export const AddressDashboard = () => {
+    const { data: customer, error, isPending } = useCustomer()
 
-export const AddressDashboard: React.FC<AddressDashboardProps> = ({
-    defaultAddress,
-    addresses,
-}) => {
+    if (error) {
+        throw error
+    }
+
+    if (isPending) {
+        return <Fallback />
+    }
+
     return (
         <div className="flex mb-3">
-            <DefaultAddressCard defaultAddress={defaultAddress} />
-            <AddressManagementList addresses={addresses} />
+            <DefaultAddressCard defaultAddress={customer!.defaultAddress} />
+            <AddressManagementList addresses={customer!.addresses} />
         </div>
     )
 }
+
+const Fallback = () => <div>Loading...</div>
