@@ -3,7 +3,7 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
 
-import { useCartQuery } from '@/context/CartContext'
+import { useCart } from '@/hooks/data/cart'
 import { useAddCartLineMutation } from '@/hooks/data/cart'
 import {
     useAddWishlistLine,
@@ -43,7 +43,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         orderBy,
     })
 
-    const { data: cart } = useCartQuery()
+    const { data: cart } = useCart()
     const { data: wishlist } = useWishlist()
 
     return (

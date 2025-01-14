@@ -1,12 +1,12 @@
 import PageHeading from '@/components/common/PageHeading'
-import { Cart } from '@/components/features/Cart'
+import { CartContainer } from '@/components/features/Cart'
 
 const CartPage: React.FC = () => {
     return (
-        <section>
+        <div>
             <PageHeading>Your Cart</PageHeading>
-            <Cart />
-        </section>
+            <CartContainer />
+        </div>
     )
 }
 

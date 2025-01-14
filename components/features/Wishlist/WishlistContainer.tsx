@@ -1,11 +1,12 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
+
 import InfiniteList from '@/components/common/InfiniteList'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useWishlistLines } from '@/hooks/data/wishlist'
 import { SortKey } from '@/types/sorting'
 import { DEFAULT_PAGE_SIZE, DEFAULT_SORT_KEY } from '@/utils/constants'
-import { useSearchParams } from 'next/navigation'
 import { WishlistGrid } from './WishlistGrid'
 
 export const WishlistContainer = () => {

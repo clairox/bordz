@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext } from 'react'
+import { createContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 import { useCustomer } from '../CustomerContext'
@@ -10,8 +10,6 @@ import { mapCartResponseToCart } from '@/utils/conversions'
 type CartContextValue = UseQueryResult<Cart, Error>
 
 const CartContext = createContext<CartContextValue>({} as CartContextValue)
-
-const useCartQuery = () => useContext(CartContext)
 
 const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const { data: customer, isPending: isCustomerPending } = useCustomer()
@@ -32,4 +30,4 @@ const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     )
 }
 
-export { CartProvider, CartContext, useCartQuery }
+export { CartProvider, CartContext }

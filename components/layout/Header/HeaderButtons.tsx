@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react'
 
-import { useCartQuery } from '@/context/CartContext'
+import { useCart } from '@/hooks/data/cart'
 import { useCustomer } from '@/context/CustomerContext'
 import { useWishlist } from '@/context/WishlistContext'
 
@@ -98,7 +98,7 @@ const WishlistHeaderButton: React.FC = () => {
 }
 
 const CartHeaderButton: React.FC = () => {
-    const { data: cart } = useCartQuery()
+    const { data: cart } = useCart()
 
     return (
         <HeaderButtonWithCount

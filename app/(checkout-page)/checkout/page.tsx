@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-import { useCartQuery } from '@/context/CartContext'
+import { useCart } from '@/hooks/data/cart'
 import Checkout, {
     ProcessCheckoutCompletion,
 } from '@/components/features/Checkout'
@@ -12,7 +12,7 @@ import RedirectIf from '@/components/common/RedirectIf'
 const CheckoutPage = () => {
     const searchParams = useSearchParams()
 
-    const { data: cart } = useCartQuery()
+    const { data: cart } = useCart()
 
     const [client, setClient] = useState(false)
     const clientSecret = useMemo(

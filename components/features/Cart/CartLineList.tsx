@@ -38,29 +38,22 @@ export const CartLineList: React.FC<CartLineListProps> = ({ lines }) => {
     }
 
     return (
-        <div>
-            {lines.length > 0 ? (
-                <div className="flex flex-col gap-[1px] bg-black">
-                    {lines.map(line => {
-                        const wishlistLineId = wishlist?.lines.find(
-                            wishlistLine =>
-                                wishlistLine.product.id === line.product.id
-                        )?.id
-                        return (
-                            <CartLineCard
-                                cartLine={line}
-                                deleteCartLine={handleDeleteCartLine}
-                                addWishlistLine={handleAddWishlistLine}
-                                deleteWishlistLine={handleDeleteWishlistLine}
-                                wishlistLineId={wishlistLineId}
-                                key={line.id}
-                            />
-                        )
-                    })}
-                </div>
-            ) : (
-                <p>Your cart is empty.</p>
-            )}
+        <div className="flex flex-col gap-[1px] bg-black">
+            {lines.map(line => {
+                const wishlistLineId = wishlist?.lines.find(
+                    wishlistLine => wishlistLine.product.id === line.product.id
+                )?.id
+                return (
+                    <CartLineCard
+                        cartLine={line}
+                        deleteCartLine={handleDeleteCartLine}
+                        addWishlistLine={handleAddWishlistLine}
+                        deleteWishlistLine={handleDeleteWishlistLine}
+                        wishlistLineId={wishlistLineId}
+                        key={line.id}
+                    />
+                )
+            })}
         </div>
     )
 }
@@ -100,7 +93,7 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
     }
 
     return (
-        <article className="flex h-48 bg-white">
+        <article className="flex bg-white">
             <div className="w-52 border-r border-black">
                 <StoredPreviewImage
                     path={product.board?.deck.images?.[0]}

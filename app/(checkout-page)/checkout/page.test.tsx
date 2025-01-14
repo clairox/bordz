@@ -12,15 +12,15 @@ vi.mock('@/components/Checkout', () => ({
 
 const useSearchParams = vi.hoisted(() => vi.fn())
 const redirect = vi.hoisted(() => vi.fn())
-const useCartQuery = vi.hoisted(() => vi.fn())
+const useCart = vi.hoisted(() => vi.fn())
 
 vi.mock('next/navigation', () => ({
     useSearchParams,
     redirect,
 }))
 
-vi.mock('@/context/cartContext', () => ({
-    useCartQuery,
+vi.mock('@/hooks/data/cart', () => ({
+    useCart,
 }))
 
 describe('Checkout page', () => {
@@ -31,7 +31,7 @@ describe('Checkout page', () => {
     })
     describe('when cart is empty', () => {
         beforeEach(() => {
-            useCartQuery.mockReturnValue({ data: { lines: [] } })
+            useCart.mockReturnValue({ data: { lines: [] } })
         })
         it('redirects to /cart', () => {
             render(<CheckoutPage />)
@@ -42,11 +42,11 @@ describe('Checkout page', () => {
 
     describe('when cart is not empty', () => {
         beforeEach(() => {
-            useCartQuery.mockReturnValue({ data: { lines: [1] } })
+            useCart.mockReturnValue({ data: { lines: [1] } })
         })
 
         it('does not redirect', () => {
-            useCartQuery.mockReturnValue({ data: { lines: [1] } })
+            useCart.mockReturnValue({ data: { lines: [1] } })
             render(<CheckoutPage />)
 
             expect(redirect).not.toHaveBeenCalled()

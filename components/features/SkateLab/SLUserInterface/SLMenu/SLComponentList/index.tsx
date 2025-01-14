@@ -1,11 +1,12 @@
 'use client'
 
+import { ArrowsOutSimple } from '@phosphor-icons/react'
+
 import PriceRepr from '@/components/common/PriceRepr'
 import { useSkateLabContext } from '@/context/SkateLabContext'
 import { getTypeFromCategory } from '@/utils/domain'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import { ComponentDialog } from '@/components/features/Component/ComponentDialog'
-import { ArrowsOutSimple } from '@phosphor-icons/react'
 
 type SLComponentListProps = {
     components: Component[]
@@ -61,9 +62,13 @@ const SLComponentCard: React.FC<SLComponentCardProps> = ({
     }
 
     return (
-        <div
+        <article
             onClick={handleComponentSelection}
-            className={`flex flex-col w-full border-b border-black last:border-none ${isSelected ? 'bg-sky-100 hover:bg-sky-200' : 'bg-white hover:bg-gray-100'}`}
+            className={`flex flex-col w-full border-b border-black last:border-none ${
+                isSelected
+                    ? 'bg-sky-100 hover:bg-sky-200'
+                    : 'bg-white hover:bg-gray-100'
+            }`}
         >
             <div className="border-b border-gray-400">
                 <StoredPreviewImage
@@ -76,7 +81,10 @@ const SLComponentCard: React.FC<SLComponentCardProps> = ({
                 <div className="flex justify-between items-center">
                     <div className="font-bold text-lg">
                         <span
-                            className={`${component.compareAtPrice && 'font-normal text-base text-red-500'}`}
+                            className={`${
+                                component.compareAtPrice &&
+                                'font-normal text-base text-red-500'
+                            }`}
                         >
                             <PriceRepr
                                 isPreSalePrice={
@@ -98,7 +106,7 @@ const SLComponentCard: React.FC<SLComponentCardProps> = ({
                     />
                 </div>
             </div>
-        </div>
+        </article>
     )
 }
 
