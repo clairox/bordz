@@ -16,6 +16,7 @@ import {
     validateRequestBody,
 } from '../shared'
 import { ComponentRecord } from '@/types/database'
+import { SortKey } from '@/types/sorting'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {

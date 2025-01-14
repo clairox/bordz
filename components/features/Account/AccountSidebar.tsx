@@ -43,7 +43,7 @@ const AccountSidebar = () => {
             >
                 Shipping Addresses
             </SidebarMenuItem>
-            <SidebarMenuItem href="/saved">Saved</SidebarMenuItem>
+            <SidebarMenuItem href="/wishlist">Saved</SidebarMenuItem>
             <SidebarMenuItem
                 href="/account/change-password"
                 isSelected={pathname === '/account/change-password'}
@@ -75,7 +75,9 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return (
         <Link href={href}>
             <div
-                className={`py-2 border-b border-black bg-white hover:bg-gray-200  ${isSelected && 'font-semibold'}`}
+                className={`py-2 border-b border-black bg-white hover:bg-gray-200  ${
+                    isSelected && 'font-semibold'
+                }`}
             >
                 {children}
             </div>

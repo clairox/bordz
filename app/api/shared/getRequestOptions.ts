@@ -5,6 +5,7 @@ import {
     DEFAULT_PAGE_SIZE,
     DEFAULT_SORT_KEY,
 } from '@/utils/constants'
+import { SortKey } from '@/types/sorting'
 
 const getRequestOptionsParams = (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams

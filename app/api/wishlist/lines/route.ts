@@ -19,6 +19,7 @@ import {
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import { db } from '@/drizzle/db'
 import { ProductRecord } from '@/types/database'
+import { SortKey } from '@/types/sorting'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {

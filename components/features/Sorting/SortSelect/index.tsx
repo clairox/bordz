@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/Select'
+import { SortKey } from '@/types/sorting'
 
 type SortSelectProps = {
     value: SortKey

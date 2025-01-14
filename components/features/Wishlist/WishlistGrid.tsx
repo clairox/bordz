@@ -1,21 +1,17 @@
 'use client'
 
-import { Fragment } from 'react'
 import Link from 'next/link'
 import { Trash } from '@phosphor-icons/react'
 
-import InfiniteList from '@/components/common/InfiniteList'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
-import { useDeleteWishlistLine, useWishlistLines } from '@/hooks/data/wishlist'
+import { useDeleteWishlistLine } from '@/hooks/data/wishlist'
 import { ProductBoardPopover } from '../Products'
 import PriceRepr from '@/components/common/PriceRepr'
 import GridFiller from '@/components/common/GridFiller'
-import { Skeleton } from '@/components/ui/Skeleton'
 
 type WishlistGridProps = {
-    pageSize: number
-    orderBy: SortKey
-    cols: number
+    items: WishlistLine[]
+    columnCount: number
 }
 
 const gridColsClasses: Record<number, string> = {
@@ -26,60 +22,25 @@ const gridColsClasses: Record<number, string> = {
 }
 
 export const WishlistGrid: React.FC<WishlistGridProps> = ({
-    pageSize,
-    orderBy,
-    cols,
+    items,
+    columnCount,
 }) => {
-    const { data, error, isPending, hasNextPage, fetchNextPage } =
-        useWishlistLines({
-            size: pageSize,
-            orderBy,
-        })
-
     const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
-
-    if (error) {
-        throw error
-    }
-
-    if (isPending) {
-        return <Fallback />
-    }
 
     return (
         <div
-            className={`grid ${gridColsClasses[cols]} gap-[1px] w-full bg-black`}
+            className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-black`}
         >
-            <InfiniteList
-                pages={data.pages}
-                hasNextPage={hasNextPage}
-                fetchNextPage={fetchNextPage}
-                render={wishlist => (
-                    <Fragment>
-                        {wishlist.length > 0 ? (
-                            <Fragment>
-                                {wishlist.map(item => {
-                                    return (
-                                        <WishlistItemCard
-                                            item={item}
-                                            deleteItem={lineId =>
-                                                deleteWishlistLine({ lineId })
-                                            }
-                                            key={item.id}
-                                        />
-                                    )
-                                })}
-                                <GridFiller
-                                    itemCount={wishlist.length}
-                                    gridTrackSize={cols}
-                                />{' '}
-                            </Fragment>
-                        ) : (
-                            <p>Your wishlist is empty.</p>
-                        )}
-                    </Fragment>
-                )}
-            />
+            {items.map(item => {
+                return (
+                    <WishlistItemCard
+                        item={item}
+                        deleteItem={lineId => deleteWishlistLine({ lineId })}
+                        key={item.id}
+                    />
+                )
+            })}
+            <GridFiller itemCount={items.length} gridTrackSize={columnCount} />
         </div>
     )
 }
@@ -96,7 +57,7 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
     const { product } = item
 
     return (
-        <article className="flex flex-col gap-2 bg-white">
+        <article className="col-span-1 flex flex-col gap-2 bg-white">
             <div className="border-b border-gray-400">
                 <StoredPreviewImage
                     path={product.board?.deck.images?.[0]}
@@ -132,20 +93,3 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
         </article>
     )
 }
-
-const Fallback = () => (
-    <div className="grid grid-cols-4 gap-[1px] w-full bg-black">
-        {Array(8)
-            .fill('x')
-            .map((_, idx) => (
-                <div key={idx} className="h-[448px] bg-white">
-                    <Skeleton className="w-full h-80 rounded-none border-b border-gray-400" />
-                    <div className="w-full h-full px-6 pt-5 pb-5">
-                        <Skeleton className="w-[160px] h-[24px] mb-4" />
-                        <Skeleton className="w-[60px] h-[18px] mb-2" />
-                        <Skeleton className="w-[90px] h-[18px]" />
-                    </div>
-                </div>
-            ))}
-    </div>
-)

@@ -7,6 +7,7 @@ import { useComponents } from '@/hooks/data/component'
 import { DataTable } from '@/components/ui/DataTable'
 import { componentTableColumns } from '@/tables/Components/columns'
 import { deleteComponents } from '@/lib/api'
+import { SortKey } from '@/types/sorting'
 
 const ComponentsPage: React.FC = () => {
     const searchParams = useSearchParams()

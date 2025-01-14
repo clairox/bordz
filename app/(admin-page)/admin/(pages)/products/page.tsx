@@ -7,6 +7,7 @@ import { DataTable } from '@/components/ui/DataTable'
 import { productTableColumns } from '@/tables/Products/columns'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteProducts } from '@/lib/api'
+import { SortKey } from '@/types/sorting'
 
 const ProductsPage = () => {
     const searchParams = useSearchParams()

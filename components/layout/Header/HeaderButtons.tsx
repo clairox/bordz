@@ -66,7 +66,9 @@ const HeaderButtonWithCount: React.FC<HeaderButtonWithCountProps> = ({
         >
             <button disabled={disabled}>
                 <div
-                    className={`flex justify-center items-center gap-1 ${disabled ? 'text-gray-400' : 'text-black'}`}
+                    className={`flex justify-center items-center gap-1 ${
+                        disabled ? 'text-gray-400' : 'text-black'
+                    }`}
                 >
                     {icon}
                     {!(hideZero && count === 0) && (
@@ -87,7 +89,7 @@ const WishlistHeaderButton: React.FC = () => {
 
     return (
         <HeaderButtonWithCount
-            href="/saved"
+            href="/wishlist"
             icon={<HeartStraight size={iconSize} weight="light" />}
             count={wishlist && wishlist.quantity}
             disabled={!wishlist}

@@ -4,6 +4,7 @@ import PageHeading from '@/components/common/PageHeading'
 import { ProductGrid } from '@/components/features/Products'
 import SortSelect from '@/components/features/Sorting/SortSelect'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { SortKey } from '@/types/sorting'
 
 type BrowsePageProps = {
     searchParams: { size?: string; orderBy?: string; cols?: string }

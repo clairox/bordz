@@ -18,6 +18,7 @@ import InfiniteList from '@/components/common/InfiniteList'
 import { ProductBoardPopover } from './ProductBoardPopover'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import GridFiller from '@/components/common/GridFiller'
+import { SortKey } from '@/types/sorting'
 
 type ProductGridProps = {
     pageSize: number

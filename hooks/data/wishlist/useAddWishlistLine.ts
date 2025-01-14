@@ -16,6 +16,7 @@ export const useAddWishlistLine = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['wishlist'] })
+            queryClient.invalidateQueries({ queryKey: ['wishlistLines'] })
         },
     })
 }

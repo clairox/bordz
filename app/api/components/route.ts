@@ -17,6 +17,7 @@ import {
     validateRequestBody,
 } from '../shared'
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants'
+import { SortKey } from '@/types/sorting'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {

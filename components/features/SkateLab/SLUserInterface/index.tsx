@@ -34,7 +34,7 @@ const SLUserInterface: React.FC = () => {
             <SLMenu />
             <div className="fixed top-24 right-10 flex flex-col gap-4">
                 <Sheet>
-                    <SheetTrigger>
+                    <SheetTrigger asChild>
                         <SLButton disabled={!isComplete} onClick={() => {}}>
                             Done
                         </SLButton>
@@ -66,7 +66,7 @@ const SLConfirmation: React.FC = () => {
 
     const addToWishlist = async () => {
         await addBoardSetupToWishlist(shouldPublish)
-        router.push('/saved')
+        router.push('/wishlist')
     }
 
     return (
