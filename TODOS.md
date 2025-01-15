@@ -102,6 +102,7 @@
 ### Order
 
 -   [ ] Use text shipping address for orders, in case shipping address is deleted
+-   [ ] Add payment method to order
 
 ### Future ideas
 

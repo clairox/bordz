@@ -31,7 +31,7 @@ export const mapOrderResponseToOrder = (response: OrderResponse): Order => {
         totalShipping: response.totalShipping,
         totalTax: response.totalTax,
         total: response.total,
-        createdAt: response.createdAt,
+        createdAt: new Date(response.createdAt),
     }
 }
 

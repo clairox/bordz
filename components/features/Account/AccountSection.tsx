@@ -2,9 +2,7 @@ import Link, { LinkProps } from 'next/link'
 import { ComponentPropsWithoutRef } from 'react'
 
 const AccountSection = ({ children }: React.PropsWithChildren) => {
-    return (
-        <div className="px-8 py-5 w-full border-b border-black">{children}</div>
-    )
+    return <div className="w-full border-b border-black">{children}</div>
 }
 
 const AccountSectionHeader = ({ children }: React.PropsWithChildren) => {

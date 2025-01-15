@@ -1,6 +1,8 @@
 import Link from 'next/link'
 
 import PriceRepr from '@/components/common/PriceRepr'
+import StoredPreviewImage from '@/components/common/StoredPreviewImage'
+import { Button } from '@/components/ui/Button'
 
 type OrderListProps = {
     orders: Order[]
@@ -19,59 +21,53 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
     }
 
     return (
-        <div className="flex flex-col gap-[1px] bg-gray-400">
+        <div className="flex flex-col gap-[1px] bg-gray-500">
+            <div className="flex justify-start gap-8 p-8 pb-4 bg-white">
+                <Button className="">Last 60 days</Button>
+                <Button>2025</Button>
+                <Button>2024</Button>
+                <Button>2023</Button>
+                <Button>2022</Button>
+                <Button>2021 and earlier</Button>
+            </div>
             {orders.map(order => (
-                <OrderListItem key={order.id} order={order} />
+                <OrderCard key={order.id} order={order} />
             ))}
         </div>
     )
 }
 
-type OrderItemProps = {
+type OrderCardProps = {
     order: Order
 }
 
-const OrderListItem: React.FC<OrderItemProps> = ({ order }) => {
+const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     return (
-        <Link href={`/account/orders/${order.id}`}>
-            <div className="p-6 bg-white hover:bg-gray-100">
-                <p className="font-semibold">Order No: {order.id}</p>
-                {order.lines.map(line => {
-                    return (
-                        <article key={line.id}>
-                            <h3>
-                                {line.quantity} x {line.title}
-                            </h3>
-                            {line.product?.board && (
-                                <ul className="text-sm">
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.deck.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.trucks.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.wheels.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.bearings.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.hardware.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.griptape.title}
-                                    </li>
-                                </ul>
-                            )}
-                            <p>
-                                <PriceRepr value={line.total} />
-                            </p>
-                        </article>
-                    )
-                })}
+        <div className="bg-white">
+            <div className="flex justify-between items-end px-8 pt-6 pb-1 border-b border-gray-300">
+                <div className="flex gap-3 items-end">
+                    <Link href={`/account/orders/${order.id}`}>
+                        <h2 className="text-lg">Order #{order.id}</h2>
+                    </Link>
+                    <div className="text-gray-600">
+                        {order.createdAt.toDateString()}
+                    </div>
+                </div>
+                <p className="text-lg">
+                    <PriceRepr value={order.total} />
+                </p>
             </div>
-        </Link>
+            <div className="flex gap-12 p-8 w-full">
+                {order.lines.map(line => (
+                    <div key={line.id} className="max-w-52  bg-white">
+                        <StoredPreviewImage
+                            path={line.product?.board?.deck.images?.[0]}
+                            alt={'product image'}
+                        />
+                    </div>
+                ))}
+            </div>
+        </div>
     )
 }
 

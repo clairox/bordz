@@ -1,7 +1,7 @@
 'use client'
 
 import { AccountHeading, AccountSection } from '@/components/features/Account'
-import { OrderListContainer } from '@/components/features/Orders/OrderListContainer'
+import { OrderListContainer } from '@/components/features/Orders'
 import { SortKey } from '@/types/sorting'
 import { DEFAULT_SORT_KEY } from '@/utils/constants'
 
