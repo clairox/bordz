@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { asc, desc, eq, inArray, SQL } from 'drizzle-orm'
+import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { ProductTable } from '@/drizzle/schema/product'
@@ -17,6 +17,7 @@ import {
 } from '../shared'
 import { ComponentRecord } from '@/types/database'
 import { SortKey } from '@/types/sorting'
+import { ComponentTable } from '@/drizzle/schema/component'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -94,17 +95,32 @@ export const POST = async (request: NextRequest) =>
             const availability =
                 getComponentsOverallAvailability(validComponents)
 
+            const { deck, trucks, wheels, bearings, hardware, griptape } =
+                validComponents
+
+            const numberOfBoardsWithSameDeck = await db
+                .select({ count: count() })
+                .from(BoardSetupTable)
+                .innerJoin(
+                    ComponentTable,
+                    eq(BoardSetupTable.deckId, ComponentTable.id)
+                )
+                .where(eq(ComponentTable.title, deck.title))
+                .then(rows => rows[0].count)
+
+            const baseTitle = deck.title.toLowerCase().endsWith(' deck')
+                ? deck.title.slice(0, -5)
+                : deck.title
+            const productTitle = `${baseTitle} Complete #${numberOfBoardsWithSameDeck + 1}`
+
             const newProduct = await createProduct(
-                'Complete Skateboard',
+                productTitle,
                 totalPrice,
                 'BOARD',
                 availability,
                 undefined,
                 data.isPublic
             )
-
-            const { deck, trucks, wheels, bearings, hardware, griptape } =
-                validComponents
 
             await db.insert(BoardSetupTable).values({
                 productId: newProduct.id,
