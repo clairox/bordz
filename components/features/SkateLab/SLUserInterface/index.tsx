@@ -5,15 +5,9 @@ import { useRouter } from 'next/navigation'
 import { capitalize } from 'lodash'
 
 import PriceRepr from '@/components/common/PriceRepr'
-import { useSkateLabContext } from '../../../../context/SkateLabContext'
+import { useSkateLabContext } from '@/context/SkateLabContext'
 import SLButton from './SLButton'
 import SLMenu from './SLMenu'
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTrigger,
-} from '@/components/ui/Dialog'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { Label } from '@/components/ui/Label'
 import { Button } from '@/components/ui/Button'

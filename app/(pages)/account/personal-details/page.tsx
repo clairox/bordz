@@ -16,11 +16,13 @@ const PersonalDetailsPage = () => {
         <div>
             <AccountHeading>Personal Details</AccountHeading>
             <AccountSection>
-                {isPending ? (
-                    <Fallback />
-                ) : (
-                    <UpdatePersonalDetailsForm customer={customer!} />
-                )}
+                <div className="p-8 w-[500px] border-r border-gray-400">
+                    {isPending ? (
+                        <Fallback />
+                    ) : (
+                        <UpdatePersonalDetailsForm customer={customer!} />
+                    )}
+                </div>
             </AccountSection>
         </div>
     )

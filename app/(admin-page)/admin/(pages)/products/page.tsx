@@ -19,6 +19,7 @@ const ProductsPage = () => {
         page,
         size: pageSize,
         orderBy,
+        publicOnly: false,
     })
 
     const { mutateAsync: deleteProducts } = useDeleteProducts()

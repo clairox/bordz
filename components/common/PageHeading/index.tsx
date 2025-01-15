@@ -2,8 +2,11 @@ type PageHeadingProps = React.PropsWithChildren
 
 const PageHeading: React.FC<PageHeadingProps> = ({ children }) => {
     return (
-        <div className="flex items-end px-6 pb-1 h-16 border-b border-black">
-            <h1 className="text-2xl">{children}</h1>
+        <div className="px-8 py-10 pb-2 border-b border-black">
+            <div className="w-fit">
+                <h2 className="px-1 text-2xl">{children}</h2>
+                <div className="relative top-2 w-full h-[2px] bg-black" />
+            </div>
         </div>
     )
 }

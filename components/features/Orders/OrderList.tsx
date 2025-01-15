@@ -23,7 +23,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
     return (
         <div className="flex flex-col gap-[1px] bg-gray-500">
             <div className="flex justify-start gap-8 p-8 pb-4 bg-white">
-                <Button className="">Last 60 days</Button>
+                <Button disabled>Last 60 days</Button>
                 <Button>2025</Button>
                 <Button>2024</Button>
                 <Button>2023</Button>

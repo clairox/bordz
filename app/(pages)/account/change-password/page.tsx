@@ -12,7 +12,9 @@ const ChangePasswordPage = () => {
         <div>
             <AccountHeading>Change Password</AccountHeading>
             <AccountSection>
-                {isPending ? <Fallback /> : <ChangePasswordForm />}
+                <div className="p-8 w-[500px] border-r border-gray-400">
+                    {isPending ? <Fallback /> : <ChangePasswordForm />}
+                </div>
             </AccountSection>
         </div>
     )

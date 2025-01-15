@@ -50,14 +50,12 @@ const AccountSidebar = () => {
             >
                 Change Password
             </SidebarMenuItem>
-            <div className="py-2 border-b border-black bg-white hover:bg-gray-200">
-                <button
-                    onClick={() => signOut()}
-                    className="w-full h-full text-left"
-                >
-                    Logout
-                </button>
-            </div>
+            <button
+                onClick={() => signOut()}
+                className="px-6 py-4 border-b border-black bg-white hover:bg-gray-200 text-left"
+            >
+                Logout
+            </button>
         </aside>
     )
 }
@@ -75,7 +73,7 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return (
         <Link href={href}>
             <div
-                className={`py-2 border-b border-black bg-white hover:bg-gray-200  ${
+                className={`px-6 py-4 border-b border-gray-400 bg-white hover:bg-gray-200  ${
                     isSelected && 'font-semibold'
                 }`}
             >

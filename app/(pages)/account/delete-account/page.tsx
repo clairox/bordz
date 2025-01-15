@@ -12,7 +12,9 @@ const DeleteAccountPage = () => {
         <div>
             <AccountHeading>Delete Account</AccountHeading>
             <AccountSection>
-                {isPending ? <Fallback /> : <DeleteAccountForm />}
+                <div className="p-8 w-[500px] border-r border-gray-400">
+                    {isPending ? <Fallback /> : <DeleteAccountForm />}
+                </div>
             </AccountSection>
         </div>
     )

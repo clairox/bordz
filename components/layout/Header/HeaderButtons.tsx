@@ -6,11 +6,13 @@ import { BagSimple, HeartStraight, User } from '@phosphor-icons/react'
 import { useCart } from '@/hooks/data/cart'
 import { useCustomer } from '@/context/CustomerContext'
 import { useWishlist } from '@/context/WishlistContext'
+import { usePathname } from 'next/navigation'
 
 const iconSize = 26
 
 const AccountHeaderButton: React.FC = () => {
     const { data: customer, isPending: isCustomerPending } = useCustomer()
+    const pathname = usePathname()
 
     return (
         <Link
@@ -21,7 +23,9 @@ const AccountHeaderButton: React.FC = () => {
                 <div className="flex justify-center items-center gap-3">
                     <User
                         size={iconSize}
-                        weight="light"
+                        weight={
+                            pathname.startsWith('/account') ? 'fill' : 'light'
+                        }
                         color={isCustomerPending ? '#999' : '#000'}
                     />
                     {customer && <span>{customer.firstName}</span>}
@@ -86,11 +90,17 @@ const HeaderButtonWithCount: React.FC<HeaderButtonWithCountProps> = ({
 
 const WishlistHeaderButton: React.FC = () => {
     const { data: wishlist } = useWishlist()
+    const pathname = usePathname()
 
     return (
         <HeaderButtonWithCount
             href="/wishlist"
-            icon={<HeartStraight size={iconSize} weight="light" />}
+            icon={
+                <HeartStraight
+                    size={iconSize}
+                    weight={pathname === '/wishlist' ? 'fill' : 'light'}
+                />
+            }
             count={wishlist && wishlist.quantity}
             disabled={!wishlist}
         />
@@ -99,11 +109,17 @@ const WishlistHeaderButton: React.FC = () => {
 
 const CartHeaderButton: React.FC = () => {
     const { data: cart } = useCart()
+    const pathname = usePathname()
 
     return (
         <HeaderButtonWithCount
             href="/cart"
-            icon={<BagSimple size={iconSize} weight="light" />}
+            icon={
+                <BagSimple
+                    size={iconSize}
+                    weight={pathname === '/cart' ? 'fill' : 'light'}
+                />
+            }
             count={cart && cart.totalQuantity}
             disabled={!cart}
         />
