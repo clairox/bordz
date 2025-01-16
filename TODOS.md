@@ -43,7 +43,7 @@
 -   [x] Return response.json() and handle error inside fetchAbsolute
 -   [ ] Move id to mutation fn in data mutation hooks
 -   [ ] BUG: api calls that require cookies don't work with suspense
--   [ ] Center the bordz logo in the header
+-   [x] Center the bordz logo in the header
 
 ### Cart
 
