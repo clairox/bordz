@@ -64,7 +64,7 @@ const SLComponentCard: React.FC<SLComponentCardProps> = ({
     return (
         <article
             onClick={handleComponentSelection}
-            className={`flex flex-col w-full border-b border-black last:border-none ${
+            className={`flex flex-col w-full border-b border-gray-400 last:border-none ${
                 isSelected
                     ? 'bg-sky-100 hover:bg-sky-200'
                     : 'bg-white hover:bg-gray-100'

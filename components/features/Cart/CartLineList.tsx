@@ -38,7 +38,7 @@ export const CartLineList: React.FC<CartLineListProps> = ({ lines }) => {
     }
 
     return (
-        <div className="flex flex-col gap-[1px] bg-black">
+        <div className="flex flex-col gap-[1px] bg-gray-400">
             {lines.map(line => {
                 const wishlistLineId = wishlist?.lines.find(
                     wishlistLine => wishlistLine.product.id === line.product.id
@@ -94,7 +94,7 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
 
     return (
         <article className="flex bg-white">
-            <div className="w-52 border-r border-black">
+            <div className="w-52 border-r border-gray-400">
                 <StoredPreviewImage
                     path={product.board?.deck.images?.[0]}
                     alt="product image"

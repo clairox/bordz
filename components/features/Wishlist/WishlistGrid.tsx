@@ -37,7 +37,7 @@ export const WishlistGrid: React.FC<WishlistGridProps> = ({
 
     return (
         <div
-            className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-black`}
+            className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-gray-400`}
         >
             {items.map(item => {
                 return (

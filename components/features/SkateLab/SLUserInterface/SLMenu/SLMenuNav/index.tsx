@@ -57,14 +57,14 @@ const SLMenuNav: React.FC<SLMenuNavProps> = ({ currentSection }) => {
                 <button
                     disabled={isFirstSection}
                     onClick={() => navigate('prev')}
-                    className={`flex justify-center items-center w-10 h-full border-l border-black ${prevButtonColorClass}`}
+                    className={`flex justify-center items-center w-10 h-full border-l border-gray-400 ${prevButtonColorClass}`}
                 >
                     <CaretLeft size={28} weight="regular" />
                 </button>
                 <button
                     disabled={isLastSection}
                     onClick={() => navigate('next')}
-                    className={`flex justify-center items-center w-10 h-full border-l border-black ${nextButtonColorClass}`}
+                    className={`flex justify-center items-center w-10 h-full border-l border-gray-400 ${nextButtonColorClass}`}
                 >
                     <CaretRight size={28} weight="regular" />
                 </button>

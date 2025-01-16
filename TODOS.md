@@ -20,13 +20,13 @@
 -   [x] Refactor code for email column addition where necessary
 -   [x] Use [userId] route in /customers
 -   [x] Move utility functions in routes to bottom
--   [ ] Create form password input component
+-   [x] Create form password input component
 -   [x] Move all fetches to /lib/api
 -   [x] Get rid of try/catch in react-query queries and mutations and wherever else they aren't needed
--   [ ] Add 'add' button with text input to select
+-   [x] Add 'add' button with text input to select
 -   [ ] Use Supabase for data storage
 -   [x] Reorganize file structure
--   [ ] Figure out a better naming convention for List and ListItem components
+-   [x] Figure out a better naming convention for List and ListItem components
 -   [ ] Use unauthorized error for missing session token
 -   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
 -   [ ] BUG session cookie not deleted after account deletion
@@ -38,12 +38,12 @@
 -   [ ] Use bucket arg with useImages hook
 -   [ ] Create default unexpected error text constant
 -   [ ] Use numbers where necessary in form schemas
--   [ ] Use Pick for update arg types
 -   [ ] Call useParams with <Record<string, string>>
--   [ ] Automatically add ' \*' to form field labels if required
+-   [x] Automatically add ' \*' to form field labels if required
 -   [x] Return response.json() and handle error inside fetchAbsolute
 -   [ ] Move id to mutation fn in data mutation hooks
 -   [ ] BUG: api calls that require cookies don't work with suspense
+-   [ ] Center the bordz logo in the header
 
 ### Cart
 
@@ -77,7 +77,8 @@
 ### Skate Lab
 
 -   [x] Add like post build confirmation modal where you can choose to add to cart or wishlist and make build public
--   [ ] Component filter/sort
+-   [ ] Component filtering/sorting
+-   [ ] Use custom sockets to attach components to deck
 
 ### Customer
 
@@ -90,13 +91,15 @@
 -   [x] Create change password page
 -   [x] Create delete account page
 -   [x] Create personal details page
+-   [ ] Base styling
+-   [ ] Add heading to sidebar
 
 ### Wishlist
 
 -   [x] Sort wishlist by createdAt desc
 -   [x] Don't allow duplicate boardsetup product on merge
 -   [x] Add unique index to wishlist wishlist_id_product_id
--   [ ] Change saved to wishlist
+-   [x] Change saved to wishlist
 -   [ ] Add price to wishlist line
 
 ### Order
@@ -107,3 +110,7 @@
 ### Future ideas
 
 -   [ ] Component page for each component, button to start a new board with component
+
+### Admin
+
+-   [ ] Item search

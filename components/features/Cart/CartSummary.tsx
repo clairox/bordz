@@ -9,7 +9,7 @@ type CartSummaryProps = {
 export const CartSummary: React.FC<CartSummaryProps> = ({ cart }) => {
     return (
         <div>
-            <div className="flex flex-col gap-2 px-4 pt-3 pb-4 border-b border-black">
+            <div className="flex flex-col gap-2 px-4 pt-3 pb-4 border-b border-gray-400">
                 <h1 className="mb-1 text-lg">Cart Summary</h1>
                 <div className="flex justify-between">
                     <div>Subtotal:</div>

@@ -14,7 +14,7 @@ const WishlistPage: React.FC<WishlistPageProps> = ({ searchParams }) => {
     return (
         <div>
             <PageHeading>Wishlist</PageHeading>
-            <div className="flex justify-end px-4 py-4 w-full border-b border-black">
+            <div className="flex justify-end px-4 py-4 w-full border-b border-gray-400">
                 <SortSelect
                     value={orderBy}
                     availableOptions={['date-desc', 'date-asc']}

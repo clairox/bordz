@@ -21,8 +21,9 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
     }
 
     return (
-        <div className="flex flex-col gap-[1px] bg-gray-500">
+        <div className="flex flex-col gap-[1px] bg-black">
             <div className="flex justify-start gap-8 p-8 pb-4 bg-white">
+                {/* TODO: Make this functional */}
                 <Button disabled>Last 60 days</Button>
                 <Button>2025</Button>
                 <Button>2024</Button>
@@ -44,7 +45,7 @@ type OrderCardProps = {
 const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     return (
         <div className="bg-white">
-            <div className="flex justify-between items-end px-8 pt-6 pb-1 border-b border-gray-300">
+            <div className="flex justify-between items-end px-8 pt-6 pb-1 border-b border-gray-400">
                 <div className="flex gap-3 items-end">
                     <Link href={`/account/orders/${order.id}`}>
                         <h2 className="text-lg">Order #{order.id}</h2>

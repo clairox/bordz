@@ -36,7 +36,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
     return (
         <div
-            className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-black`}
+            className={`grid ${gridColsClasses[columnCount]} gap-[1px] w-full bg-gray-400`}
         >
             {products.map((product, idx) => {
                 const cartLineId = cart?.lines.find(

@@ -16,7 +16,7 @@ const BrowsePage: React.FC<BrowsePageProps> = ({ searchParams }) => {
     return (
         <div>
             <PageHeading>Browse Completes</PageHeading>
-            <div className="flex justify-end items-center px-4 py-4 w-full border-b border-black">
+            <div className="flex justify-end items-center px-4 py-4 w-full border-b border-gray-400">
                 <SortSelect
                     value={orderBy}
                     availableOptions={[
