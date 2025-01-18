@@ -1,11 +1,14 @@
 import PageHeading from '@/components/common/PageHeading'
-import { CartContainer } from '@/components/features/Cart'
+import { CartContainer } from '@/components/features/Cart/server'
+import { Suspense } from 'react'
 
 const CartPage: React.FC = () => {
     return (
         <div>
             <PageHeading>Your Cart</PageHeading>
-            <CartContainer />
+            <Suspense fallback={<div>Loading...</div>}>
+                <CartContainer />
+            </Suspense>
         </div>
     )
 }

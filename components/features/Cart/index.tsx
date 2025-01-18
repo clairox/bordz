@@ -1,4 +1,3 @@
-export * from './CartContainer'
 export * from './AddToCartButton'
 export * from './CartCheckoutButton'
 export * from './CartLineList'
