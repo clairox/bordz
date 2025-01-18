@@ -18,7 +18,7 @@ const AccountSidebar = () => {
     }, [isSignOutSuccess, router])
 
     return (
-        <aside className="flex flex-col h-full border-r border-black">
+        <aside className="flex flex-col h-full border-r border-b border-black">
             <SidebarMenuItem
                 href="/account/settings"
                 isSelected={pathname === '/account/settings'}

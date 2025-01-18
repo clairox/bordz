@@ -9,6 +9,7 @@ import {
 import { AddressDashboard } from '@/components/features/Addresses'
 import { useAuth } from '@/context/AuthContext'
 import { useCustomer } from '@/context/CustomerContext'
+import { Button } from '@/components/ui/Button'
 
 const SettingsPage: React.FC = () => {
     const { data: user } = useAuth()
@@ -33,17 +34,19 @@ const SettingsPage: React.FC = () => {
                     </Section.Header.ActionLink>
                 </Section.Header>
                 <Section.Content>
-                    <div className="mb-3">
-                        <p className="font-semibold">Name:</p>
-                        <p>{customer?.displayName}</p>
-                    </div>
-                    <div className="mb-3">
-                        <p className="font-semibold">Email:</p>
-                        <p>{user?.email}</p>
-                    </div>
-                    <div className="mb-3">
-                        <p className="font-semibold">Phone:</p>
-                        <p>{customer?.phone}</p>
+                    <div className="px-8">
+                        <div className="mb-3">
+                            <p className="font-semibold">Name:</p>
+                            <p>{customer?.displayName}</p>
+                        </div>
+                        <div className="mb-3">
+                            <p className="font-semibold">Email:</p>
+                            <p>{user?.email}</p>
+                        </div>
+                        <div className="mb-3">
+                            <p className="font-semibold">Phone:</p>
+                            <p>{customer?.phone}</p>
+                        </div>
                     </div>
                 </Section.Content>
             </Section>
@@ -52,10 +55,7 @@ const SettingsPage: React.FC = () => {
                     <Section.Header.Title>Addresses</Section.Header.Title>
                 </Section.Header>
                 <Section.Content>
-                    <AddressDashboard
-                        defaultAddress={customer?.defaultAddress}
-                        addresses={customer?.addresses ?? []}
-                    />
+                    <AddressDashboard />
                 </Section.Content>
             </Section>
             <Section>
@@ -63,14 +63,15 @@ const SettingsPage: React.FC = () => {
                     <Section.Header.Title>Delete Account</Section.Header.Title>
                 </Section.Header>
                 <Section.Content>
-                    <div className="mb-3">
-                        <button
+                    <div className="mb-3 px-8 pb-4">
+                        <Button
                             onClick={() =>
                                 router.push('/account/delete-account')
                             }
+                            className="w-fit"
                         >
                             Delete Account
-                        </button>
+                        </Button>
                     </div>
                 </Section.Content>
             </Section>

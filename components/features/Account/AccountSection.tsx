@@ -7,7 +7,7 @@ const AccountSection = ({ children }: React.PropsWithChildren) => {
 
 const AccountSectionHeader = ({ children }: React.PropsWithChildren) => {
     return (
-        <div className="relative flex justify-between pt-2 pb-6">
+        <div className="relative flex justify-between px-8 pt-4 pb-6">
             {children}
         </div>
     )
@@ -29,7 +29,7 @@ const AccountSectionActionLink = ({
     ...props
 }: React.PropsWithChildren<LinkProps>) => {
     return (
-        <Link {...props} className="absolute right-0 top-0">
+        <Link {...props} className="absolute right-0 top-0 pr-8 pt-2">
             {children}
         </Link>
     )

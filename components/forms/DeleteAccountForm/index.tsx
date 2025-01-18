@@ -25,6 +25,7 @@ const DeleteAccountForm: React.FC = () => {
             ]}
             onSubmit={async data => await deleteAccount(data)}
             submitButtonContent="Delete Account"
+            submitButtonVariant="destructive"
             getErrorMessage={error => {
                 if ((error as AuthApiError).code === 'invalid_credentials') {
                     return 'Password is incorrect.'

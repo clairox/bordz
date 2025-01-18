@@ -29,6 +29,7 @@ import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
+import { ButtonProps } from '@/components/ui/Button'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -120,6 +121,7 @@ type DataFormProps<
     onSubmit: (data: TFieldValues) => Promise<unknown>
     successMessage?: string
     submitButtonContent?: React.ReactNode
+    submitButtonVariant?: ButtonProps['variant']
     getErrorMessage?: (error: unknown) => string | undefined
     resetOnSuccess?: boolean
 }
@@ -133,7 +135,8 @@ const DataForm = <
     fieldData,
     onSubmit,
     successMessage,
-    submitButtonContent,
+    submitButtonContent = 'Save',
+    submitButtonVariant = 'default',
     getErrorMessage,
     resetOnSuccess,
 }: DataFormProps<TSchema, TFieldValues>) => {
@@ -334,8 +337,12 @@ const DataForm = <
                             }
                         }
                     })}
-                    <ButtonAsync loading={loading} success={success}>
-                        {submitButtonContent ?? 'Save'}
+                    <ButtonAsync
+                        variant={submitButtonVariant}
+                        loading={loading}
+                        success={success}
+                    >
+                        {submitButtonContent}
                     </ButtonAsync>
                 </form>
             </Form>

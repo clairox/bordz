@@ -1,22 +1,23 @@
 'use client'
 
-import { ButtonHTMLAttributes, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Check } from '@phosphor-icons/react'
-import { Button } from '../Button'
+import { Button, ButtonProps } from '../Button'
 
-type ButtonAsyncProps = React.PropsWithChildren<{
-    type?: ButtonHTMLAttributes<HTMLButtonElement>['type']
-    loading: boolean
-    success: boolean
-    shouldReset?: boolean
-}>
+type ButtonAsyncProps = React.PropsWithChildren<
+    ButtonProps & {
+        loading: boolean
+        success: boolean
+        shouldReset?: boolean
+    }
+>
 
 const ButtonAsync: React.FC<ButtonAsyncProps> = ({
-    type,
     children,
     loading,
     success,
     shouldReset = false,
+    ...props
 }) => {
     const [content, setContent] = useState<React.ReactNode>(children)
     const [disabled, setDisabled] = useState(false)
@@ -49,7 +50,7 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
     }, [success, children, shouldReset])
 
     return (
-        <Button type={type} disabled={disabled} className="w-fit">
+        <Button {...props} disabled={disabled} className="w-fit">
             {content}
         </Button>
     )

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 
 import { AddressCard } from './AddressCard'
+import { Button } from '@/components/ui/Button'
 
 type DefaultAddressCardProps = {
     defaultAddress?: Address
@@ -14,7 +15,7 @@ export const DefaultAddressCard: React.FC<DefaultAddressCardProps> = ({
     const router = useRouter()
 
     return (
-        <div className="flex flex-col justify-between w-1/2 border-r border-black">
+        <div className="flex flex-col justify-between w-1/2">
             {defaultAddress ? (
                 <div>
                     <p className="font-semibold">Default address:</p>
@@ -23,11 +24,12 @@ export const DefaultAddressCard: React.FC<DefaultAddressCardProps> = ({
             ) : (
                 <p>No default address saved.</p>
             )}
-            <button
+            <Button
                 onClick={() => router.push('/account/addresses/edit-default')}
+                className="mt-4 w-fit"
             >
                 Update default address
-            </button>
+            </Button>
         </div>
     )
 }

@@ -15,7 +15,7 @@ export const AddressDashboard = () => {
     }
 
     return (
-        <div className="flex mb-3">
+        <div className="flex mb-3 px-8 pb-4">
             <DefaultAddressCard defaultAddress={customer!.defaultAddress} />
             <AddressManagementList addresses={customer!.addresses} />
         </div>
