@@ -2,26 +2,29 @@
 
 import { QueryClientProvider } from '@tanstack/react-query'
 
-import { AuthProvider } from './AuthContext'
 import { getQueryClient } from '../lib/queryClient'
 import { CartProvider } from './CartContext'
 import { SupabaseProvider } from './SupabaseContext'
 import { CustomerProvider } from './CustomerContext'
 import { WishlistProvider } from './WishlistContext'
 
-const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
+type ProvidersProps = React.PropsWithChildren<{
+    session?: Session
+}>
+
+const Providers: React.FC<ProvidersProps> = ({ children, session }) => {
     const queryClient = getQueryClient()
 
     return (
         <SupabaseProvider>
             <QueryClientProvider client={queryClient}>
-                <AuthProvider>
-                    <CustomerProvider>
-                        <CartProvider>
-                            <WishlistProvider>{children}</WishlistProvider>
-                        </CartProvider>
-                    </CustomerProvider>
-                </AuthProvider>
+                <CustomerProvider initialData={session?.customer}>
+                    <CartProvider initialData={session?.cart}>
+                        <WishlistProvider initialData={session?.wishlist}>
+                            {children}
+                        </WishlistProvider>
+                    </CartProvider>
+                </CustomerProvider>
             </QueryClientProvider>
         </SupabaseProvider>
     )

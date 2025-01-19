@@ -12,11 +12,11 @@ export const useDeleteCartLineMutation = () => {
             const data = await deleteCartLine(lineId)
             return mapCartResponseToCart(data)
         },
-        onSuccess: cart => {
-            queryClient.invalidateQueries({ queryKey: ['cart'] })
+        onSuccess: async cart => {
+            await queryClient.invalidateQueries({ queryKey: ['cart'] })
 
             if (cart.checkoutId) {
-                queryClient.invalidateQueries({
+                await queryClient.invalidateQueries({
                     queryKey: ['checkout', cart.checkoutId],
                 })
             }

@@ -1,101 +1,23 @@
 'use client'
 
-import {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
-} from 'react'
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { createContext, useContext } from 'react'
+import { UseSuspenseQueryResult } from '@tanstack/react-query'
 
-import { useAuth } from '../AuthContext'
-import { useSupabase } from '../SupabaseContext'
-import { useGetAuthSession, useGetSessionUserRole } from '@/hooks/auth'
-import { fetchCustomer } from '@/lib/api'
-import { mapCustomerResponseToCustomer } from '@/utils/conversions'
+import { useProvideCustomer } from './useProvideCustomer'
 
-type CustomerContextValue = UseQueryResult<Customer | null, Error>
+type CustomerContextValue = UseSuspenseQueryResult<Customer | null>
+type CustomerProviderProps = React.PropsWithChildren<{ initialData?: Customer }>
 
 const CustomerContext = createContext<CustomerContextValue>(
     {} as CustomerContextValue
 )
 const useCustomer = () => useContext(CustomerContext)
 
-const useProvideCustomer = () => {
-    const supabase = useSupabase()
-    const { data: user, status: authStatus } = useAuth()
-    const getAuthSession = useGetAuthSession()
-    const getSessionUserRole = useGetSessionUserRole()
-    const queryKey = ['customer', user?.id]
-
-    const [isCustomerQueryEnabled, setIsCustomerQueryEnabled] = useState(false)
-
-    const getUserProfile = useCallback(
-        async (userId: string) => {
-            const { data: profile, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', userId)
-                .maybeSingle()
-
-            if (error) {
-                throw error
-            }
-
-            if (!profile) {
-                throw new Error('User profile has not been created.')
-            }
-
-            return profile
-        },
-        [supabase]
-    )
-
-    useEffect(() => {
-        if (authStatus === 'pending') {
-            setIsCustomerQueryEnabled(false)
-            return
-        }
-
-        if (!user) {
-            setIsCustomerQueryEnabled(true)
-            return
-        }
-
-        getAuthSession().then(async session => {
-            if (!session) {
-                setIsCustomerQueryEnabled(true)
-                return
-            }
-            const profile = await getUserProfile(session.user.id)
-            if (!profile.is_new) {
-                setIsCustomerQueryEnabled(true)
-            }
-        })
-    }, [authStatus, user, getAuthSession, getUserProfile])
-
-    return useQuery<Customer | null>({
-        queryKey,
-        queryFn: async () => {
-            if (!user) {
-                return null
-            }
-
-            const userRole = await getSessionUserRole()
-            if (!userRole || userRole !== 'customer') {
-                return null
-            }
-
-            const data = await fetchCustomer(user.id)
-            return mapCustomerResponseToCustomer(data)
-        },
-        enabled: isCustomerQueryEnabled,
-    })
-}
-
-const CustomerProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-    const customer = useProvideCustomer()
+const CustomerProvider: React.FC<CustomerProviderProps> = ({
+    initialData,
+    children,
+}) => {
+    const customer = useProvideCustomer(initialData)
 
     return (
         <CustomerContext.Provider value={customer}>

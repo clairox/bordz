@@ -37,14 +37,15 @@ const updateSession = async (request: NextRequest) => {
         data: { session },
     } = await supabase.auth.getSession()
 
+    // TODO: Admin sign in and customer sign in should only work for respective roles
     if (session) {
         const pathname = request.nextUrl.pathname
 
         if (!pathname.startsWith('/_next') && !pathname.startsWith('/api')) {
             const userRole = getUserRole(session)
-            console.log(
-                `Requesting ${request.nextUrl.pathname} with role '${userRole}'.`
-            )
+            // console.log(
+            //     `Requesting ${request.nextUrl.pathname} with role '${userRole}'.`
+            // )
 
             if (userRole === 'admin') {
                 if (

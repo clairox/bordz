@@ -34,9 +34,8 @@ export const useUpdatePersonalDetails = () => {
             await updateCustomer(userId, { email, firstName, lastName, phone })
         },
         onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] })
             if ((await getSessionUserRole()) === 'customer') {
-                queryClient.invalidateQueries({ queryKey: ['customer'] })
+                await queryClient.invalidateQueries({ queryKey: ['customer'] })
             }
         },
     })

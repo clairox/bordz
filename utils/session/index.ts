@@ -1,2 +1,5 @@
+export * from './decodeSessionToken'
+export * from './fetchSessionData'
 export * from './getUserRole'
 export * from './killSession'
+export * from './verifySessionToken'

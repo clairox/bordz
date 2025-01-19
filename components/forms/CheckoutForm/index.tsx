@@ -1,4 +1,8 @@
+'use client'
+
 import { FormEvent, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ContactOption } from '@stripe/stripe-js'
 import {
     AddressElement,
     PaymentElement,
@@ -8,9 +12,6 @@ import {
 
 import { useCreateAddress } from '@/hooks/data/address'
 import { useUpdateCheckout } from '@/hooks/data/checkout'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/context/AuthContext'
-import { ContactOption } from '@stripe/stripe-js'
 import { useCustomer } from '@/context/CustomerContext'
 
 const CheckoutForm = () => {
@@ -23,19 +24,18 @@ const CheckoutForm = () => {
     const [submitting, setSubmitting] = useState(false)
     const [email, setEmail] = useState('')
 
-    const { data: auth } = useAuth()
     const { data: customer, status: customerStatus } = useCustomer()
 
     const { mutateAsync: updateCheckout } = useUpdateCheckout()
     const { mutateAsync: createAddress } = useCreateAddress()
 
     useEffect(() => {
-        if (email || (auth && customerStatus === 'pending')) {
+        if (email) {
             return
         }
 
-        if (auth) {
-            setEmail(auth.email)
+        if (customer) {
+            setEmail(customer.email)
         } else {
             const emailRegex =
                 /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -48,7 +48,7 @@ const CheckoutForm = () => {
                 setEmail(sessionEmail)
             }
         }
-    }, [router, email, auth, customerStatus])
+    }, [router, email, customer, customerStatus])
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()

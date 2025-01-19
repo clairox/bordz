@@ -2,19 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Session } from '@supabase/supabase-js'
 
 import { useSupabase } from '@/context/SupabaseContext'
 import { useGetSessionUserRole } from '.'
-
-type Auth = {
-    id: string
-    email: string
-} | null
-
-type UseLoginVariables = {
-    email: string
-    password: string
-}
+import { fetchSessionData } from '@/utils/session'
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 export const useLogin = (redirectTo?: string) => {
     const supabase = useSupabase()
@@ -22,10 +15,11 @@ export const useLogin = (redirectTo?: string) => {
     const queryClient = useQueryClient()
     const getSessionUserRole = useGetSessionUserRole()
 
-    return useMutation<Auth, Error, UseLoginVariables>({
+    type MutationArgs = { email: string; password: string }
+    return useMutation<Session, Error, MutationArgs>({
         mutationFn: async ({ email, password }) => {
             const {
-                data: { user },
+                data: { session },
                 error,
             } = await supabase.auth.signInWithPassword({
                 email,
@@ -36,15 +30,27 @@ export const useLogin = (redirectTo?: string) => {
                 throw error
             }
 
-            return { id: user!.id, email: user!.email! }
+            await fetchAbsolute<AuthInfo>('/session', {
+                method: 'POST',
+                body: JSON.stringify({
+                    token: session!.access_token,
+                }),
+            })
+            return session!
         },
-        onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] })
-
+        onSuccess: async ({ access_token }) => {
             const userRole = await getSessionUserRole()
+
             if (userRole === 'admin') {
                 router.push('/admin')
             } else if (userRole === 'customer') {
+                const session = await fetchSessionData(access_token, false)
+                if (session) {
+                    queryClient.setQueryData(['customer'], session.customer)
+                    queryClient.setQueryData(['cart'], session.cart)
+                    queryClient.setQueryData(['wishlist'], session.wishlist)
+                }
+
                 router.push(redirectTo ?? '/')
             }
         },

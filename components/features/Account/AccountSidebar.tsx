@@ -7,15 +7,7 @@ import Link from 'next/link'
 import { useSignOut } from '@/hooks/auth'
 
 const AccountSidebar = () => {
-    const router = useRouter()
     const pathname = usePathname()
-    const { mutate: signOut, isSuccess: isSignOutSuccess } = useSignOut()
-
-    useEffect(() => {
-        if (isSignOutSuccess) {
-            router.push('/login')
-        }
-    }, [isSignOutSuccess, router])
 
     return (
         <aside className="flex flex-col h-full border-r border-b border-black">
@@ -50,12 +42,7 @@ const AccountSidebar = () => {
             >
                 Change Password
             </SidebarMenuItem>
-            <button
-                onClick={() => signOut()}
-                className="px-6 py-4 border-b border-black bg-white hover:bg-gray-200 text-left"
-            >
-                Logout
-            </button>
+            <LogoutButton />
         </aside>
     )
 }
@@ -80,6 +67,26 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
                 {children}
             </div>
         </Link>
+    )
+}
+
+const LogoutButton = () => {
+    const router = useRouter()
+    const signOut = useSignOut()
+
+    useEffect(() => {
+        if (signOut.isSuccess) {
+            router.push('/login')
+        }
+    }, [signOut.isSuccess, router])
+
+    return (
+        <button
+            onClick={() => signOut.mutate()}
+            className="px-6 py-4 border-b border-black bg-white hover:bg-gray-200 text-left"
+        >
+            Logout
+        </button>
     )
 }
 

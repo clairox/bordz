@@ -3,6 +3,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSupabase } from '@/context/SupabaseContext'
 import { useGetSessionUserRole } from '.'
 import { killSession } from '@/utils/session'
+import { fetchCart, fetchWishlist } from '@/lib/api'
+import {
+    mapCartResponseToCart,
+    mapWishlistResponseToWishlist,
+} from '@/utils/conversions'
 
 export const useSignOut = () => {
     const supabase = useSupabase()
@@ -25,11 +30,15 @@ export const useSignOut = () => {
         onSuccess: async data => {
             await killSession()
 
-            queryClient.setQueryData(['auth'], null)
             if (data?.role === 'customer') {
-                queryClient.removeQueries({ queryKey: ['customer'] })
-                queryClient.removeQueries({ queryKey: ['cart'] })
-                queryClient.removeQueries({ queryKey: ['wishlist'] })
+                const newCart = mapCartResponseToCart(await fetchCart())
+                const newWishlist = mapWishlistResponseToWishlist(
+                    await fetchWishlist()
+                )
+
+                queryClient.setQueryData(['customer'], null)
+                queryClient.setQueryData(['cart'], newCart)
+                queryClient.setQueryData(['wishlist'], newWishlist)
             }
         },
     })

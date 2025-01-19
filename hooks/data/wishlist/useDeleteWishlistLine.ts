@@ -13,9 +13,9 @@ export const useDeleteWishlistLine = () => {
             const data = await deleteWishlistLine(lineId)
             return mapWishlistResponseToWishlist(data)
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['wishlist'] })
-            queryClient.invalidateQueries({ queryKey: ['wishlistLines'] })
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['wishlist'] })
+            await queryClient.invalidateQueries({ queryKey: ['wishlistLines'] })
         },
     })
 }

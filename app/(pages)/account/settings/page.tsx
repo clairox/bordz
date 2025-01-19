@@ -7,18 +7,16 @@ import {
     AccountSection as Section,
 } from '@/components/features/Account'
 import { AddressDashboard } from '@/components/features/Addresses'
-import { useAuth } from '@/context/AuthContext'
 import { useCustomer } from '@/context/CustomerContext'
 import { Button } from '@/components/ui/Button'
 
 const SettingsPage: React.FC = () => {
-    const { data: user } = useAuth()
-    const { data: customer, isPending: isCustomerPending } = useCustomer()
+    const { data: customer } = useCustomer()
 
     const router = useRouter()
 
-    if (isCustomerPending) {
-        return <div>Loading...</div>
+    if (!customer) {
+        return <></>
     }
 
     return (
@@ -41,7 +39,7 @@ const SettingsPage: React.FC = () => {
                         </div>
                         <div className="mb-3">
                             <p className="font-semibold">Email:</p>
-                            <p>{user?.email}</p>
+                            <p>{customer?.email}</p>
                         </div>
                         <div className="mb-3">
                             <p className="font-semibold">Phone:</p>

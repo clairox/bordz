@@ -4,15 +4,7 @@ import { useCustomer } from '@/context/CustomerContext'
 import { AddressManagementList, DefaultAddressCard } from '.'
 
 export const AddressDashboard = () => {
-    const { data: customer, error, isPending } = useCustomer()
-
-    if (error) {
-        throw error
-    }
-
-    if (isPending) {
-        return <Fallback />
-    }
+    const { data: customer } = useCustomer()
 
     return (
         <div className="flex mb-3 px-8 pb-4">

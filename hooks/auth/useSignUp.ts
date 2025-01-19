@@ -2,21 +2,24 @@
 
 import { useCallback } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { User } from '@supabase/supabase-js'
+import { Session, User } from '@supabase/supabase-js'
 
 import { useSupabase } from '@/context/SupabaseContext'
 import { CustomerCreateArgs } from '@/types/api'
-import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 import { createCustomer } from '@/lib/api'
+import { useRouter } from 'next/navigation'
+import { fetchSessionData } from '@/utils/session'
+import fetchAbsolute from '@/lib/fetchAbsolute'
 
 export const useSignUp = () => {
     const supabase = useSupabase()
     const queryClient = useQueryClient()
+    const router = useRouter
 
     const signUp = useCallback(
-        async (email: string, password: string): Promise<User> => {
+        async (email: string, password: string): Promise<Session> => {
             const {
-                data: { user },
+                data: { session },
                 error,
             } = await supabase.auth.signUp({
                 email,
@@ -27,11 +30,11 @@ export const useSignUp = () => {
                 throw error
             }
 
-            if (!user) {
+            if (!session) {
                 throw new Error('An unexpected error has occurred.')
             }
 
-            return user
+            return session
         },
         [supabase]
     )
@@ -39,24 +42,35 @@ export const useSignUp = () => {
     type MutationArgs = Omit<CustomerCreateArgs, 'userId'> & {
         password: string
     }
-    return useMutation<Customer, Error, MutationArgs>({
+    return useMutation<Session, Error, MutationArgs>({
         mutationFn: async ({ email, password, ...args }) => {
-            const user = await signUp(email, password)
-            const data = await createCustomer({
+            const session = await signUp(email, password)
+            await createCustomer({
                 ...args,
-                userId: user.id,
+                userId: session.user.id,
                 email,
             })
-            const customer = mapCustomerResponseToCustomer(data)
 
             await supabase
                 .from('profiles')
                 .update({ is_new: false })
-                .eq('id', user.id)
-            return customer
+                .eq('id', session.user.id)
+
+            await fetchAbsolute<AuthInfo>('/session', {
+                method: 'POST',
+                body: JSON.stringify({
+                    token: session!.access_token,
+                }),
+            })
+            return session
         },
-        onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] })
+        onSuccess: async ({ access_token }) => {
+            const session = await fetchSessionData(access_token, false)
+            if (session) {
+                queryClient.setQueryData(['customer'], session.customer)
+                queryClient.setQueryData(['cart'], session.cart)
+                queryClient.setQueryData(['wishlist'], session.wishlist)
+            }
         },
     })
 }

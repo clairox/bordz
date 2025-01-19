@@ -12,6 +12,7 @@ import {
 import { ProductBoardPopover } from '../Products'
 import { AddToWishlistButton } from '../Wishlist'
 import PriceRepr from '@/components/common/PriceRepr'
+import { useEffect, useState } from 'react'
 
 type CartLineListProps = {
     lines: CartLine[]
@@ -46,7 +47,6 @@ export const CartLineList: React.FC<CartLineListProps> = ({ lines }) => {
                 return (
                     <CartLineCard
                         cartLine={line}
-                        deleteCartLine={handleDeleteCartLine}
                         addWishlistLine={handleAddWishlistLine}
                         deleteWishlistLine={handleDeleteWishlistLine}
                         wishlistLineId={wishlistLineId}
@@ -60,7 +60,6 @@ export const CartLineList: React.FC<CartLineListProps> = ({ lines }) => {
 
 type CartLineCardProps = {
     cartLine: CartLine
-    deleteCartLine: (id: string) => Promise<void>
     addWishlistLine: (productId: string) => Promise<void>
     deleteWishlistLine: (id: string) => Promise<void>
     wishlistLineId?: string
@@ -68,20 +67,20 @@ type CartLineCardProps = {
 
 const CartLineCard: React.FC<CartLineCardProps> = ({
     cartLine,
-    deleteCartLine,
     addWishlistLine,
     deleteWishlistLine,
     wishlistLineId,
 }) => {
     const { product } = cartLine
+    const deleteCartLine = useDeleteCartLineMutation()
 
     const handleDeleteButtonClick = () => {
-        deleteCartLine(cartLine.id)
+        deleteCartLine.mutate({ lineId: cartLine.id })
     }
 
     const moveToWishlist = async () => {
         await addWishlistLine(cartLine.product.id)
-        deleteCartLine(cartLine.id)
+        deleteCartLine.mutate({ lineId: cartLine.id })
     }
 
     const handleWishlistButtonToggle = () => {
@@ -130,12 +129,16 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
                     </p>
                     <div className="flex justify-between">
                         <div>
-                            <button
-                                onClick={handleDeleteButtonClick}
-                                className="hover:underline"
-                            >
-                                Delete
-                            </button>
+                            {deleteCartLine.isPending ? (
+                                'Loading...'
+                            ) : (
+                                <button
+                                    onClick={handleDeleteButtonClick}
+                                    className="hover:underline"
+                                >
+                                    Delete
+                                </button>
+                            )}
                         </div>
                         <div>
                             <p className="text-lg">

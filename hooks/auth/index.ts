@@ -1,4 +1,3 @@
-export * from './useAuthSession'
 export * from './useGetAuthSession'
 export * from './useGetSessionUserRole'
 export * from './useLogin'

@@ -1,26 +1,32 @@
 'use client'
 
 import { createContext } from 'react'
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { useSuspenseQuery, UseSuspenseQueryResult } from '@tanstack/react-query'
 
 import { useCustomer } from '../CustomerContext'
 import { fetchCart } from '@/lib/api'
 import { mapCartResponseToCart } from '@/utils/conversions'
 
-type CartContextValue = UseQueryResult<Cart, Error>
+type CartContextValue = UseSuspenseQueryResult<Cart>
 
 const CartContext = createContext<CartContextValue>({} as CartContextValue)
 
-const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-    const { data: customer, isPending: isCustomerPending } = useCustomer()
+type CartProviderProps = React.PropsWithChildren<{
+    initialData?: Cart
+}>
+const CartProvider: React.FC<CartProviderProps> = ({
+    initialData,
+    children,
+}) => {
+    const { data: customer } = useCustomer()
 
-    const cartQuery = useQuery<Cart>({
-        queryKey: ['cart', customer?.id],
+    const cartQuery = useSuspenseQuery<Cart>({
+        queryKey: ['cart'],
         queryFn: async () => {
             const data = await fetchCart(customer?.id)
             return mapCartResponseToCart(data)
         },
-        enabled: !isCustomerPending,
+        initialData,
     })
 
     return (

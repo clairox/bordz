@@ -14,9 +14,9 @@ export const useAddWishlistLine = () => {
             const data = await createWishlistLine(productId)
             return mapWishlistResponseToWishlist(data)
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['wishlist'] })
-            queryClient.invalidateQueries({ queryKey: ['wishlistLines'] })
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['wishlist'] })
+            await queryClient.invalidateQueries({ queryKey: ['wishlistLines'] })
         },
     })
 }

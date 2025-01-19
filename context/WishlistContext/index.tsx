@@ -1,13 +1,13 @@
 'use client'
 
 import { createContext, useContext } from 'react'
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { useSuspenseQuery, UseSuspenseQueryResult } from '@tanstack/react-query'
 
 import { useCustomer } from '../CustomerContext'
 import { fetchWishlist } from '@/lib/api'
 import { mapWishlistResponseToWishlist } from '@/utils/conversions'
 
-type WishlistContextValue = UseQueryResult<Wishlist, Error>
+type WishlistContextValue = UseSuspenseQueryResult<Wishlist, Error>
 
 const WishlistContext = createContext<WishlistContextValue>(
     {} as WishlistContextValue
@@ -15,16 +15,23 @@ const WishlistContext = createContext<WishlistContextValue>(
 
 const useWishlist = () => useContext(WishlistContext)
 
-const WishlistProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-    const { data: customer, isPending: isCustomerPending } = useCustomer()
+type WishlistProviderProps = React.PropsWithChildren<{
+    initialData?: Wishlist
+}>
 
-    const wishlistQuery = useQuery<Wishlist>({
-        queryKey: ['wishlist', customer?.id],
+const WishlistProvider: React.FC<WishlistProviderProps> = ({
+    initialData,
+    children,
+}) => {
+    const { data: customer } = useCustomer()
+
+    const wishlistQuery = useSuspenseQuery<Wishlist>({
+        queryKey: ['wishlist'],
         queryFn: async () => {
             const data = await fetchWishlist(customer?.id)
             return mapWishlistResponseToWishlist(data)
         },
-        enabled: !isCustomerPending,
+        initialData,
     })
 
     return (

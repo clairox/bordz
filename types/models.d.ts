@@ -158,6 +158,15 @@ type Product = {
     isPublic: boolean
 }
 
+type AuthInfo = { id: string; email: string }
+
+type Session = {
+    auth: AuthInfo
+    customer: Customer
+    cart: Cart
+    wishlist: Wishlist
+}
+
 type SkateLabMode = 'edit' | 'customize' | 'default'
 
 type Wishlist = {

@@ -2,7 +2,6 @@
 
 import { QueryClientProvider } from '@tanstack/react-query'
 
-import { AuthProvider } from '@/context/AuthContext'
 import { SupabaseProvider } from '@/context/SupabaseContext'
 import { getQueryClient } from '@/lib/queryClient'
 
@@ -14,7 +13,7 @@ const AdminPageProviders: React.FC<React.PropsWithChildren> = ({
     return (
         <SupabaseProvider>
             <QueryClientProvider client={queryClient}>
-                <AuthProvider>{children}</AuthProvider>
+                {children}
             </QueryClientProvider>
         </SupabaseProvider>
     )

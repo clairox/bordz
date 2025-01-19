@@ -5,15 +5,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useGetSessionUserRole } from '@/hooks/auth'
 
-type UseUpdatePasswordArgs = {
-    password: string
-}
-
 export const useUpdatePassword = () => {
     const supabase = useSupabase()
     const queryClient = useQueryClient()
     const getSessionUserRole = useGetSessionUserRole()
-    return useMutation<void, Error, UseUpdatePasswordArgs>({
+
+    type MutationArgs = { password: string }
+    return useMutation<void, Error, MutationArgs>({
         mutationFn: async args => {
             // TODO: call supabase.auth.reauthenticate and set nonce with return value
             const { error } = await supabase.auth.updateUser({
@@ -22,12 +20,10 @@ export const useUpdatePassword = () => {
             if (error) {
                 throw error
             }
-            return
         },
         onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] })
             if ((await getSessionUserRole()) === 'customer') {
-                queryClient.invalidateQueries({ queryKey: ['customer'] })
+                await queryClient.invalidateQueries({ queryKey: ['customer'] })
             }
         },
     })
