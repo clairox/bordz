@@ -3,13 +3,8 @@
 import Link from 'next/link'
 
 import { useCart, useAddCartLineMutation } from '@/hooks/data/cart'
-import {
-    useAddWishlistLine,
-    useDeleteWishlistLine,
-} from '@/hooks/data/wishlist'
-import { useWishlist } from '@/context/WishlistContext'
 import PriceRepr from '@/components/common/PriceRepr'
-import { AddToWishlistButton } from '@/components/features/Wishlist'
+import { WishlistToggleButton } from '@/components/features/Wishlist'
 import { AddToCartButton } from '@/components/features/Cart'
 import { BoardDetailsPopover } from './BoardDetailsPopover'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
@@ -32,7 +27,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     columnCount = 4,
 }) => {
     const { data: cart } = useCart()
-    const { data: wishlist } = useWishlist()
 
     return (
         <div
@@ -43,15 +37,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                     line => line.product.id === product.id
                 )?.id
 
-                const wishlistLineId = wishlist?.lines.find(
-                    line => line.product.id === product.id
-                )?.id
-
                 return (
                     <ProductCard
                         product={product}
                         cartLineId={cartLineId}
-                        wishlistLineId={wishlistLineId}
                         key={product.id + idx}
                     />
                 )
@@ -67,27 +56,11 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 type ProductCardProps = {
     product: Product
     cartLineId?: string
-    wishlistLineId?: string
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-    product,
-    cartLineId,
-    wishlistLineId,
-}) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, cartLineId }) => {
     const { mutate: addCartLine, status: addCartLineStatus } =
         useAddCartLineMutation()
-
-    const { mutate: addWishlistLine } = useAddWishlistLine()
-    const { mutate: deleteWishlistLine } = useDeleteWishlistLine()
-
-    const handleWishlistButtonToggle = () => {
-        if (wishlistLineId) {
-            deleteWishlistLine({ lineId: wishlistLineId })
-        } else {
-            addWishlistLine({ productId: product.id })
-        }
-    }
 
     return (
         <article className="flex flex-col gap-2 bg-white">
@@ -124,10 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         isInStock={product.availableForSale}
                         onClick={() => addCartLine({ productId: product.id })}
                     />
-                    <AddToWishlistButton
-                        isInWishlist={!!wishlistLineId}
-                        onToggle={handleWishlistButtonToggle}
-                    />
+                    <WishlistToggleButton productId={product.id} />
                 </div>
             </div>
         </article>
