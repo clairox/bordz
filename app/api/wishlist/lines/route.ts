@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { asc, desc, eq, SQL } from 'drizzle-orm'
 
 import {
-    boardSetup,
     calculateNextPageNumber,
     getProduct,
     getRequestOptionsParams,
@@ -42,11 +41,7 @@ export const GET = async (request: NextRequest) =>
             offset: (page - 1) * size,
             orderBy: sorts[orderBy],
             with: {
-                product: {
-                    with: {
-                        boardSetup,
-                    },
-                },
+                product: true,
             },
         })
 
@@ -129,11 +124,7 @@ const createWishlistLine = async (
                 return await db.query.WishlistLineItemTable.findFirst({
                     where: eq(WishlistLineItemTable.id, id),
                     with: {
-                        product: {
-                            with: {
-                                boardSetup,
-                            },
-                        },
+                        product: true,
                     },
                 })
             })

@@ -97,11 +97,7 @@ const createCartLine = async (
                 return await db.query.CartLineItemTable.findFirst({
                     where: eq(CartLineItemTable.id, id),
                     with: {
-                        product: {
-                            with: {
-                                boardSetup,
-                            },
-                        },
+                        product: true,
                     },
                 })
             })

@@ -1,13 +1,13 @@
-import { ComponentResponse } from '@/types/api'
+import { BoardFullResponse, BoardResponse } from '@/types/api'
 
 export const mapComponentResponseToComponent = (
-    response: ComponentResponse
+    response: BoardFullResponse[ComponentType]
 ): Component => {
     return {
         id: response.id,
         title: response.title,
         description: response.description ?? undefined,
-        images: response.images ?? undefined,
+        images: response.images ?? [],
         model: response.model ?? undefined,
         price: response.price,
         compareAtPrice: response.compareAtPrice ?? undefined,
@@ -18,5 +18,19 @@ export const mapComponentResponseToComponent = (
         vendor: response.componentAttributes.vendor,
         size: response.componentAttributes.size,
         color: response.componentAttributes.color,
+    }
+}
+
+export const mapComponentResponseToComponentSummary = (
+    response: BoardResponse[ComponentType]
+): ComponentSummary => {
+    return {
+        id: response.id,
+        title: response.title,
+        featuredImage: response.images?.[0] ?? undefined,
+        price: response.price,
+        compareAtPrice: response.compareAtPrice ?? undefined,
+        availableForSale: response.availableForSale,
+        totalInventory: response.totalInventory,
     }
 }

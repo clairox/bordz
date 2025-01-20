@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { desc, eq, inArray } from 'drizzle-orm'
 
 import {
-    boardSetup,
     handleRoute,
     calculateNextPageNumber,
     getRequestOptionsParams,
@@ -28,11 +27,7 @@ export const GET = async (request: NextRequest) =>
             with: {
                 lines: {
                     with: {
-                        product: {
-                            with: {
-                                boardSetup,
-                            },
-                        },
+                        product: true,
                     },
                 },
                 customer: true,

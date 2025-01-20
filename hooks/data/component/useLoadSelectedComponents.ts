@@ -2,8 +2,7 @@
 
 import { useSuspenseQuery } from '@tanstack/react-query'
 
-import { mapBoardResponseToBoard } from '@/utils/conversions'
-import { fetchCartLine, fetchProduct } from '@/lib/api'
+import { fetchBoardFullByProductId, fetchCartLine } from '@/lib/api'
 
 const defaultSelectedComponents = {
     deck: undefined,
@@ -18,22 +17,19 @@ export const useLoadSelectedComponents = (
     mode: SkateLabMode,
     id: string | undefined
 ) => {
-    const getBoardFromCartLine = async (lineId: string): Promise<Board> => {
-        const data = await fetchCartLine(lineId)
-        if (!data.product.boardSetup) {
+    const getBoardFromCartLine = async (lineId: string): Promise<BoardFull> => {
+        const cartLine = await fetchCartLine(lineId)
+        return await fetchBoardFullByProductId(cartLine.productId).catch(() => {
             throw new Error('Invalid board setup')
-        }
-
-        return mapBoardResponseToBoard(data.product.boardSetup)
+        })
     }
 
-    const getBoardFromProduct = async (productId: string) => {
-        const data = await fetchProduct(productId)
-        if (!data.boardSetup) {
+    const getBoardFromProduct = async (
+        productId: string
+    ): Promise<BoardFull> => {
+        return await fetchBoardFullByProductId(productId).catch(() => {
             throw new Error('Invalid board setup')
-        }
-
-        return mapBoardResponseToBoard(data.boardSetup)
+        })
     }
 
     return useSuspenseQuery<
@@ -51,7 +47,7 @@ export const useLoadSelectedComponents = (
                 throw new Error('Invalid id param')
             }
 
-            let board: Board
+            let board: BoardFull
             if (mode === 'edit') {
                 board = await getBoardFromCartLine(id)
             } else {

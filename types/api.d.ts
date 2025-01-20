@@ -1,5 +1,7 @@
 import { AddressRecord, WishlistRecord } from './database'
 import {
+    BoardFullQueryResult,
+    BoardSetupQueryResult,
     CartLineQueryResult,
     CartQueryResult,
     CheckoutQueryResult,
@@ -13,6 +15,8 @@ import { SortKey } from './sorting'
 
 /* Responses */
 type AddressResponse = AddressRecord
+type BoardResponse = BoardSetupQueryResult
+type BoardFullResponse = BoardFullQueryResult
 type CartResponse = CartQueryResult
 type CartLineResponse = CartLineQueryResult
 type CheckoutResponse = CheckoutQueryResult

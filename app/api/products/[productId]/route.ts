@@ -6,7 +6,6 @@ import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
 import { ProductTable } from '@/drizzle/schema/product'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import {
-    boardSetup,
     getBoardSetup,
     getComponents,
     getComponentsOverallAvailability,
@@ -24,9 +23,6 @@ export const GET = async (_: NextRequest, { params: { productId } }: Props) =>
     await handleRoute(async () => {
         const product = await db.query.ProductTable.findFirst({
             where: eq(ProductTable.id, productId),
-            with: {
-                boardSetup,
-            },
         })
 
         if (!product) {

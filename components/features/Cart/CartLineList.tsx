@@ -9,10 +9,9 @@ import {
     useAddWishlistLine,
     useDeleteWishlistLine,
 } from '@/hooks/data/wishlist'
-import { ProductBoardPopover } from '../Products'
+import { BoardDetailsPopover } from '../Products'
 import { AddToWishlistButton } from '../Wishlist'
 import PriceRepr from '@/components/common/PriceRepr'
-import { useEffect, useState } from 'react'
 
 type CartLineListProps = {
     lines: CartLine[]
@@ -104,8 +103,8 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
                     <div className="flex justify-between items-center w-full">
                         <div className="flex justify-start items-center gap-2">
                             <h1 className="text-lg">{product.title}</h1>
-                            {product.board && (
-                                <ProductBoardPopover board={product.board} />
+                            {product.productType === 'BOARD' && (
+                                <BoardDetailsPopover productId={product.id} />
                             )}
                         </div>
                         <AddToWishlistButton

@@ -3,7 +3,6 @@ import { eq } from 'drizzle-orm'
 import { db } from '@/drizzle/db'
 import { CartTable } from '@/drizzle/schema/cart'
 import { CartQueryResult } from '@/types/queries'
-import { boardSetup } from './'
 
 const getCartByOwnerId = async (
     ownerId: string
@@ -13,11 +12,7 @@ const getCartByOwnerId = async (
         with: {
             lines: {
                 with: {
-                    product: {
-                        with: {
-                            boardSetup,
-                        },
-                    },
+                    product: true,
                 },
             },
             checkout: true,

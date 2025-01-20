@@ -41,9 +41,6 @@ export const GET = async (request: NextRequest) =>
             limit: size,
             offset: (page - 1) * size,
             orderBy: sorts[orderBy],
-            with: {
-                boardSetup,
-            },
         })
 
         const nextPage = await calculateNextPageNumber(

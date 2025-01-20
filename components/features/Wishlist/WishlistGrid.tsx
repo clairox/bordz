@@ -5,7 +5,7 @@ import { Trash } from '@phosphor-icons/react'
 
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import { useDeleteWishlistLine } from '@/hooks/data/wishlist'
-import { ProductBoardPopover } from '../Products'
+import { BoardDetailsPopover } from '../Products'
 import PriceRepr from '@/components/common/PriceRepr'
 import GridFiller from '@/components/common/GridFiller'
 
@@ -75,15 +75,15 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
             <div className="px-6 pt-2 pb-5">
                 <div className="flex justify-between mb-4">
                     <h3>{product.title}</h3>
-                    {product.board && (
-                        <ProductBoardPopover board={product.board} />
+                    {product.productType === 'BOARD' && (
+                        <BoardDetailsPopover productId={product.id} />
                     )}
                 </div>
                 <div className="flex justify-between">
                     <p>
                         <PriceRepr value={product.price} />
                     </p>
-                    {product.board && (
+                    {product.productType === 'BOARD' && (
                         <Link
                             href={`/lab?mode=edit&id=${item.id}`}
                             className="text-sm hover:underline"

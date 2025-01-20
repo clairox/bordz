@@ -11,7 +11,7 @@ import { useWishlist } from '@/context/WishlistContext'
 import PriceRepr from '@/components/common/PriceRepr'
 import { AddToWishlistButton } from '@/components/features/Wishlist'
 import { AddToCartButton } from '@/components/features/Cart'
-import { ProductBoardPopover } from './ProductBoardPopover'
+import { BoardDetailsPopover } from './BoardDetailsPopover'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import GridFiller from '@/components/common/GridFiller'
 
@@ -100,15 +100,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <div className="px-6 pt-2 pb-5">
                 <div className="flex justify-between mb-4">
                     <h3>{product.title}</h3>
-                    {product.board && (
-                        <ProductBoardPopover board={product.board} />
+                    {product.productType === 'BOARD' && (
+                        <BoardDetailsPopover productId={product.id} />
                     )}
                 </div>
                 <div className="flex justify-between">
                     <p>
                         <PriceRepr value={product.price} />
                     </p>
-                    {product.board && (
+                    {product.productType === 'BOARD' && (
                         <Link
                             href={`/lab?mode=customize&id=${product.id}`}
                             className="text-sm hover:underline"

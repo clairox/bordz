@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { OrderTable } from '@/drizzle/schema/order'
-import { handleRoute, boardSetup } from '../../shared'
+import { handleRoute } from '../../shared'
 import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 
@@ -18,11 +18,7 @@ export const GET = async (_: NextRequest, { params: { orderId } }: Props) =>
                 shippingAddress: true,
                 lines: {
                     with: {
-                        product: {
-                            with: {
-                                boardSetup,
-                            },
-                        },
+                        product: true,
                     },
                 },
             },

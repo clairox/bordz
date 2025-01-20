@@ -19,6 +19,15 @@ import {
 } from './database'
 
 type BoardSetupQueryResult = BoardSetupRecord & {
+    deck: ComponentSummaryQueryResult
+    trucks: ComponentSummaryQueryResult
+    wheels: ComponentSummaryQueryResult
+    bearings: ComponentSummaryQueryResult
+    hardware: ComponentSummaryQueryResult
+    griptape: ComponentSummaryQueryResult
+}
+
+type BoardFullQueryResult = BoardSetupRecord & {
     deck: ComponentQueryResult
     trucks: ComponentQueryResult
     wheels: ComponentQueryResult
@@ -46,6 +55,8 @@ type ComponentQueryResult = ComponentRecord & {
     componentAttributes: ComponentAttributesQueryResult
 }
 
+type ComponentSummaryQueryResult = ComponentRecord
+
 type ComponentAttributesQueryResult = ComponentAttributesRecord & {
     category: CategoryRecord
     vendor: VendorRecord
@@ -68,9 +79,7 @@ type OrderLineQueryResult = OrderLineRecord & {
     product: ProductQueryResult
 }
 
-type ProductQueryResult = ProductRecord & {
-    boardSetup?: BoardSetupQueryResult
-}
+type ProductQueryResult = ProductRecord
 
 type WishlistLineQueryResult = WishlistLineRecord & {
     product: ProductQueryResult

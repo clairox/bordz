@@ -22,6 +22,17 @@ type AssetData = {
 type Board = {
     id: string
     productId: string
+    deck: ComponentSummary
+    trucks: ComponentSummary
+    wheels: ComponentSummary
+    bearings: ComponentSummary
+    hardware: ComponentSummary
+    griptape: ComponentSummary
+}
+
+type BoardFull = {
+    id: string
+    productId: string
     deck: Component
     trucks: Component
     wheels: Component
@@ -77,7 +88,8 @@ type Component = {
     id: string
     title: string
     description?: string
-    images?: string[]
+    featuredImage?: string
+    images: string[]
     model?: string
     price: number
     compareAtPrice?: number
@@ -88,6 +100,16 @@ type Component = {
     size: Size
     color: Color
     vendor: Vendor
+}
+
+type ComponentSummary = {
+    id: string
+    title: string
+    featuredImage?: string
+    price: number
+    compareAtPrice?: number
+    availableForSale: boolean
+    totalInventory: number
 }
 
 type Customer = {
@@ -154,7 +176,6 @@ type Product = {
     featuredImage?: string
     availableForSale: boolean
     productType: 'BOARD' | 'OTHER'
-    board?: Board
     isPublic: boolean
 }
 

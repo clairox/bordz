@@ -21,11 +21,7 @@ export const GET = async (_: NextRequest, { params: { lineId } }: Props) =>
         const cartLine = await db.query.CartLineItemTable.findFirst({
             where: eq(CartLineItemTable.id, lineId),
             with: {
-                product: {
-                    with: {
-                        boardSetup: true,
-                    },
-                },
+                product: true,
             },
         })
 

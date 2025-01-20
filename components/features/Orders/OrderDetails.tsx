@@ -4,7 +4,7 @@ import { useOrder } from '@/hooks/data/order'
 import { AddressCard } from '../Addresses'
 import PriceRepr from '@/components/common/PriceRepr'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
-import { ProductBoardPopover } from '../Products'
+import { BoardDetailsPopover } from '../Products'
 
 type OrderDetailsProps = {
     id: string
@@ -56,15 +56,15 @@ const OrderLineCard: React.FC<OrderLineCardProps> = ({ line }) => {
         <div className="flex w-full bg-white">
             <div className="w-40 border-r border-gray-400">
                 <StoredPreviewImage
-                    path={line.product?.board?.deck.images?.[0]}
+                    path={line.product?.featuredImage}
                     alt="product image"
                 />
             </div>
             <div className="px-4 py-2 w-full">
                 <div className="flex mb-1 gap-4">
                     <h3 className="">{line.product?.title}</h3>
-                    {line.product?.board && (
-                        <ProductBoardPopover board={line.product?.board} />
+                    {line.product?.productType === 'BOARD' && (
+                        <BoardDetailsPopover productId={line.product?.id} />
                     )}
                 </div>
                 <div className="font-semibold">

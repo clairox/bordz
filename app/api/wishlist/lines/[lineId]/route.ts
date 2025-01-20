@@ -17,11 +17,7 @@ export const GET = async (_: NextRequest, { params: { lineId } }: Props) =>
         const wishlistLine = await db.query.WishlistLineItemTable.findFirst({
             where: eq(WishlistLineItemTable.id, lineId),
             with: {
-                product: {
-                    with: {
-                        boardSetup: true,
-                    },
-                },
+                product: true,
             },
         })
 
