@@ -161,8 +161,7 @@ type Product = {
 type AuthInfo = { id: string; email: string }
 
 type Session = {
-    auth: AuthInfo
-    customer: Customer
+    customer: Customer | null
     cart: Cart
     wishlist: Wishlist
 }

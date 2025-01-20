@@ -1,5 +1,8 @@
-import { fetchCart, fetchCustomer, fetchWishlist } from '@/lib/api'
-import { verifySessionToken } from './verifySessionToken'
+import {
+    fetchCustomer,
+    fetchSessionCart,
+    fetchSessionWishlist,
+} from '@/lib/api'
 import {
     mapCartResponseToCart,
     mapCustomerResponseToCustomer,
@@ -7,34 +10,27 @@ import {
 } from '../conversions'
 import { decodeSessionToken } from './decodeSessionToken'
 
-export const fetchSessionData = async (
-    sessionToken: string,
-    verify: boolean = true
-): Promise<Session | undefined> => {
-    let userId, email: string
+export const fetchSessionData = async (token: string): Promise<Session> => {
+    const { sub: userId } = decodeSessionToken(token)
 
-    if (verify) {
-        const { payload } = await verifySessionToken(sessionToken)
-        userId = payload.sub
-        email = payload.email as string
-    } else {
-        const payload = decodeSessionToken(sessionToken)
-        userId = payload.sub
-        email = payload.email as string
+    let customer: Customer | null = null
+    if (userId) {
+        customer = await fetchCustomer(userId)
+            .then(res => mapCustomerResponseToCustomer(res))
+            .catch(() => null)
     }
 
-    if (userId && email) {
-        const customer = await fetchCustomer(userId)
-        const cart = await fetchCart(customer.id)
-        const wishlist = await fetchWishlist(customer.id)
+    const cart = await fetchSessionCart(customer?.id)
+        .then(res => mapCartResponseToCart(res))
+        .catch(err => {
+            throw err
+        })
 
-        return {
-            auth: { id: userId, email: email as string },
-            customer: mapCustomerResponseToCustomer(customer),
-            cart: mapCartResponseToCart(cart),
-            wishlist: mapWishlistResponseToWishlist(wishlist),
-        }
-    }
+    const wishlist = await fetchSessionWishlist(customer?.id)
+        .then(res => mapWishlistResponseToWishlist(res))
+        .catch(err => {
+            throw err
+        })
 
-    return undefined
+    return { customer, cart, wishlist }
 }

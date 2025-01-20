@@ -3,6 +3,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/drizzle/db'
 import { AddressTable, DefaultAddressTable } from '@/drizzle/schema/address'
 import { handleRoute, validateRequestBody } from '../shared'
+import { eq } from 'drizzle-orm'
+
+export const GET = async (request: NextRequest) =>
+    await handleRoute(async () => {
+        const ownerId = request.nextUrl.searchParams.get('ownerId')
+
+        const addresses = await db.query.AddressTable.findMany({
+            where: ownerId ? eq(AddressTable.ownerId, ownerId) : undefined,
+        })
+
+        return NextResponse.json(addresses)
+    })
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {

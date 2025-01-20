@@ -2,13 +2,12 @@ import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { Public_Sans } from 'next/font/google'
 
+import '@/styles/globals.css'
 import { Header } from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { cn } from '@/utils'
-import { fetchSessionData } from '@/utils/session'
+import { initializeSession } from '@/utils/session'
 import Providers from '@/context/providers'
-
-import '@/styles/globals.css'
 
 const publicSans = Public_Sans({
     subsets: ['latin'],
@@ -23,12 +22,7 @@ export const metadata: Metadata = {
 const RootLayout: React.FC<Readonly<React.PropsWithChildren>> = async ({
     children,
 }) => {
-    let session: Session | undefined = undefined
-
-    const sessionToken = cookies().get('session')?.value
-    if (sessionToken) {
-        session = await fetchSessionData(sessionToken)
-    }
+    const session = await initializeSession(cookies())
 
     return (
         <Providers session={session}>

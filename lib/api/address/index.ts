@@ -9,6 +9,22 @@ export const fetchAddress = async (id: string): Promise<AddressResponse> => {
     return await fetchAbsolute<AddressResponse>(`/addresses/${id}`)
 }
 
+export const fetchCustomerAddresses = async (
+    customerId: string
+): Promise<AddressResponse[]> => {
+    return await fetchAbsolute<AddressResponse[]>(
+        `/addresses?ownerId=${customerId}`
+    )
+}
+
+export const fetchCustomerDefaultAddress = async (
+    customerId: string
+): Promise<AddressResponse> => {
+    return await fetchAbsolute<AddressResponse>(
+        `/defaultAddresses/${customerId}`
+    )
+}
+
 export const createAddress = async (
     args: AddressCreateArgs
 ): Promise<AddressResponse> => {

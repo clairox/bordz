@@ -65,7 +65,7 @@ export const useSignUp = () => {
             return session
         },
         onSuccess: async ({ access_token }) => {
-            const session = await fetchSessionData(access_token, false)
+            const session = await fetchSessionData(access_token)
             if (session) {
                 queryClient.setQueryData(['customer'], session.customer)
                 queryClient.setQueryData(['cart'], session.cart)

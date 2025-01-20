@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 
 import {
@@ -53,7 +54,9 @@ const SettingsPage: React.FC = () => {
                     <Section.Header.Title>Addresses</Section.Header.Title>
                 </Section.Header>
                 <Section.Content>
-                    <AddressDashboard />
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <AddressDashboard />
+                    </Suspense>
                 </Section.Content>
             </Section>
             <Section>

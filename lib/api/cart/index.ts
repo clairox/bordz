@@ -1,11 +1,17 @@
 import { CartLineResponse, CartResponse } from '@/types/api'
 import fetchAbsolute from '../../fetchAbsolute'
 
-export const fetchCart = async (customerId?: string): Promise<CartResponse> => {
+export const fetchSessionCart = async (
+    customerId?: string
+): Promise<CartResponse> => {
     return await fetchAbsolute<CartResponse>('/cart', {
         method: 'POST',
         body: JSON.stringify({ customerId }),
     })
+}
+
+export const fetchCart = async (id: string): Promise<CartResponse> => {
+    return await fetchAbsolute<CartResponse>(`/carts/${id}`)
 }
 
 export const fetchCartLine = async (

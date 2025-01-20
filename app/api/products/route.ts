@@ -118,7 +118,7 @@ export const POST = async (request: NextRequest) =>
                 totalPrice,
                 'BOARD',
                 availability,
-                undefined,
+                deck.images?.[0],
                 data.isPublic
             )
 

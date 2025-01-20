@@ -1,6 +1,6 @@
 'use client'
 
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 import { useGetSessionUserRole } from '@/hooks/auth'
 import { useSupabase } from '../SupabaseContext'
@@ -11,7 +11,7 @@ export const useProvideCustomer = (initialData?: Customer) => {
     const supabase = useSupabase()
     const getSessionUserRole = useGetSessionUserRole()
 
-    return useSuspenseQuery<Customer | null>({
+    return useQuery<Customer | null>({
         queryKey: ['customer'],
         queryFn: async () => {
             const {

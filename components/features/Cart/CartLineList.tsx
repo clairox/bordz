@@ -95,7 +95,7 @@ const CartLineCard: React.FC<CartLineCardProps> = ({
         <article className="flex bg-white">
             <div className="w-52 border-r border-gray-400">
                 <StoredPreviewImage
-                    path={product.board?.deck.images?.[0]}
+                    path={product.featuredImage}
                     alt="product image"
                 />
             </div>

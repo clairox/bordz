@@ -62,7 +62,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 {order.lines.map(line => (
                     <div key={line.id} className="max-w-52  bg-white">
                         <StoredPreviewImage
-                            path={line.product?.board?.deck.images?.[0]}
+                            path={line.product?.featuredImage}
                             alt={'product image'}
                         />
                     </div>

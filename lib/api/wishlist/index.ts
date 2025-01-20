@@ -5,13 +5,17 @@ import {
     WishlistResponse,
 } from '@/types/api'
 
-export const fetchWishlist = async (
+export const fetchSessionWishlist = async (
     customerId?: string
 ): Promise<WishlistResponse> => {
     return await fetchAbsolute<WishlistResponse>('/wishlist', {
         method: 'POST',
         body: JSON.stringify({ customerId }),
     })
+}
+
+export const fetchWishlist = async (id: string): Promise<WishlistResponse> => {
+    return await fetchAbsolute<WishlistResponse>(`/wishlists/${id}`)
 }
 
 export const fetchWishlistLines = async ({

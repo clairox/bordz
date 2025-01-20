@@ -68,7 +68,7 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
         <article className="col-span-1 flex flex-col gap-2 bg-white">
             <div className="border-b border-gray-400">
                 <StoredPreviewImage
-                    path={product.board?.deck.images?.[0]}
+                    path={product.featuredImage}
                     alt="wishlist item image"
                 />
             </div>

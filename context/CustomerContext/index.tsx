@@ -1,11 +1,11 @@
 'use client'
 
 import { createContext, useContext } from 'react'
-import { UseSuspenseQueryResult } from '@tanstack/react-query'
+import { UseQueryResult } from '@tanstack/react-query'
 
 import { useProvideCustomer } from './useProvideCustomer'
 
-type CustomerContextValue = UseSuspenseQueryResult<Customer | null>
+type CustomerContextValue = UseQueryResult<Customer | null>
 type CustomerProviderProps = React.PropsWithChildren<{ initialData?: Customer }>
 
 const CustomerContext = createContext<CustomerContextValue>(
