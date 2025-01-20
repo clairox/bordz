@@ -11,14 +11,14 @@ import { useEffect } from 'react'
 
 type WishlistToggleButtonProps = {
     productId: string
-    onToggle?: () => void
+    onClick?: () => void
     onAddSuccess?: () => void
     onDeleteSuccess?: () => void
 }
 
-const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
+export const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
     productId,
-    onToggle,
+    onClick,
     onAddSuccess,
     onDeleteSuccess,
 }) => {
@@ -56,7 +56,7 @@ const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
         <button
             disabled={addWishlistItem.isPending || deleteWishlistItem.isPending}
             onClick={() => {
-                onToggle?.()
+                onClick?.()
 
                 if (existingLine) {
                     deleteWishlistItem.mutate({ lineId: existingLine.id })
@@ -69,5 +69,3 @@ const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
         </button>
     )
 }
-
-export { WishlistToggleButton }
