@@ -12,6 +12,8 @@ import { useSessionWishlist } from '@/hooks/session'
 type WishlistToggleButtonProps = {
     productId: string
     onClick?: () => void
+    onAdd?: () => void
+    onDelete?: () => void
     onAddSuccess?: () => void
     onDeleteSuccess?: () => void
 }
@@ -19,6 +21,8 @@ type WishlistToggleButtonProps = {
 export const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
     productId,
     onClick,
+    onAdd,
+    onDelete,
     onAddSuccess,
     onDeleteSuccess,
 }) => {
@@ -59,8 +63,10 @@ export const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
                 onClick?.()
 
                 if (existingLine) {
+                    onDelete?.()
                     deleteWishlistItem.mutate({ lineId: existingLine.id })
                 } else {
+                    onAdd?.()
                     addWishlistItem.mutate({ productId })
                 }
             }}

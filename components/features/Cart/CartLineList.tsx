@@ -68,7 +68,7 @@ const CartLineCard: React.FC<CartLineCardProps> = ({ cartLine }) => {
                         </div>
                         <WishlistToggleButton
                             productId={product.id}
-                            onClick={() => setDeleting(true)}
+                            onAdd={() => setDeleting(true)}
                             onAddSuccess={() =>
                                 deleteCartLine.mutate({ lineId: cartLine.id })
                             }
