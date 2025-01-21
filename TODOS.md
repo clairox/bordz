@@ -91,8 +91,9 @@
 -   [x] Create change password page
 -   [x] Create delete account page
 -   [x] Create personal details page
--   [ ] Base styling
--   [ ] Add heading to sidebar
+-   [x] Base styling
+-   [x] Add heading to sidebar
+-   [ ] Use alert dialog for delete account, get rid of delete account page "Are you sure you would like to delete your account? This action cannot be undone. Please enter your password to confirm."
 
 ### Wishlist
 
