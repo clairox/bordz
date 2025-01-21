@@ -10,7 +10,7 @@ type AdminUpdateCustomerFormProps = {
 const AdminUpdateCustomerForm: React.FC<AdminUpdateCustomerFormProps> = ({
     customer,
 }) => {
-    const { mutateAsync: updateCustomer } = useUpdateCustomer(customer.userId)
+    const { mutateAsync: updateCustomer } = useUpdateCustomer()
     const router = useRouter()
 
     return (
@@ -46,7 +46,7 @@ const AdminUpdateCustomerForm: React.FC<AdminUpdateCustomerFormProps> = ({
                 },
             ]}
             onSubmit={async data => {
-                await updateCustomer(data)
+                await updateCustomer({ userId: customer.userId, ...data })
                 router.push('/admin/customers')
             }}
         />

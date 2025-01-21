@@ -12,7 +12,7 @@ type AdminUpdateOrderFormProps = {
 const AdminUpdateOrderForm: React.FC<AdminUpdateOrderFormProps> = ({
     order,
 }) => {
-    const { mutateAsync: updateOrder } = useUpdateOrder(order.id)
+    const { mutateAsync: updateOrder } = useUpdateOrder()
     const router = useRouter()
 
     return (
@@ -49,6 +49,7 @@ const AdminUpdateOrderForm: React.FC<AdminUpdateOrderFormProps> = ({
             ]}
             onSubmit={async data => {
                 await updateOrder({
+                    id: order.id,
                     ...data,
                     totalShipping: parseInt(data.totalShipping),
                     totalTax: parseInt(data.totalTax),

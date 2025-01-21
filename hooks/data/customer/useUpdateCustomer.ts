@@ -3,14 +3,15 @@ import { CustomerUpdateArgs } from '@/types/api'
 import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export const useUpdateCustomer = (userId: string) => {
+export const useUpdateCustomer = () => {
     const queryClient = useQueryClient()
-    return useMutation<Customer, Error, CustomerUpdateArgs>({
-        mutationFn: async args => {
+    type MutationArgs = { userId: string } & CustomerUpdateArgs
+    return useMutation<Customer, Error, MutationArgs>({
+        mutationFn: async ({ userId, ...args }) => {
             const data = await updateCustomer(userId, args)
             return mapCustomerResponseToCustomer(data)
         },
-        onSuccess: () =>
+        onSuccess: ({ userId }) =>
             queryClient.invalidateQueries({
                 queryKey: ['customer', userId],
             }),

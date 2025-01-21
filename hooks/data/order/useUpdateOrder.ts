@@ -4,14 +4,17 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { updateOrder } from '@/lib/api'
 import { OrderUpdateArgs } from '@/types/api'
+import { mapOrderResponseToOrder } from '@/utils/conversions'
 
-export const useUpdateOrder = (orderId: string) => {
+export const useUpdateOrder = () => {
     const queryClient = useQueryClient()
-    return useMutation<void, Error, OrderUpdateArgs>({
-        mutationFn: async args => {
-            await updateOrder(orderId, args)
+    type MutationArgs = { id: string } & OrderUpdateArgs
+    return useMutation<Order, Error, MutationArgs>({
+        mutationFn: async ({ id, ...args }) => {
+            const data = await updateOrder(id, args)
+            return mapOrderResponseToOrder(data)
         },
-        onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ['orders', orderId] }),
+        onSuccess: ({ id }) =>
+            queryClient.invalidateQueries({ queryKey: ['orders', id] }),
     })
 }

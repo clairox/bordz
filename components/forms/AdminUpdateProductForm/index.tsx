@@ -13,7 +13,7 @@ type AdminUpdateProductFormProps = {
 const AdminUpdateProductForm: React.FC<AdminUpdateProductFormProps> = ({
     product,
 }) => {
-    const { mutateAsync: updateProduct } = useUpdateProduct(product.id)
+    const { mutateAsync: updateProduct } = useUpdateProduct()
     const router = useRouter()
 
     return (
@@ -53,6 +53,7 @@ const AdminUpdateProductForm: React.FC<AdminUpdateProductFormProps> = ({
             ]}
             onSubmit={async data => {
                 await updateProduct({
+                    id: product.id
                     ...data,
                     price: parseInt(data.price),
                 })

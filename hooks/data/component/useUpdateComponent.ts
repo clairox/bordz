@@ -6,16 +6,17 @@ import { updateComponent } from '@/lib/api'
 import { ComponentUpdateArgs } from '@/types/api'
 import { mapComponentResponseToComponent } from '@/utils/conversions'
 
-export const useUpdateComponent = (componentId: string) => {
+export const useUpdateComponent = () => {
     const queryClient = useQueryClient()
-    return useMutation<Component, Error, ComponentUpdateArgs>({
-        mutationFn: async args => {
-            const data = await updateComponent(componentId, args)
+    type MutationArgs = { id: string } & ComponentUpdateArgs
+    return useMutation<Component, Error, MutationArgs>({
+        mutationFn: async ({ id, ...args }) => {
+            const data = await updateComponent(id, args)
             return mapComponentResponseToComponent(data)
         },
-        onSuccess: () =>
+        onSuccess: ({ id }) =>
             queryClient.invalidateQueries({
-                queryKey: ['components', componentId],
+                queryKey: ['components', id],
             }),
     })
 }
