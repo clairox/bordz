@@ -7,35 +7,24 @@ import {
     fetchCart,
     fetchSessionWishlist,
 } from '@/lib/api'
-import { verifySessionToken } from './verifySessionToken'
 import {
     mapCartResponseToCart,
     mapCustomerResponseToCustomer,
     mapWishlistResponseToWishlist,
 } from '../conversions'
-import { decodeSessionToken } from './decodeSessionToken'
+import { User } from '@supabase/supabase-js'
 
 // TODO: Return something from cart and wishlist fetches. If cartId or wishlistId is deleted by user an error will be thrown on init
 export const initializeSession = async (
-    cookies: ReadonlyRequestCookies,
-    verify: boolean = true
-): Promise<Session | undefined> => {
-    const token = cookies.get('session')?.value
+    user: User | null,
+    cookies: ReadonlyRequestCookies
+): Promise<InitialAppState> => {
     const cartId = cookies.get('cartId')?.value
     const wishlistId = cookies.get('wishlistId')?.value
 
-    let userId
-    if (token && verify) {
-        const { payload } = await verifySessionToken(token)
-        userId = payload.sub
-    } else if (token) {
-        const payload = decodeSessionToken(token)
-        userId = payload.sub
-    }
-
     let customer: Customer | null = null
-    if (userId) {
-        customer = await fetchCustomer(userId)
+    if (user?.id) {
+        customer = await fetchCustomer(user.id)
             .then(res => mapCustomerResponseToCustomer(res))
             .catch(() => null)
     }

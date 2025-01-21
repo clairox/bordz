@@ -181,7 +181,7 @@ type Product = {
 
 type AuthInfo = { id: string; email: string }
 
-type Session = {
+type InitialAppState = {
     customer: Customer | null
     cart: Cart
     wishlist: Wishlist

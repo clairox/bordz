@@ -1,6 +1,6 @@
+export * from './clearSessionCookies'
 export * from './decodeSessionToken'
 export * from './fetchSessionData'
 export * from './initializeSession'
 export * from './getUserRole'
-export * from './killSession'
 export * from './verifySessionToken'

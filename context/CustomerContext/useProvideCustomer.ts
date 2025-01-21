@@ -7,7 +7,7 @@ import { useSupabase } from '../SupabaseContext'
 import { fetchCustomer } from '@/lib/api'
 import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 
-export const useProvideCustomer = (initialData?: Customer) => {
+export const useProvideCustomer = (initialData?: Customer | null) => {
     const supabase = useSupabase()
     const getSessionUserRole = useGetSessionUserRole()
 

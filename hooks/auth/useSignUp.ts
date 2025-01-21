@@ -2,19 +2,16 @@
 
 import { useCallback } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Session, User } from '@supabase/supabase-js'
+import { Session } from '@supabase/supabase-js'
 
 import { useSupabase } from '@/context/SupabaseContext'
 import { CustomerCreateArgs } from '@/types/api'
 import { createCustomer } from '@/lib/api'
-import { useRouter } from 'next/navigation'
 import { fetchSessionData } from '@/utils/session'
-import fetchAbsolute from '@/lib/fetchAbsolute'
 
 export const useSignUp = () => {
     const supabase = useSupabase()
     const queryClient = useQueryClient()
-    const router = useRouter
 
     const signUp = useCallback(
         async (email: string, password: string): Promise<Session> => {
@@ -56,12 +53,6 @@ export const useSignUp = () => {
                 .update({ is_new: false })
                 .eq('id', session.user.id)
 
-            await fetchAbsolute<AuthInfo>('/session', {
-                method: 'POST',
-                body: JSON.stringify({
-                    token: session!.access_token,
-                }),
-            })
             return session
         },
         onSuccess: async ({ access_token }) => {

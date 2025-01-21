@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useSupabase } from '@/context/SupabaseContext'
 import { useGetSessionUserRole } from '@/hooks/auth'
-import { killSession } from '@/utils/session'
+import { clearSessionCookies } from '@/utils/session'
 import {
     deleteCustomer,
     fetchSessionCart,
@@ -71,9 +71,8 @@ export const useDeleteAccount = () => {
             }
         },
         onSuccess: async data => {
-            await killSession()
-
             if (data?.role === 'customer') {
+                await clearSessionCookies()
                 const newCart = mapCartResponseToCart(await fetchSessionCart())
                 const newWishlist = mapWishlistResponseToWishlist(
                     await fetchSessionWishlist()

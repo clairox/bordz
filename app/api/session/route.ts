@@ -27,11 +27,11 @@ export const POST = async (request: NextRequest) =>
             })
         }
 
-        const { exp, user_metadata } = decodeSessionToken(token)
+        const { user_metadata } = decodeSessionToken(token)
 
         const cookie = serialize('session', token, {
             ...DEFAULT_COOKIE_CONFIG,
-            maxAge: exp - Math.floor(Date.now() * 0.001),
+            maxAge: 10,
         })
 
         const response = NextResponse.json({
@@ -46,12 +46,14 @@ export const POST = async (request: NextRequest) =>
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
         const session = request.cookies.get('session')?.value
-        if (!session) {
-            return new NextResponse(null, { status: 204 })
-        }
 
-        const jwt = jose.decodeJwt(session)
-        const userRole = jwt.user_role
+        const response = new NextResponse(null, { status: 204 })
+
+        let userRole
+        if (session) {
+            const jwt = jose.decodeJwt(session)
+            userRole = jwt.user_role
+        }
 
         const sessionCookie = serialize('session', '', {
             ...DEFAULT_COOKIE_CONFIG,
@@ -73,12 +75,12 @@ export const DELETE = async (request: NextRequest) =>
             }
         )
 
-        const response = new NextResponse(null, { status: 204 })
         response.headers.append('Set-Cookie', sessionCookie)
         response.headers.append('Set-Cookie', sbAuthTokenCookie)
         response.headers.append('Set-Cookie', sbAuthTokenCodeVerifierCookie)
 
-        if (userRole === 'customer') {
+        const asCustomer = request.nextUrl.searchParams.get('asCustomer')
+        if (userRole === 'customer' || asCustomer === 'true') {
             const checkoutId = request.cookies.get('checkoutId')?.value
             if (checkoutId) {
                 await db

@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer'
 import { cn } from '@/utils'
 import { initializeSession } from '@/utils/session'
 import Providers from '@/context/providers'
+import { createClient } from '@/lib/supabase/server'
 
 const publicSans = Public_Sans({
     subsets: ['latin'],
@@ -22,10 +23,14 @@ export const metadata: Metadata = {
 const RootLayout: React.FC<Readonly<React.PropsWithChildren>> = async ({
     children,
 }) => {
-    const session = await initializeSession(cookies())
+    const supabase = createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+    const initialAppState = await initializeSession(user, cookies())
 
     return (
-        <Providers session={session}>
+        <Providers initialState={initialAppState}>
             <html lang="en">
                 <body className={cn('font-light', publicSans.className)}>
                     <Header />

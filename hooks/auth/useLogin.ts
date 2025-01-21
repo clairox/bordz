@@ -30,12 +30,6 @@ export const useLogin = (redirectTo?: string) => {
                 throw error
             }
 
-            await fetchAbsolute<AuthInfo>('/session', {
-                method: 'POST',
-                body: JSON.stringify({
-                    token: session!.access_token,
-                }),
-            })
             return session!
         },
         onSuccess: async ({ access_token }) => {
