@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 
 import { useLoadSelectedComponents } from '@/hooks/data/component'
-import { useAddCartLineMutation } from '@/hooks/data/cart'
+import { useAddCartLine } from '@/hooks/data/cart'
 import { useAddWishlistLine } from '@/hooks/data/wishlist'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { ProductResponse } from '@/types/api'
@@ -86,7 +86,7 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         return mapProductResponseToProduct(data)
     }
 
-    const { mutateAsync: addCartLine } = useAddCartLineMutation()
+    const { mutateAsync: addCartLine } = useAddCartLine()
     const { mutateAsync: addWishlistLine } = useAddWishlistLine()
 
     const { mutateAsync: updateBoardSetup } = useMutation({

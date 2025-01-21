@@ -28,7 +28,7 @@
 -   [x] Reorganize file structure
 -   [x] Figure out a better naming convention for List and ListItem components
 -   [ ] Use unauthorized error for missing session token
--   [ ] Remove 'Query' and 'Mutation' from react-query queries and mutations
+-   [x] Remove 'Query' and 'Mutation' from react-query query and mutation variable names
 -   [ ] BUG session cookie not deleted after account deletion
 -   [ ] Add 'recommended' (or something) sort key based on views (?)
 -   [x] Paginate admin tables
@@ -102,6 +102,7 @@
 -   [x] Add unique index to wishlist wishlist_id_product_id
 -   [x] Change saved to wishlist
 -   [ ] Add price to wishlist line
+-   [ ] Change 'wishlist line' to 'wishlist item' throughout app
 
 ### Order
 

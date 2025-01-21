@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 
-import { useCart, useAddCartLineMutation } from '@/hooks/data/cart'
 import PriceRepr from '@/components/common/PriceRepr'
 import { WishlistToggleButton } from '@/components/features/Wishlist'
 import { AddToCartButton } from '@/components/features/Cart'

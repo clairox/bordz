@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { mapCartResponseToCart } from '@/utils/conversions'
 import { clearCart } from '@/lib/api'
 
-export const useClearCartMutation = () => {
+export const useClearCart = () => {
     const queryClient = useQueryClient()
 
     return useMutation({

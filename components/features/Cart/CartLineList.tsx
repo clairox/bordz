@@ -3,7 +3,7 @@
 import Link from 'next/link'
 
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
-import { useDeleteCartLineMutation } from '@/hooks/data/cart'
+import { useDeleteCartLine } from '@/hooks/data/cart'
 import { BoardDetailsPopover } from '../Products'
 import { WishlistToggleButton } from '../Wishlist'
 import PriceRepr from '@/components/common/PriceRepr'
@@ -29,7 +29,7 @@ type CartLineCardProps = {
 
 const CartLineCard: React.FC<CartLineCardProps> = ({ cartLine }) => {
     const { product } = cartLine
-    const deleteCartLine = useDeleteCartLineMutation()
+    const deleteCartLine = useDeleteCartLine()
 
     const [deleting, setDeleting] = useState(false)
 

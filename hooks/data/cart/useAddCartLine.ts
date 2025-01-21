@@ -1,15 +1,17 @@
+'use client'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { mapCartResponseToCart } from '@/utils/conversions'
-import { deleteCartLine } from '@/lib/api'
+import { createCartLine } from '@/lib/api'
 
-export const useDeleteCartLineMutation = () => {
+export const useAddCartLine = () => {
     const queryClient = useQueryClient()
 
-    type MutationArgs = { lineId: string }
+    type MutationArgs = { productId: string }
     return useMutation<Cart, Error, MutationArgs>({
-        mutationFn: async ({ lineId }): Promise<Cart> => {
-            const data = await deleteCartLine(lineId)
+        mutationFn: async ({ productId }): Promise<Cart> => {
+            const data = await createCartLine(productId)
             return mapCartResponseToCart(data)
         },
         onSuccess: async cart => {

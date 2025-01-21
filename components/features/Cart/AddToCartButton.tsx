@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { useAddCartLineMutation, useCart } from '@/hooks/data/cart'
+import { useAddCartLine, useCart } from '@/hooks/data/cart'
 
 type AddToCartButtonProps = {
     productId: string
@@ -14,7 +14,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     isInStock,
 }) => {
     const cart = useCart()
-    const addCartLine = useAddCartLineMutation()
+    const addCartLine = useAddCartLine()
 
     const existingLine = cart.data?.lines.find(
         line => line.product.id === productId
