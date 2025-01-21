@@ -8,11 +8,11 @@ import { mapComponentResponseToComponent } from '@/utils/conversions'
 import AdminUpdateComponentForm from '@/components/forms/AdminUpdateComponentForm'
 
 const ComponentPage: React.FC = () => {
-    const params = useParams()
+    const { componentId } = useParams<Record<string, string>>()
     const { data: component } = useSuspenseQuery<Component>({
-        queryKey: ['components', params.componentId],
+        queryKey: ['components', componentId],
         queryFn: async () => {
-            const data = await fetchComponent(params.componentId as string)
+            const data = await fetchComponent(componentId)
             return mapComponentResponseToComponent(data)
         },
     })

@@ -8,11 +8,11 @@ import { mapProductResponseToProduct } from '@/utils/conversions'
 import AdminUpdateProductForm from '@/components/forms/AdminUpdateProductForm'
 
 const ProductPage: React.FC = () => {
-    const params = useParams()
+    const { productId } = useParams<Record<string, string>>()
     const { data: product } = useSuspenseQuery<Product>({
-        queryKey: ['product', params.productId],
+        queryKey: ['product', productId],
         queryFn: async () => {
-            const data = await fetchProduct(params.productId as string)
+            const data = await fetchProduct(productId)
             return mapProductResponseToProduct(data)
         },
     })

@@ -29,7 +29,6 @@
 -   [x] Figure out a better naming convention for List and ListItem components
 -   [ ] Use unauthorized error for missing session token
 -   [x] Remove 'Query' and 'Mutation' from react-query query and mutation variable names
--   [ ] BUG session cookie not deleted after account deletion
 -   [ ] Add 'recommended' (or something) sort key based on views (?)
 -   [x] Paginate admin tables
 -   [ ] Change createBadRequestError to handle Missing required fields:
@@ -38,7 +37,7 @@
 -   [ ] Use bucket arg with useImages hook
 -   [ ] Create default unexpected error text constant
 -   [ ] Use numbers where necessary in form schemas
--   [ ] Call useParams with <Record<string, string>>
+-   [x] Call useParams with <Record<string, string>>
 -   [x] Automatically add ' \*' to form field labels if required
 -   [x] Return response.json() and handle error inside fetchAbsolute
 -   [ ] Move id to mutation fn in data mutation hooks
