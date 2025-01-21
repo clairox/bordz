@@ -17,7 +17,7 @@ import {
     DEFAULT_COOKIE_CONFIG,
 } from '@/utils/constants'
 import { CartLineRecord, CartRecord } from '@/types/database'
-import { expireCookies } from '@/utils/session/expireCookie'
+import { expireCookies } from '@/utils/session'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {

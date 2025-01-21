@@ -12,7 +12,7 @@ import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
 import { createConflictError, createInternalServerError } from '@/lib/errors'
 import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
-import { expireCookies } from '@/utils/session/expireCookie'
+import { expireCookies } from '@/utils/session'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {

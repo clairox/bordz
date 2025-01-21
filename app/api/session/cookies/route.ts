@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
-import { expireCookies } from '@/utils/session/expireCookie'
+import { expireCookies } from '@/utils/session'
 
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
