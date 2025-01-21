@@ -107,10 +107,10 @@
 -   [ ] Use text shipping address for orders, in case shipping address is deleted
 -   [ ] Add payment method to order
 
-### Future ideas
-
--   [ ] Component page for each component, button to start a new board with component
-
 ### Admin
 
 -   [ ] Item search
+
+### Future ideas
+
+-   [ ] Component page for each component, button to start a new board with component
