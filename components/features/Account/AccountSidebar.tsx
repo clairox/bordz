@@ -5,10 +5,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 import { useSignOut } from '@/hooks/auth'
-import { useCustomer } from '@/context/CustomerContext'
+import { useSessionCustomer } from '@/hooks/session'
 
 const AccountSidebar = () => {
-    const customer = useCustomer()
+    const customer = useSessionCustomer()
     const pathname = usePathname()
 
     return (

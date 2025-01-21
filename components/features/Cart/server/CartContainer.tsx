@@ -3,13 +3,13 @@
 import { Fragment } from 'react'
 // import { ArrowClockwise } from '@phosphor-icons/react'
 
-import { useCart } from '@/hooks/data/cart'
 import { CartLineList } from '../CartLineList'
 import { CartSummary } from '../CartSummary'
+import { useSessionCart } from '@/hooks/session'
 // import { Button } from '@/components/ui/Button'
 
 export const CartContainer: React.FC = () => {
-    const { data: cart /* error, isPending, refetch */ } = useCart()
+    const { data: cart /* error, isPending, refetch */ } = useSessionCart()
 
     // if (error) {
     //     return (

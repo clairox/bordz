@@ -3,15 +3,18 @@
 import Link from 'next/link'
 import { BagSimple, HeartStraight, User } from '@phosphor-icons/react'
 
-import { useCart } from '@/hooks/data/cart'
-import { useCustomer } from '@/context/CustomerContext'
-import { useWishlist } from '@/context/WishlistContext'
 import { usePathname } from 'next/navigation'
+import {
+    useSessionCart,
+    useSessionCustomer,
+    useSessionWishlist,
+} from '@/hooks/session'
 
 const iconSize = 26
 
 const AccountHeaderButton: React.FC = () => {
-    const { data: customer, isPending: isCustomerPending } = useCustomer()
+    const { data: customer, isPending: isCustomerPending } =
+        useSessionCustomer()
     const pathname = usePathname()
 
     return (
@@ -89,7 +92,7 @@ const HeaderButtonWithCount: React.FC<HeaderButtonWithCountProps> = ({
 }
 
 const WishlistHeaderButton: React.FC = () => {
-    const { data: wishlist } = useWishlist()
+    const { data: wishlist } = useSessionWishlist()
     const pathname = usePathname()
 
     return (
@@ -108,7 +111,7 @@ const WishlistHeaderButton: React.FC = () => {
 }
 
 const CartHeaderButton: React.FC = () => {
-    const { data: cart } = useCart()
+    const { data: cart } = useSessionCart()
     const pathname = usePathname()
 
     return (

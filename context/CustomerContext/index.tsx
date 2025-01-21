@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext } from 'react'
+import { createContext } from 'react'
 import { UseQueryResult } from '@tanstack/react-query'
 
 import { useProvideCustomer } from './useProvideCustomer'
@@ -13,7 +13,6 @@ type CustomerProviderProps = React.PropsWithChildren<{
 const CustomerContext = createContext<CustomerContextValue>(
     {} as CustomerContextValue
 )
-const useCustomer = () => useContext(CustomerContext)
 
 const CustomerProvider: React.FC<CustomerProviderProps> = ({
     initialData,
@@ -28,4 +27,4 @@ const CustomerProvider: React.FC<CustomerProviderProps> = ({
     )
 }
 
-export { useCustomer, CustomerProvider }
+export { CustomerContext, CustomerProvider }

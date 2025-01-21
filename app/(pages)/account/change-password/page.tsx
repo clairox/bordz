@@ -3,10 +3,10 @@
 import { AccountHeading, AccountSection } from '@/components/features/Account'
 import ChangePasswordForm from '@/components/forms/UpdatePasswordForm'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { useCustomer } from '@/context/CustomerContext'
+import { useSessionCustomer } from '@/hooks/session'
 
 const ChangePasswordPage = () => {
-    const { isPending } = useCustomer()
+    const { isPending } = useSessionCustomer()
 
     return (
         <div>

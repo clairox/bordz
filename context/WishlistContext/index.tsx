@@ -1,19 +1,17 @@
 'use client'
 
-import { createContext, useContext } from 'react'
+import { createContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
-import { useCustomer } from '../CustomerContext'
 import { fetchSessionWishlist } from '@/lib/api'
 import { mapWishlistResponseToWishlist } from '@/utils/conversions'
+import { useSessionCustomer } from '@/hooks/session'
 
 type WishlistContextValue = UseQueryResult<Wishlist, Error>
 
 const WishlistContext = createContext<WishlistContextValue>(
     {} as WishlistContextValue
 )
-
-const useWishlist = () => useContext(WishlistContext)
 
 type WishlistProviderProps = React.PropsWithChildren<{
     initialData?: Wishlist
@@ -23,7 +21,7 @@ const WishlistProvider: React.FC<WishlistProviderProps> = ({
     initialData,
     children,
 }) => {
-    const { data: customer } = useCustomer()
+    const { data: customer } = useSessionCustomer()
 
     const wishlistQuery = useQuery<Wishlist>({
         queryKey: ['wishlist'],
@@ -41,4 +39,4 @@ const WishlistProvider: React.FC<WishlistProviderProps> = ({
     )
 }
 
-export { WishlistProvider, WishlistContext, useWishlist }
+export { WishlistProvider, WishlistContext }

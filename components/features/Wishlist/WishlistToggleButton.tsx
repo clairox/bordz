@@ -6,8 +6,8 @@ import {
     useAddWishlistLine,
     useDeleteWishlistLine,
 } from '@/hooks/data/wishlist'
-import { useWishlist } from '@/context/WishlistContext'
 import { useEffect } from 'react'
+import { useSessionWishlist } from '@/hooks/session'
 
 type WishlistToggleButtonProps = {
     productId: string
@@ -22,7 +22,7 @@ export const WishlistToggleButton: React.FC<WishlistToggleButtonProps> = ({
     onAddSuccess,
     onDeleteSuccess,
 }) => {
-    const wishlist = useWishlist()
+    const wishlist = useSessionWishlist()
     const addWishlistItem = useAddWishlistLine()
     const deleteWishlistItem = useDeleteWishlistLine()
 

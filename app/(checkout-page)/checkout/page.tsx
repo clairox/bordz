@@ -3,16 +3,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-import { useCart } from '@/hooks/data/cart'
 import Checkout, {
     ProcessCheckoutCompletion,
 } from '@/components/features/Checkout'
 import RedirectIf from '@/components/common/RedirectIf'
+import { useSessionCart } from '@/hooks/session'
 
 const CheckoutPage = () => {
     const searchParams = useSearchParams()
 
-    const { data: cart } = useCart()
+    const { data: cart } = useSessionCart()
 
     const [client, setClient] = useState(false)
     const clientSecret = useMemo(

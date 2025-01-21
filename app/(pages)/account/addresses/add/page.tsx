@@ -1,12 +1,12 @@
 'use client'
 
-import { useCustomer } from '@/context/CustomerContext'
 import { AccountHeading, AccountSection } from '@/components/features/Account'
 import CreateAddressForm from '@/components/forms/CreateAddressForm'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useSessionCustomer } from '@/hooks/session'
 
 const AddAddressPage = () => {
-    const { data: customer, error, isPending } = useCustomer()
+    const { data: customer, error, isPending } = useSessionCustomer()
 
     if (error) {
         throw error

@@ -44,6 +44,7 @@
 -   [ ] Move id to mutation fn in data mutation hooks
 -   [ ] BUG: api calls that require cookies don't work with suspense
 -   [x] Center the bordz logo in the header
+-   [ ] Move customer provider logic back into provider
 
 ### Cart
 

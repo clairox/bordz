@@ -1,12 +1,12 @@
 'use client'
 
-import { useCustomer } from '@/context/CustomerContext'
 import DeleteAccountForm from '@/components/forms/DeleteAccountForm'
 import { AccountHeading, AccountSection } from '@/components/features/Account'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useSessionCustomer } from '@/hooks/session'
 
 const DeleteAccountPage = () => {
-    const { isPending } = useCustomer()
+    const { isPending } = useSessionCustomer()
 
     return (
         <div>

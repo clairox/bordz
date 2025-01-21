@@ -12,7 +12,7 @@ import {
 
 import { useCreateAddress } from '@/hooks/data/address'
 import { useUpdateCheckout } from '@/hooks/data/checkout'
-import { useCustomer } from '@/context/CustomerContext'
+import { useSessionCustomer } from '@/hooks/session'
 
 const CheckoutForm = () => {
     const stripe = useStripe()
@@ -24,7 +24,7 @@ const CheckoutForm = () => {
     const [submitting, setSubmitting] = useState(false)
     const [email, setEmail] = useState('')
 
-    const { data: customer, status: customerStatus } = useCustomer()
+    const { data: customer, status: customerStatus } = useSessionCustomer()
 
     const { mutateAsync: updateCheckout } = useUpdateCheckout()
     const { mutateAsync: createAddress } = useCreateAddress()

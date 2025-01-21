@@ -3,12 +3,12 @@ import { InfiniteData, QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { fetchOrders } from '@/lib/api'
 import { mapOrderResponseToOrder } from '@/utils/conversions'
 import { PaginatedQueryOptions } from '@/types/api'
-import { useCustomer } from '@/context/CustomerContext'
+import { useSessionCustomer } from '@/hooks/session'
 
 type UseOrdersArgs = PaginatedQueryOptions
 
 export const useOrders = (args?: UseOrdersArgs) => {
-    const { data: customer } = useCustomer()
+    const { data: customer } = useSessionCustomer()
 
     return useInfiniteQuery<
         Page<Order>,

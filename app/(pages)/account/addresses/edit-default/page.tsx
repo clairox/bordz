@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation'
 import { useUpdateAddress } from '@/hooks/data/address'
 import { AddressCard } from '@/components/features/Addresses'
 import ButtonAsync from '@/components/ui/ButtonAsync'
-import { useCustomer } from '@/context/CustomerContext'
 import { AccountHeading, AccountSection } from '@/components/features/Account'
+import { useSessionCustomer } from '@/hooks/session'
 
 const EditDefaultAddressPage = () => {
     const router = useRouter()
 
-    const { data: customer, status: customerStatus } = useCustomer()
+    const { data: customer, status: customerStatus } = useSessionCustomer()
 
     const [defaultAddressId, setDefaultAddressId] = useState<string | null>(
         null

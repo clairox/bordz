@@ -4,9 +4,9 @@ import { useParams } from 'next/navigation'
 
 import { useAddress } from '@/hooks/data/address'
 import UpdateAddressForm from '@/components/forms/UpdateAddressForm'
-import { useCustomer } from '@/context/CustomerContext'
 import { AccountHeading, AccountSection } from '@/components/features/Account'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useSessionCustomer } from '@/hooks/session'
 
 const EditAddressPage = () => {
     const { addressId } = useParams<Record<string, string>>()
@@ -20,7 +20,7 @@ const EditAddressPage = () => {
         data: customer,
         error: customerError,
         isPending: isCustomerPending,
-    } = useCustomer()
+    } = useSessionCustomer()
 
     if (addressError || customerError) {
         throw addressError || customerError

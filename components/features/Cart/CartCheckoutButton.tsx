@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { useCustomer } from '@/context/CustomerContext'
+import { useSessionCustomer } from '@/hooks/session'
 import { useRouter } from 'next/navigation'
 
 type CartCheckoutButtonProps = {
@@ -12,7 +12,7 @@ type CartCheckoutButtonProps = {
 export const CartCheckoutButton: React.FC<CartCheckoutButtonProps> = ({
     disabled = false,
 }) => {
-    const { data: customer, error, isPending } = useCustomer()
+    const { data: customer, error, isPending } = useSessionCustomer()
     const router = useRouter()
 
     if (error) {

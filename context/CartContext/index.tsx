@@ -3,9 +3,9 @@
 import { createContext } from 'react'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
-import { useCustomer } from '../CustomerContext'
 import { fetchSessionCart } from '@/lib/api'
 import { mapCartResponseToCart } from '@/utils/conversions'
+import { useSessionCustomer } from '@/hooks/session'
 
 type CartContextValue = UseQueryResult<Cart>
 
@@ -18,7 +18,7 @@ const CartProvider: React.FC<CartProviderProps> = ({
     initialData,
     children,
 }) => {
-    const { data: customer } = useCustomer()
+    const { data: customer } = useSessionCustomer()
 
     const cartQuery = useQuery<Cart>({
         queryKey: ['cart'],

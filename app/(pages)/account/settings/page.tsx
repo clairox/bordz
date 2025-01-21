@@ -8,11 +8,11 @@ import {
     AccountSection as Section,
 } from '@/components/features/Account'
 import { AddressDashboard } from '@/components/features/Addresses'
-import { useCustomer } from '@/context/CustomerContext'
 import { Button } from '@/components/ui/Button'
+import { useSessionCustomer } from '@/hooks/session'
 
 const SettingsPage: React.FC = () => {
-    const { data: customer } = useCustomer()
+    const { data: customer } = useSessionCustomer()
 
     const router = useRouter()
 

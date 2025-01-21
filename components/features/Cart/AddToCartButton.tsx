@@ -2,7 +2,8 @@
 
 import { useMemo } from 'react'
 
-import { useAddCartLine, useCart } from '@/hooks/data/cart'
+import { useAddCartLine } from '@/hooks/data/cart'
+import { useSessionCart } from '@/hooks/session'
 
 type AddToCartButtonProps = {
     productId: string
@@ -13,7 +14,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     productId,
     isInStock,
 }) => {
-    const cart = useCart()
+    const cart = useSessionCart()
     const addCartLine = useAddCartLine()
 
     const existingLine = cart.data?.lines.find(

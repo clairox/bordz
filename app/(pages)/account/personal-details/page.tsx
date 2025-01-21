@@ -3,10 +3,10 @@
 import { AccountHeading, AccountSection } from '@/components/features/Account'
 import UpdatePersonalDetailsForm from '@/components/forms/UpdatePersonalDetailsForm'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { useCustomer } from '@/context/CustomerContext'
+import { useSessionCustomer } from '@/hooks/session'
 
 const PersonalDetailsPage = () => {
-    const { data: customer, error, isPending } = useCustomer()
+    const { data: customer, error, isPending } = useSessionCustomer()
 
     if (error) {
         throw error

@@ -1,8 +1,8 @@
+import { useSessionCustomer } from '@/hooks/session'
 import { AddressManagementList, DefaultAddressCard } from '.'
-import { useCustomer } from '@/context/CustomerContext'
 
 export const AddressDashboard = () => {
-    const { data: customer } = useCustomer()
+    const { data: customer } = useSessionCustomer()
 
     return (
         <div className="flex mb-3 px-8 pb-4">
