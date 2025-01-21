@@ -114,6 +114,39 @@
 
 -   [ ] Item search
 
+### DB
+
+-   [ ] Add is_complete, price, compare_at_price, title columns to boards table
+-   [ ] Add compare_at_price column to products table
+-   [ ] Change user_id column to customer_id on orders table
+-   [ ] Change wishlist_lines table to wishlist_items
+-   [ ] Change lines column to items on wishlists table
+-   [ ] Update components.handle on components.title update
+-   [ ] Update components.available_for_sale on components.total_inventory update
+-   [ ] Update boards.is_complete on boards.{component} update
+-   [ ] Update boards.is_complete on components.available_for_sale update where boards.{component} = components.id
+-   [ ] Update boards.is_complete on components insert or delete where boards.{component} = components.id
+-   [ ] Update boards.title on components.title update where boards.deck = components.id
+-   [ ] Update boards.price on components.price update where boards.{component} = components.id
+-   [ ] Update boards.compare_at_price on components.compare_at_price update where boards.{component} = components.id
+-   [ ] Update boards.available_for_sale on components.available_for_sale update where boards.{component} = components.id
+-   [ ] Update products.title on boards.title update where products.board = boards.id
+-   [ ] Update products.price on boards.price where products.board = boards.id
+-   [ ] Update products.compare_at_price on boards.compare_at_price where products.board = boards.id
+-   [ ] Update cart_lines.subtotal on products.price or products.compare_at_price update where cart_lines.product = products.id
+-   [ ] Update cart_lines.total on cart_lines.subtotal update
+-   [ ] Update carts.subtotal on cart_lines.total update where cart_lines.cart = carts.id
+-   [ ] Update carts.subtotal on cart_lines insert or delete where cart_lines.cart = carts.id
+-   [ ] Update carts.total on carts.subtotal update
+-   [ ] Update carts.totalQuantity on cart_lines insert or delete where cart_lines.cart = carts.id
+-   [ ] Update carts.totalQuantity on cart_lines.quantity update where cart_lines.cart = carts.id
+-   [ ] Update checkout_lines.unit_price on product.price update where checkout_lines.product = product.id
+-   [ ] Update checkouts.subtotal on checkout_lines.unit_price, checkout_lines.quantity update where checkout_lines.checkout = checkouts.id
+-   [ ] Update checkouts.subtotal on checkout_lines insert or delete where checkout_lines.checkout = checkouts.id
+-   [ ] Update checkouts.total on checkouts.subtotal, checkouts.total_shipping, checkouts.total_tax update
+-   [ ] Update customers.number_of_orders on orders insert where orders.customer_id = customers.id
+-   [ ] Update wishlist.quantity on wishlist_items insert or delete where wishlist_items.wishlist_id = wishlist.id
+
 ### Future ideas
 
 -   [ ] Component page for each component, button to start a new board with component
