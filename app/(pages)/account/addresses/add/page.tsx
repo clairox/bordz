@@ -16,11 +16,13 @@ const AddAddressPage = () => {
         <div>
             <AccountHeading>New Address</AccountHeading>
             <AccountSection>
-                {isPending ? (
-                    <Fallback />
-                ) : (
-                    <CreateAddressForm ownerId={customer!.id} />
-                )}
+                <div className="p-8 w-[500px] border-r border-gray-400">
+                    {isPending ? (
+                        <Fallback />
+                    ) : (
+                        <CreateAddressForm ownerId={customer!.id} />
+                    )}
+                </div>
             </AccountSection>
         </div>
     )

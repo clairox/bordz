@@ -191,8 +191,12 @@ const DataForm = <
     }
 
     return (
-        <div>
-            {message && <FormMessage type={messageType} message={message} />}
+        <div className="flex flex-col gap-6">
+            {message && (
+                <div className="mx-4">
+                    <FormMessage type={messageType} message={message} />
+                </div>
+            )}
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(handleSubmit)}

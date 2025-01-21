@@ -30,14 +30,16 @@ const EditAddressPage = () => {
         <div>
             <AccountHeading>Edit Address</AccountHeading>
             <AccountSection>
-                {isAddressPending || isCustomerPending ? (
-                    <Fallback />
-                ) : (
-                    <UpdateAddressForm
-                        address={address}
-                        defaultAddressId={customer?.defaultAddress?.id}
-                    />
-                )}
+                <div className="p-8 w-[500px] border-r border-gray-400">
+                    {isAddressPending || isCustomerPending ? (
+                        <Fallback />
+                    ) : (
+                        <UpdateAddressForm
+                            address={address}
+                            defaultAddressId={customer?.defaultAddress?.id}
+                        />
+                    )}
+                </div>
             </AccountSection>
         </div>
     )
