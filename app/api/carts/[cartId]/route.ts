@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getCart } from '@/drizzle/db/handlers'
+import { getCart } from '@/lib/db'
 import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { handleRoute } from '../../shared'

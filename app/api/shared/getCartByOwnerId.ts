@@ -1,14 +1,14 @@
 import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { CartTable } from '@/drizzle/schema/cart'
+import { Carts } from '@/drizzle/schema/cart'
 import { CartQueryResult } from '@/types/queries'
 
 const getCartByOwnerId = async (
     ownerId: string
 ): Promise<CartQueryResult | undefined> => {
-    return await db.query.CartTable.findFirst({
-        where: eq(CartTable.ownerId, ownerId),
+    return await db.query.Carts.findFirst({
+        where: eq(Carts.ownerId, ownerId),
         with: {
             lines: {
                 with: {

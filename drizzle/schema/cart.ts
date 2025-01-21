@@ -2,30 +2,30 @@ import { integer, smallint, uniqueIndex } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
-import { CustomerTable } from './user'
-import { ProductTable } from './product'
-import { CheckoutTable } from './checkout'
+import { Customers } from './customer'
+import { Products } from './product'
+import { Checkouts } from './checkout'
 
-export const CartTable = pgTableWithAutoFields('carts', {
+export const Carts = pgTableWithAutoFields('carts', {
     subtotal: integer('subtotal').default(0).notNull(),
     total: integer('total').default(0).notNull(),
     totalQuantity: smallint('total_quantity').default(0).notNull(),
-    ownerId: shortUuid('owner_id').references(() => CustomerTable.id, {
+    ownerId: shortUuid('owner_id').references(() => Customers.id, {
         onDelete: 'cascade',
     }),
 })
 
-export const CartLineItemTable = pgTableWithAutoFields(
-    'cart_line_items',
+export const CartLines = pgTableWithAutoFields(
+    'cart_lines',
     {
         subtotal: integer('subtotal').default(0).notNull(),
         total: integer('total').default(0).notNull(),
         quantity: smallint('quantity').default(1).notNull(),
         productId: shortUuid('product_id')
-            .references(() => ProductTable.id, { onDelete: 'cascade' })
+            .references(() => Products.id, { onDelete: 'cascade' })
             .notNull(),
         cartId: shortUuid('cart_id')
-            .references(() => CartTable.id, { onDelete: 'cascade' })
+            .references(() => Carts.id, { onDelete: 'cascade' })
             .notNull(),
     },
     table => ({
@@ -36,25 +36,22 @@ export const CartLineItemTable = pgTableWithAutoFields(
     })
 )
 
-export const CartRelations = relations(CartTable, ({ one, many }) => ({
-    owner: one(CustomerTable, {
-        fields: [CartTable.ownerId],
-        references: [CustomerTable.id],
+export const CartRelations = relations(Carts, ({ one, many }) => ({
+    owner: one(Customers, {
+        fields: [Carts.ownerId],
+        references: [Customers.id],
     }),
-    checkout: one(CheckoutTable),
-    lines: many(CartLineItemTable),
+    checkout: one(Checkouts),
+    lines: many(CartLines),
 }))
 
-export const CartLineItemRelations = relations(
-    CartLineItemTable,
-    ({ one }) => ({
-        product: one(ProductTable, {
-            fields: [CartLineItemTable.productId],
-            references: [ProductTable.id],
-        }),
-        cart: one(CartTable, {
-            fields: [CartLineItemTable.cartId],
-            references: [CartTable.id],
-        }),
-    })
-)
+export const CartLineRelations = relations(CartLines, ({ one }) => ({
+    product: one(Products, {
+        fields: [CartLines.productId],
+        references: [Products.id],
+    }),
+    cart: one(Carts, {
+        fields: [CartLines.cartId],
+        references: [Carts.id],
+    }),
+}))

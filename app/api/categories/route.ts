@@ -5,6 +5,6 @@ import { handleRoute } from '../shared'
 
 export const GET = async () =>
     await handleRoute(async () => {
-        const categories = await db.query.CategoryTable.findMany()
+        const categories = await db.query.Categories.findMany()
         return NextResponse.json(categories)
     })

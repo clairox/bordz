@@ -8,22 +8,20 @@ import {
     validateRequestBody,
 } from '../shared'
 import { db } from '@/drizzle/db'
-import { OrderTable } from '@/drizzle/schema/order'
+import { Orders } from '@/drizzle/schema/order'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
         const { page, size } = getRequestOptionsParams(request)
         const customerId = request.nextUrl.searchParams.get('customer')
 
-        const where = customerId
-            ? eq(OrderTable.customerId, customerId)
-            : undefined
+        const where = customerId ? eq(Orders.customerId, customerId) : undefined
 
-        const orders = await db.query.OrderTable.findMany({
+        const orders = await db.query.Orders.findMany({
             where,
             limit: size,
             offset: (page - 1) * size,
-            orderBy: [desc(OrderTable.createdAt)],
+            orderBy: [desc(Orders.createdAt)],
             with: {
                 lines: {
                     with: {
@@ -38,7 +36,7 @@ export const GET = async (request: NextRequest) =>
         const nextPage = await calculateNextPageNumber(
             page,
             size,
-            OrderTable,
+            Orders,
             where
         )
 
@@ -50,6 +48,6 @@ export const DELETE = async (request: NextRequest) =>
         const data = await request.json()
         validateRequestBody(data, ['ids'])
 
-        await db.delete(OrderTable).where(inArray(OrderTable.id, data.ids))
+        await db.delete(Orders).where(inArray(Orders.id, data.ids))
         return new NextResponse(null, { status: 204 })
     })

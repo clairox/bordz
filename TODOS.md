@@ -45,6 +45,11 @@
 -   [x] Move id to mutation fn in data mutation hooks
 -   [x] Center the bordz logo in the header
 -   [x] Move customer provider logic back into provider
+-   [ ] Make DAL functions
+-   [ ] Rename drizzle schemas
+-   [ ] Change all instances of "boardSetup" and "BoardSetup" to "board" and "Board"
+-   [ ] Change all instances of "component" to "boardComponent"
+-   [ ] Change all instances of "componentAttributes" to "boardComponentAttrs" or "attrs"
 
 ### Cart
 

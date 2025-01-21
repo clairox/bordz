@@ -15,7 +15,7 @@ import {
     createInternalServerError,
     createNotFoundError,
 } from '@/lib/errors'
-import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
+import { WishlistItems, Wishlists } from '@/drizzle/schema/wishlist'
 import { db } from '@/drizzle/db'
 import { ProductRecord } from '@/types/database'
 import { SortKey } from '@/types/sorting'
@@ -30,13 +30,13 @@ export const GET = async (request: NextRequest) =>
         const { page, size, orderBy } = getRequestOptionsParams(request)
 
         const sorts: Partial<Record<SortKey, SQL>> = {
-            'date-desc': desc(WishlistLineItemTable.createdAt),
-            'date-asc': asc(WishlistLineItemTable.createdAt),
+            'date-desc': desc(WishlistItems.createdAt),
+            'date-asc': asc(WishlistItems.createdAt),
         }
 
-        const where = eq(WishlistLineItemTable.wishlistId, wishlistId)
+        const where = eq(WishlistItems.wishlistId, wishlistId)
 
-        const lines = await db.query.WishlistLineItemTable.findMany({
+        const lines = await db.query.WishlistItems.findMany({
             where,
             limit: size,
             offset: (page - 1) * size,
@@ -49,7 +49,7 @@ export const GET = async (request: NextRequest) =>
         const nextPage = await calculateNextPageNumber(
             page,
             size,
-            WishlistLineItemTable,
+            WishlistItems,
             where
         )
 
@@ -90,16 +90,16 @@ export const DELETE = async (request: NextRequest) =>
         }
 
         await db
-            .delete(WishlistLineItemTable)
-            .where(eq(WishlistLineItemTable.wishlistId, oldWishlist.id))
+            .delete(WishlistItems)
+            .where(eq(WishlistItems.wishlistId, oldWishlist.id))
 
         const updatedWishlist = await db
-            .update(WishlistTable)
+            .update(Wishlists)
             .set({
                 quantity: 0,
                 updatedAt: new Date(),
             })
-            .where(eq(WishlistTable.id, wishlistId))
+            .where(eq(Wishlists.id, wishlistId))
 
         if (!updatedWishlist) {
             throw createInternalServerError('Failed to update wishlist.')
@@ -114,7 +114,7 @@ const createWishlistLine = async (
 ) => {
     try {
         const newWishlistLine = await db
-            .insert(WishlistLineItemTable)
+            .insert(WishlistItems)
             .values({
                 productId: product.id,
                 wishlistId,
@@ -122,8 +122,8 @@ const createWishlistLine = async (
             .returning()
             .then(async rows => {
                 const id = rows[0].id
-                return await db.query.WishlistLineItemTable.findFirst({
-                    where: eq(WishlistLineItemTable.id, id),
+                return await db.query.WishlistItems.findFirst({
+                    where: eq(WishlistItems.id, id),
                     with: {
                         product: true,
                     },
@@ -153,12 +153,12 @@ const updateWishlistWithNewLine = async (id: string) => {
     }
 
     const updatedCart = await db
-        .update(WishlistTable)
+        .update(Wishlists)
         .set({
             quantity: oldWishlist.quantity + 1,
             updatedAt: new Date(),
         })
-        .where(eq(WishlistTable.id, id))
+        .where(eq(Wishlists.id, id))
         .returning()
         .then(async rows => {
             const updatedWishlistId = rows[0].id

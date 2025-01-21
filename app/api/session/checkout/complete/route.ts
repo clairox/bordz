@@ -7,9 +7,9 @@ import {
     handleRoute,
 } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
-import { CartTable } from '@/drizzle/schema/cart'
-import { CheckoutTable } from '@/drizzle/schema/checkout'
-import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
+import { Carts } from '@/drizzle/schema/cart'
+import { Checkouts } from '@/drizzle/schema/checkout'
+import { OrderLines, Orders } from '@/drizzle/schema/order'
 import { createConflictError, createInternalServerError } from '@/lib/errors'
 import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 import { expireCookies } from '@/utils/session'
@@ -29,10 +29,10 @@ export const POST = async (request: NextRequest) =>
         const order = await createOrder(checkout)
 
         await db
-            .update(CheckoutTable)
+            .update(Checkouts)
             .set({ orderId: order.id, updatedAt: new Date() })
 
-        await db.delete(CartTable).where(eq(CartTable.id, cartId))
+        await db.delete(Carts).where(eq(Carts.id, cartId))
 
         let response = NextResponse.json({ orderId: order.id }, { status: 200 })
 
@@ -42,9 +42,9 @@ export const POST = async (request: NextRequest) =>
 
 const completeCheckout = async (id: string) => {
     const completedCheckout = await db
-        .update(CheckoutTable)
+        .update(Checkouts)
         .set({ completedAt: new Date(), updatedAt: new Date() })
-        .where(eq(CheckoutTable.id, id))
+        .where(eq(Checkouts.id, id))
         .returning()
         .then(async rows => await getCheckout(rows[0].id))
 
@@ -64,7 +64,7 @@ const createOrder = async (checkout: Checkout) => {
 
     try {
         const newOrderId = await db
-            .insert(OrderTable)
+            .insert(Orders)
             .values({
                 email: checkout.email,
                 subtotal: checkout.subtotal,
@@ -79,8 +79,8 @@ const createOrder = async (checkout: Checkout) => {
 
         await createOrderLines(newOrderId, checkout.lines)
 
-        const newOrder = await db.query.OrderTable.findFirst({
-            where: eq(OrderTable.id, newOrderId),
+        const newOrder = await db.query.Orders.findFirst({
+            where: eq(Orders.id, newOrderId),
             with: {
                 lines: {
                     with: {
@@ -109,7 +109,7 @@ const createOrderLines = async (
     checkoutLines: CheckoutLine[]
 ) => {
     return await db
-        .insert(OrderLineItemTable)
+        .insert(OrderLines)
         .values(
             checkoutLines.map((line, idx) => {
                 return {

@@ -1,13 +1,13 @@
 import { createUrlHandle } from '@/utils/url'
-import { db } from '.'
+import { db } from './db'
 import {
-    CategoryTable,
-    ColorTable,
-    ComponentAttributesTable,
-    ComponentTable,
-    SizeTable,
-    VendorTable,
-} from '../schema/component'
+    Categories,
+    Colors,
+    BoardComponentAttrs,
+    BoardComponents,
+    Sizes,
+    Vendors,
+} from './schema/component'
 
 const seed = async () => {
     const components = [
@@ -98,9 +98,9 @@ const seed = async () => {
     ]
 
     console.log('Clearing categories...')
-    await db.delete(CategoryTable)
+    await db.delete(Categories)
     const categories = await db
-        .insert(CategoryTable)
+        .insert(Categories)
         .values([
             { label: 'Decks' },
             { label: 'Trucks' },
@@ -112,9 +112,9 @@ const seed = async () => {
         .returning()
 
     console.log('Clearing vendors...')
-    await db.delete(VendorTable)
+    await db.delete(Vendors)
     const vendors = await db
-        .insert(VendorTable)
+        .insert(Vendors)
         .values([
             { name: 'Baker' },
             { name: 'Girl' },
@@ -133,9 +133,9 @@ const seed = async () => {
         .returning()
 
     console.log('Clearing sizes...')
-    await db.delete(SizeTable)
+    await db.delete(Sizes)
     const sizes = await db
-        .insert(SizeTable)
+        .insert(Sizes)
         .values([
             { label: 'One Size' },
             { label: '8.0' },
@@ -147,9 +147,9 @@ const seed = async () => {
         .returning()
 
     console.log('Clearing colors...')
-    await db.delete(ColorTable)
+    await db.delete(Colors)
     const colors = await db
-        .insert(ColorTable)
+        .insert(Colors)
         .values([
             { label: 'red', value: '#ff0000' },
             { label: 'orange', value: '#ffa500' },
@@ -162,7 +162,7 @@ const seed = async () => {
         .returning()
 
     console.log('Clearing components...')
-    await db.delete(ComponentTable)
+    await db.delete(BoardComponents)
     console.log('Done!')
 
     for (let i = 0; i < components.length; i++) {
@@ -170,7 +170,7 @@ const seed = async () => {
         console.log(`Creating '${component.title}'...`)
 
         const newComponent = await db
-            .insert(ComponentTable)
+            .insert(BoardComponents)
             .values({
                 ...component,
                 handle: createUrlHandle(component.title),
@@ -178,7 +178,7 @@ const seed = async () => {
             .returning()
             .then(rows => rows[0])
 
-        const createComponentAttributesTable = async (
+        const createBoardComponentAttrs = async (
             component: typeof newComponent
         ) => {
             const attributes = {
@@ -388,10 +388,10 @@ const seed = async () => {
 
             attributes.componentId = component.id
 
-            await db.insert(ComponentAttributesTable).values(attributes)
+            await db.insert(BoardComponentAttrs).values(attributes)
         }
 
-        await createComponentAttributesTable(newComponent)
+        await createBoardComponentAttrs(newComponent)
         console.log('Done!')
     }
 

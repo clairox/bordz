@@ -1,10 +1,10 @@
 import { db } from '@/drizzle/db'
-import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
+import { Boards } from '@/drizzle/schema/board'
 import { eq } from 'drizzle-orm'
 
 const getBoardSetup = async (id: string) => {
-    return await db.query.BoardSetupTable.findFirst({
-        where: eq(BoardSetupTable.id, id),
+    return await db.query.Boards.findFirst({
+        where: eq(Boards.id, id),
         with: {
             deck: true,
             trucks: true,

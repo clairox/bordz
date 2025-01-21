@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { asc, count, desc, eq, inArray, SQL } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { ProductTable } from '@/drizzle/schema/product'
-import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
+import { Products } from '@/drizzle/schema/product'
+import { Boards } from '@/drizzle/schema/board'
 import { createNotFoundError } from '@/lib/errors'
 import {
-    boardSetup,
     calculateNextPageNumber,
     getComponents,
     getComponentsOverallAvailability,
@@ -17,7 +16,7 @@ import {
 } from '../shared'
 import { ComponentRecord } from '@/types/database'
 import { SortKey } from '@/types/sorting'
-import { ComponentTable } from '@/drizzle/schema/component'
+import { BoardComponents } from '@/drizzle/schema/component'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -28,15 +27,15 @@ export const GET = async (request: NextRequest) =>
                 : false
 
         const sorts: Partial<Record<SortKey, SQL>> = {
-            'date-desc': desc(ProductTable.createdAt),
-            'date-asc': asc(ProductTable.createdAt),
-            'price-desc': desc(ProductTable.price),
-            'price-asc': asc(ProductTable.price),
+            'date-desc': desc(Products.createdAt),
+            'date-asc': asc(Products.createdAt),
+            'price-desc': desc(Products.price),
+            'price-asc': asc(Products.price),
         }
 
-        const where = publicOnly ? eq(ProductTable.isPublic, true) : undefined
+        const where = publicOnly ? eq(Products.isPublic, true) : undefined
 
-        const products = await db.query.ProductTable.findMany({
+        const products = await db.query.Products.findMany({
             where,
             limit: size,
             offset: (page - 1) * size,
@@ -46,7 +45,7 @@ export const GET = async (request: NextRequest) =>
         const nextPage = await calculateNextPageNumber(
             page,
             size,
-            ProductTable,
+            Products,
             where
         )
 
@@ -97,12 +96,12 @@ export const POST = async (request: NextRequest) =>
 
             const numberOfBoardsWithSameDeck = await db
                 .select({ count: count() })
-                .from(BoardSetupTable)
+                .from(Boards)
                 .innerJoin(
-                    ComponentTable,
-                    eq(BoardSetupTable.deckId, ComponentTable.id)
+                    BoardComponents,
+                    eq(Boards.deckId, BoardComponents.id)
                 )
-                .where(eq(ComponentTable.title, deck.title))
+                .where(eq(BoardComponents.title, deck.title))
                 .then(rows => rows[0].count)
 
             const baseTitle = deck.title.toLowerCase().endsWith(' deck')
@@ -119,7 +118,7 @@ export const POST = async (request: NextRequest) =>
                 data.isPublic
             )
 
-            await db.insert(BoardSetupTable).values({
+            await db.insert(Boards).values({
                 productId: newProduct.id,
                 deckId: deck.id,
                 trucksId: trucks.id,
@@ -151,7 +150,7 @@ export const DELETE = async (request: NextRequest) =>
         const data = await request.json()
         validateRequestBody(data, ['ids'])
 
-        await db.delete(ProductTable).where(inArray(ProductTable.id, data.ids))
+        await db.delete(Products).where(inArray(Products.id, data.ids))
         return new NextResponse(null, { status: 204 })
     })
 
@@ -164,7 +163,7 @@ const createProduct = async (
     isPublic?: boolean
 ) => {
     return await db
-        .insert(ProductTable)
+        .insert(Products)
         .values({
             title: title,
             price: price,

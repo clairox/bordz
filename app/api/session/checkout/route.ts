@@ -10,7 +10,7 @@ import {
 } from '@/app/api/shared'
 import { calculateTaxManually } from '@/utils/domain'
 import { db } from '@/drizzle/db'
-import { CheckoutLineItemTable, CheckoutTable } from '@/drizzle/schema/checkout'
+import { CheckoutLines, Checkouts } from '@/drizzle/schema/checkout'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { DEFAULT_COOKIE_CONFIG, SHIPPING_COST } from '@/utils/constants'
 import { CartQueryResult, CartLineQueryResult } from '@/types/queries'
@@ -55,7 +55,7 @@ export const PATCH = async (request: NextRequest) =>
         const data = await request.json()
 
         const updatedCheckout = await db
-            .update(CheckoutTable)
+            .update(Checkouts)
             .set({
                 subtotal: data.subtotal,
                 total: data.total,
@@ -66,7 +66,7 @@ export const PATCH = async (request: NextRequest) =>
                 paymentIntentId: data.paymentIntentId,
                 updatedAt: new Date(),
             })
-            .where(eq(CheckoutTable.id, checkoutId))
+            .where(eq(Checkouts.id, checkoutId))
             .returning()
             .then(async rows => await getCheckout(rows[0].id))
 
@@ -81,7 +81,7 @@ const createCheckout = async (cart: CartQueryResult) => {
     const totalTax = calculateTaxManually(cart.total)
 
     const newCheckoutId = await db
-        .insert(CheckoutTable)
+        .insert(Checkouts)
         .values({
             subtotal: cart.subtotal,
             total: cart.total + totalTax + SHIPPING_COST,
@@ -108,7 +108,7 @@ const createCheckoutLines = async (
     cartLines: CartLineQueryResult[]
 ) => {
     return await db
-        .insert(CheckoutLineItemTable)
+        .insert(CheckoutLines)
         .values(
             cartLines.map(line => {
                 return {

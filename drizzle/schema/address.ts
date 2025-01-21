@@ -2,9 +2,9 @@ import { pgTable, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 import { isNotNull, relations, SQL, sql } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
-import { CustomerTable } from './user'
+import { Customers } from './customer'
 
-export const AddressTable = pgTableWithAutoFields(
+export const Addresses = pgTableWithAutoFields(
     'addresses',
     {
         fullName: varchar('full_name', { length: 100 }).notNull(),
@@ -27,7 +27,7 @@ export const AddressTable = pgTableWithAutoFields(
                         country_code
                     `
             ),
-        ownerId: shortUuid('owner_id').references(() => CustomerTable.id, {
+        ownerId: shortUuid('owner_id').references(() => Customers.id, {
             onDelete: 'set null',
         }),
     },
@@ -38,34 +38,34 @@ export const AddressTable = pgTableWithAutoFields(
     })
 )
 
-export const AddressRelations = relations(AddressTable, ({ one }) => ({
-    owner: one(CustomerTable, {
-        fields: [AddressTable.ownerId],
-        references: [CustomerTable.id],
+export const AddressRelations = relations(Addresses, ({ one }) => ({
+    owner: one(Customers, {
+        fields: [Addresses.ownerId],
+        references: [Customers.id],
     }),
 }))
 
-export const DefaultAddressTable = pgTable('default_addresses', {
+export const DefaultAddresses = pgTable('default_addresses', {
     ownerId: shortUuid('owner_id')
         .primaryKey()
-        .references(() => CustomerTable.id, {
+        .references(() => Customers.id, {
             onDelete: 'cascade',
         }),
-    addressId: shortUuid('address_id').references(() => AddressTable.id, {
+    addressId: shortUuid('address_id').references(() => Addresses.id, {
         onDelete: 'cascade',
     }),
 })
 
 export const DefaultAddressRelations = relations(
-    DefaultAddressTable,
+    DefaultAddresses,
     ({ one }) => ({
-        owner: one(CustomerTable, {
-            fields: [DefaultAddressTable.ownerId],
-            references: [CustomerTable.id],
+        owner: one(Customers, {
+            fields: [DefaultAddresses.ownerId],
+            references: [Customers.id],
         }),
-        address: one(AddressTable, {
-            fields: [DefaultAddressTable.addressId],
-            references: [AddressTable.id],
+        address: one(Addresses, {
+            fields: [DefaultAddresses.addressId],
+            references: [Addresses.id],
         }),
     })
 )

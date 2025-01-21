@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
-import { ProductTable } from '@/drizzle/schema/product'
+import { Boards } from '@/drizzle/schema/board'
+import { Products } from '@/drizzle/schema/product'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import {
     getBoardSetup,
@@ -21,8 +21,8 @@ type Props = DynamicRoutePropsWithParams<{ productId: string }>
 
 export const GET = async (_: NextRequest, { params: { productId } }: Props) =>
     await handleRoute(async () => {
-        const product = await db.query.ProductTable.findFirst({
-            where: eq(ProductTable.id, productId),
+        const product = await db.query.Products.findFirst({
+            where: eq(Products.id, productId),
         })
 
         if (!product) {
@@ -118,7 +118,7 @@ const updateProduct = async (
     }
 ) => {
     const updatedProduct = await db
-        .update(ProductTable)
+        .update(Products)
         .set({
             title: values.title,
             price: values.price,
@@ -127,7 +127,7 @@ const updateProduct = async (
             isPublic: values.isPublic,
             updatedAt: new Date(),
         })
-        .where(eq(ProductTable.id, id))
+        .where(eq(Products.id, id))
         .returning()
         .then(async rows => await getProduct(rows[0].id))
 
@@ -150,7 +150,7 @@ const updateBoardSetup = async (
     }
 ) => {
     const updatedBoardSetup = await db
-        .update(BoardSetupTable)
+        .update(Boards)
         .set({
             deckId: values.deckId,
             trucksId: values.trucksId,
@@ -160,7 +160,7 @@ const updateBoardSetup = async (
             griptapeId: values.griptapeId,
             updatedAt: new Date(),
         })
-        .where(eq(BoardSetupTable.id, id))
+        .where(eq(Boards.id, id))
         .returning()
         .then(async rows => await getBoardSetup(rows[0].id))
 

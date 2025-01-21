@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { db } from '@/drizzle/db'
 import { handleRoute, validateRequestBody } from '../shared'
-import { SizeTable } from '@/drizzle/schema/component'
+import { Sizes } from '@/drizzle/schema/component'
 
 export const GET = async () =>
     await handleRoute(async () => {
-        const sizes = await db.query.SizeTable.findMany()
+        const sizes = await db.query.Sizes.findMany()
         return NextResponse.json(sizes)
     })
 
@@ -16,7 +16,7 @@ export const POST = async (request: NextRequest) =>
         validateRequestBody(data, ['size'])
 
         const newSize = await db
-            .insert(SizeTable)
+            .insert(Sizes)
             .values({ label: data.size })
             .returning()
             .then(rows => rows[0])

@@ -5,7 +5,7 @@ import { serialize } from 'cookie'
 import { getWishlist, handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
 import { WishlistLineRecord, WishlistRecord } from '@/types/database'
-import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
+import { WishlistItems, Wishlists } from '@/drizzle/schema/wishlist'
 import { createInternalServerError } from '@/lib/errors'
 import {
     DEFAULT_COOKIE_CONFIG,
@@ -105,8 +105,8 @@ export const POST = async (request: NextRequest) =>
     })
 
 const getWishlistByOwnerId = async (ownerId: string) => {
-    return await db.query.WishlistTable.findFirst({
-        where: eq(WishlistTable.ownerId, ownerId),
+    return await db.query.Wishlists.findFirst({
+        where: eq(Wishlists.ownerId, ownerId),
         with: {
             lines: {
                 with: {
@@ -119,7 +119,7 @@ const getWishlistByOwnerId = async (ownerId: string) => {
 
 const createWishlist = async (ownerId?: string) => {
     const newWishlist = await db
-        .insert(WishlistTable)
+        .insert(Wishlists)
         .values({ ownerId })
         .returning()
         .then(async rows => await getWishlist(rows[0].id))
@@ -139,19 +139,19 @@ const mergeWishlists = async (target: WishlistType, source: WishlistType) => {
 
     const sourceLines = await db
         .select()
-        .from(WishlistLineItemTable)
+        .from(WishlistItems)
         .where(
             and(
-                eq(WishlistLineItemTable.wishlistId, source.id),
+                eq(WishlistItems.wishlistId, source.id),
                 notInArray(
-                    WishlistLineItemTable.productId,
+                    WishlistItems.productId,
                     target.lines.map(line => line.productId)
                 )
             )
         )
 
     if (sourceLines.length) {
-        await db.insert(WishlistLineItemTable).values(
+        await db.insert(WishlistItems).values(
             sourceLines.map(line => {
                 return {
                     productId: line.productId,
@@ -161,16 +161,16 @@ const mergeWishlists = async (target: WishlistType, source: WishlistType) => {
         )
     }
 
-    await db.delete(WishlistTable).where(eq(WishlistTable.id, source.id))
+    await db.delete(Wishlists).where(eq(Wishlists.id, source.id))
 
     if (sourceLines.length) {
         return await db
-            .update(WishlistTable)
+            .update(Wishlists)
             .set({
                 quantity: target.quantity + sourceLines.length,
                 updatedAt: new Date(),
             })
-            .where(eq(WishlistTable.id, target.id))
+            .where(eq(Wishlists.id, target.id))
             .returning()
             .then(async rows => await getWishlist(rows[0].id))
     } else {

@@ -8,8 +8,8 @@ import {
     updateCheckout,
 } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
-import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
-import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
+import { CartLines, Carts } from '@/drizzle/schema/cart'
+import { CheckoutLines } from '@/drizzle/schema/checkout'
 import { CartLineRecord } from '@/types/database'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
@@ -18,8 +18,8 @@ type Props = DynamicRoutePropsWithParams<{ lineId: string }>
 
 export const GET = async (_: NextRequest, { params: { lineId } }: Props) =>
     await handleRoute(async () => {
-        const cartLine = await db.query.CartLineItemTable.findFirst({
-            where: eq(CartLineItemTable.id, lineId),
+        const cartLine = await db.query.CartLines.findFirst({
+            where: eq(CartLines.id, lineId),
             with: {
                 product: true,
             },
@@ -62,8 +62,8 @@ export const DELETE = async (
 
 const deleteCartLine = async (id: string) => {
     const deletedCartLine = await db
-        .delete(CartLineItemTable)
-        .where(eq(CartLineItemTable.id, id))
+        .delete(CartLines)
+        .where(eq(CartLines.id, id))
         .returning()
         .then(rows => rows[0])
 
@@ -85,14 +85,14 @@ const updateCartWithDeletedCartLine = async (
     }
 
     const updatedCart = await db
-        .update(CartTable)
+        .update(Carts)
         .set({
             subtotal: oldCart.subtotal - deletedCartLine.subtotal,
             total: oldCart.total - deletedCartLine.total,
             totalQuantity: oldCart.totalQuantity - deletedCartLine.quantity,
             updatedAt: new Date(),
         })
-        .where(eq(CartTable.id, id))
+        .where(eq(Carts.id, id))
         .returning()
         .then(async rows => {
             const updatedCartId = rows[0].id
@@ -108,11 +108,11 @@ const updateCartWithDeletedCartLine = async (
 
 const deleteCheckoutLine = async (checkoutId: string, productId: string) => {
     await db
-        .delete(CheckoutLineItemTable)
+        .delete(CheckoutLines)
         .where(
             and(
-                eq(CheckoutLineItemTable.checkoutId, checkoutId),
-                eq(CheckoutLineItemTable.productId, productId)
+                eq(CheckoutLines.checkoutId, checkoutId),
+                eq(CheckoutLines.productId, productId)
             )
         )
 }

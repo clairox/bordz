@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { handleRoute } from '@/app/api/shared'
-import { getBoardByProductId } from '@/drizzle/db/handlers'
+import { getBoardByProductId } from '@/lib/db'
 import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 

@@ -9,10 +9,10 @@ import {
 import { relations } from 'drizzle-orm'
 
 import { generatePK, pgTableWithAutoFields, shortUuid } from './shared'
-import { BoardSetupTable } from './boardSetup'
+import { Boards } from './board'
 import { MAX_HANDLE_LENGTH } from '@/utils/constants'
 
-export const ComponentTable = pgTableWithAutoFields('components', {
+export const BoardComponents = pgTableWithAutoFields('board_components', {
     title: varchar('title', { length: 200 }).notNull(),
     handle: varchar('handle', { length: MAX_HANDLE_LENGTH }).notNull(),
     images: varchar('images', { length: 200 }).array(),
@@ -25,94 +25,94 @@ export const ComponentTable = pgTableWithAutoFields('components', {
     totalInventory: smallint('total_inventory').default(0).notNull(),
 })
 
-export const ComponentAttributesTable = pgTableWithAutoFields(
-    'component_attributes',
+export const BoardComponentAttrs = pgTableWithAutoFields(
+    'board_component_attrs',
     {
         componentId: shortUuid('component_id')
-            .references(() => ComponentTable.id, { onDelete: 'cascade' })
+            .references(() => BoardComponents.id, { onDelete: 'cascade' })
             .notNull(),
         categoryId: shortUuid('category_id')
-            .references(() => CategoryTable.id, { onDelete: 'restrict' })
+            .references(() => Categories.id, { onDelete: 'restrict' })
             .notNull(),
-        vendorId: shortUuid('vendor_id').references(() => VendorTable.id, {
+        vendorId: shortUuid('vendor_id').references(() => Vendors.id, {
             onDelete: 'set null',
         }),
         sizeId: shortUuid('size_id')
-            .references(() => SizeTable.id, { onDelete: 'restrict' })
+            .references(() => Sizes.id, { onDelete: 'restrict' })
             .notNull(),
         colorId: shortUuid('color_id')
-            .references(() => ColorTable.id, { onDelete: 'restrict' })
+            .references(() => Colors.id, { onDelete: 'restrict' })
             .notNull(),
     }
 )
 
-export const CategoryTable = pgTable('categories', {
+export const Categories = pgTable('categories', {
     id: generatePK(),
     label: varchar('label', { length: 20 }).notNull(),
 })
 
-export const VendorTable = pgTable('vendors', {
+export const Vendors = pgTable('vendors', {
     id: generatePK(),
     name: varchar('name', { length: 50 }).notNull(),
 })
 
-export const SizeTable = pgTable('sizes', {
+export const Sizes = pgTable('sizes', {
     id: generatePK(),
     label: varchar('label', { length: 10 }).notNull(),
 })
 
-export const ColorTable = pgTable('colors', {
+export const Colors = pgTable('colors', {
     id: generatePK(),
     label: varchar('label', { length: 25 }).notNull(),
     value: varchar('value', { length: 7 }).notNull(),
 })
 
-export const ComponentRelations = relations(
-    ComponentTable,
+export const BoardComponentRelations = relations(
+    BoardComponents,
     ({ one, many }) => ({
-        boardSetups: many(BoardSetupTable),
-        componentAttributes: one(ComponentAttributesTable),
+        boardSetups: many(Boards), // TODO: boards
+        componentAttributes: one(BoardComponentAttrs), // TODO: attrs
     })
 )
 
-export const ComponentAttributesRelations = relations(
-    ComponentAttributesTable,
+export const BoardComponentAttrsRelations = relations(
+    BoardComponentAttrs,
     ({ one }) => ({
-        component: one(ComponentTable, {
-            fields: [ComponentAttributesTable.componentId],
-            references: [ComponentTable.id],
+        component: one(BoardComponents, {
+            fields: [BoardComponentAttrs.componentId],
+            references: [BoardComponents.id],
         }),
-        category: one(CategoryTable, {
-            fields: [ComponentAttributesTable.categoryId],
-            references: [CategoryTable.id],
+        category: one(Categories, {
+            fields: [BoardComponentAttrs.categoryId],
+            references: [Categories.id],
         }),
-        vendor: one(VendorTable, {
-            fields: [ComponentAttributesTable.vendorId],
-            references: [VendorTable.id],
+        vendor: one(Vendors, {
+            fields: [BoardComponentAttrs.vendorId],
+            references: [Vendors.id],
         }),
-        size: one(SizeTable, {
-            fields: [ComponentAttributesTable.sizeId],
-            references: [SizeTable.id],
+        size: one(Sizes, {
+            fields: [BoardComponentAttrs.sizeId],
+            references: [Sizes.id],
         }),
-        color: one(ColorTable, {
-            fields: [ComponentAttributesTable.colorId],
-            references: [ColorTable.id],
+        color: one(Colors, {
+            fields: [BoardComponentAttrs.colorId],
+            references: [Colors.id],
         }),
     })
 )
 
-export const CategoryRelations = relations(CategoryTable, ({ many }) => ({
-    parent: many(ComponentAttributesTable),
+export const CategoryRelations = relations(Categories, ({ many }) => ({
+    parent: many(BoardComponentAttrs),
 }))
 
-export const VendorRelations = relations(VendorTable, ({ many }) => ({
-    parent: many(ComponentAttributesTable),
+export const VendorRelations = relations(Vendors, ({ many }) => ({
+    parent: many(BoardComponentAttrs),
 }))
 
-export const SizeRelations = relations(SizeTable, ({ many }) => ({
-    parent: many(ComponentAttributesTable),
+export const SizeRelations = relations(Sizes, ({ many }) => ({
+    parent: many(BoardComponentAttrs),
 }))
 
-export const ColorRelations = relations(ColorTable, ({ many }) => ({
-    parent: many(ComponentAttributesTable),
+export const ColorRelations = relations(Colors, ({ many }) => ({
+    parent: many(BoardComponentAttrs),
 }))

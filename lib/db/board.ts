@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 
 import { BoardSetupQueryResult } from '@/types/queries'
 import { db } from '@/drizzle/db'
-import { BoardSetupTable } from '@/drizzle/schema/boardSetup'
+import { Boards } from '@/drizzle/schema/board'
 
 const withAttributes = (
     value: boolean = false
@@ -24,8 +24,8 @@ export async function getBoardByProductId(
     productId: string,
     full: boolean = false
 ): Promise<BoardSetupQueryResult | undefined> {
-    return await db.query.BoardSetupTable.findFirst({
-        where: eq(BoardSetupTable.productId, productId),
+    return await db.query.Boards.findFirst({
+        where: eq(Boards.productId, productId),
         with: {
             deck: withAttributes(full),
             trucks: withAttributes(full),

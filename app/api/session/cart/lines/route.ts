@@ -10,8 +10,8 @@ import {
     validateRequestBody,
 } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
-import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
-import { CheckoutLineItemTable } from '@/drizzle/schema/checkout'
+import { CartLines, Carts } from '@/drizzle/schema/cart'
+import { CheckoutLines } from '@/drizzle/schema/checkout'
 import { CartLineRecord, ProductRecord } from '@/types/database'
 import {
     createConflictError,
@@ -55,19 +55,17 @@ export const DELETE = async (request: NextRequest) =>
             throw createNotFoundError('Cart')
         }
 
-        await db
-            .delete(CartLineItemTable)
-            .where(eq(CartLineItemTable.cartId, oldCart.id))
+        await db.delete(CartLines).where(eq(CartLines.cartId, oldCart.id))
 
         const updatedCart = await db
-            .update(CartTable)
+            .update(Carts)
             .set({
                 subtotal: 0,
                 total: 0,
                 totalQuantity: 0,
                 updatedAt: new Date(),
             })
-            .where(eq(CartTable.id, cartId))
+            .where(eq(Carts.id, cartId))
 
         if (!updatedCart) {
             throw createInternalServerError('Failed to update cart.')
@@ -83,7 +81,7 @@ const createCartLine = async (
 ) => {
     try {
         const newCartLine = await db
-            .insert(CartLineItemTable)
+            .insert(CartLines)
             .values({
                 subtotal: product.price,
                 total: product.price,
@@ -94,8 +92,8 @@ const createCartLine = async (
             .returning()
             .then(async rows => {
                 const id = rows[0].id
-                return await db.query.CartLineItemTable.findFirst({
-                    where: eq(CartLineItemTable.id, id),
+                return await db.query.CartLines.findFirst({
+                    where: eq(CartLines.id, id),
                     with: {
                         product: true,
                     },
@@ -127,14 +125,14 @@ const updateCartWithNewCartLine = async (
     }
 
     const updatedCart = await db
-        .update(CartTable)
+        .update(Carts)
         .set({
             subtotal: oldCart.subtotal + newCartLine.subtotal,
             total: oldCart.total + newCartLine.total,
             totalQuantity: oldCart.totalQuantity + newCartLine.quantity,
             updatedAt: new Date(),
         })
-        .where(eq(CartTable.id, id))
+        .where(eq(Carts.id, id))
         .returning()
         .then(async rows => {
             const updatedCartId = rows[0].id
@@ -155,7 +153,7 @@ const createCheckoutLine = async (
 ) => {
     try {
         const newCheckoutLine = await db
-            .insert(CheckoutLineItemTable)
+            .insert(CheckoutLines)
             .values({
                 unitPrice: product.price,
                 quantity: cartLine.quantity,
@@ -165,8 +163,8 @@ const createCheckoutLine = async (
             .returning()
             .then(async rows => {
                 const id = rows[0].id
-                return await db.query.CheckoutLineItemTable.findFirst({
-                    where: eq(CheckoutLineItemTable.id, id),
+                return await db.query.CheckoutLines.findFirst({
+                    where: eq(CheckoutLines.id, id),
                 })
             })
 

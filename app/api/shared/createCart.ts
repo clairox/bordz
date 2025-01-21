@@ -1,4 +1,4 @@
-import { CartTable } from '@/drizzle/schema/cart'
+import { Carts } from '@/drizzle/schema/cart'
 import { db } from '@/drizzle/db'
 import { createInternalServerError } from '@/lib/errors'
 import getCart from './getCart'
@@ -6,7 +6,7 @@ import { CartQueryResult } from '@/types/queries'
 
 const createCart = async (ownerId?: string): Promise<CartQueryResult> => {
     const newCart = await db
-        .insert(CartTable)
+        .insert(Carts)
         .values({ ownerId })
         .returning()
         .then(async rows => await getCart(rows[0].id))

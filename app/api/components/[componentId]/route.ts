@@ -3,8 +3,8 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import {
-    ComponentAttributesTable,
-    ComponentTable,
+    BoardComponentAttrs,
+    BoardComponents,
 } from '@/drizzle/schema/component'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { handleRoute } from '../../shared'
@@ -14,8 +14,8 @@ type Props = DynamicRoutePropsWithParams<{ componentId: string }>
 
 export const GET = async (_: NextRequest, { params: { componentId } }: Props) =>
     await handleRoute(async () => {
-        const component = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, componentId),
+        const component = await db.query.BoardComponents.findFirst({
+            where: eq(BoardComponents.id, componentId),
             with: {
                 componentAttributes: {
                     with: {
@@ -43,7 +43,7 @@ export const PATCH = async (
         const data = await request.json()
 
         const updatedComponent = await db
-            .update(ComponentTable)
+            .update(BoardComponents)
             .set({
                 title: data.title,
                 images: data.images,
@@ -55,20 +55,20 @@ export const PATCH = async (
                 totalInventory: data.totalInventory,
                 availableForSale: data.totalInventory > 0,
             })
-            .where(eq(ComponentTable.id, componentId))
+            .where(eq(BoardComponents.id, componentId))
             .returning()
             .then(rows => rows[0])
 
         // TODO: Update Drizzle to get .from()
         const updatedComponentAttrs = await db
-            .update(ComponentAttributesTable)
+            .update(BoardComponentAttrs)
             .set({
                 categoryId: data.category,
                 vendorId: data.vendor,
                 colorId: data.color,
                 sizeId: data.size,
             })
-            .where(eq(ComponentAttributesTable.componentId, componentId))
+            .where(eq(BoardComponentAttrs.componentId, componentId))
             .returning()
             .then(rows => getComponentAttrs(rows[0].id))
 
@@ -83,8 +83,8 @@ export const PATCH = async (
     })
 
 const getComponentAttrs = async (id: string) => {
-    return await db.query.ComponentAttributesTable.findFirst({
-        where: eq(ComponentAttributesTable.id, id),
+    return await db.query.BoardComponentAttrs.findFirst({
+        where: eq(BoardComponentAttrs.id, id),
         with: {
             category: true,
             vendor: true,

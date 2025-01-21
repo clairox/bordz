@@ -2,12 +2,12 @@ import { smallint, varchar } from 'drizzle-orm/pg-core'
 import { relations, sql, SQL } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
-import { AddressTable, DefaultAddressTable } from './address'
-import { OrderTable } from './order'
-import { CartTable } from './cart'
-import { WishlistTable } from './wishlist'
+import { Addresses, DefaultAddresses } from './address'
+import { Orders } from './order'
+import { Carts } from './cart'
+import { Wishlists } from './wishlist'
 
-export const CustomerTable = pgTableWithAutoFields('customers', {
+export const Customers = pgTableWithAutoFields('customers', {
     email: varchar('email', { length: 320 }).unique().notNull(),
     firstName: varchar('first_name', { length: 50 }).notNull(),
     lastName: varchar('last_name', { length: 50 }).notNull(),
@@ -19,10 +19,10 @@ export const CustomerTable = pgTableWithAutoFields('customers', {
     userId: shortUuid('user_id').unique().notNull(),
 })
 
-export const CustomerRelations = relations(CustomerTable, ({ one, many }) => ({
-    cart: one(CartTable),
-    wishlist: one(WishlistTable),
-    defaultAddress: one(DefaultAddressTable),
-    addresses: many(AddressTable),
-    orders: many(OrderTable),
+export const CustomerRelations = relations(Customers, ({ one, many }) => ({
+    cart: one(Carts),
+    wishlist: one(Wishlists),
+    defaultAddress: one(DefaultAddresses),
+    addresses: many(Addresses),
+    orders: many(Orders),
 }))

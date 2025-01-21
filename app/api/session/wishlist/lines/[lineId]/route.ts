@@ -4,7 +4,7 @@ import {
     handleRoute,
 } from '@/app/api/shared'
 import { db } from '@/drizzle/db'
-import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
+import { WishlistItems, Wishlists } from '@/drizzle/schema/wishlist'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { eq } from 'drizzle-orm'
@@ -14,8 +14,8 @@ type Props = DynamicRoutePropsWithParams<{ lineId: string }>
 
 export const GET = async (_: NextRequest, { params: { lineId } }: Props) =>
     await handleRoute(async () => {
-        const wishlistLine = await db.query.WishlistLineItemTable.findFirst({
-            where: eq(WishlistLineItemTable.id, lineId),
+        const wishlistLine = await db.query.WishlistItems.findFirst({
+            where: eq(WishlistItems.id, lineId),
             with: {
                 product: true,
             },
@@ -46,8 +46,8 @@ export const DELETE = async (
 
 const deleteWishlistLine = async (id: string) => {
     const deletedWishlistLine = await db
-        .delete(WishlistLineItemTable)
-        .where(eq(WishlistLineItemTable.id, id))
+        .delete(WishlistItems)
+        .where(eq(WishlistItems.id, id))
         .returning()
         .then(rows => rows[0])
 
@@ -66,12 +66,12 @@ const updateWishlistWithDeletedLine = async (id: string) => {
     }
 
     const updatedWishlist = await db
-        .update(WishlistTable)
+        .update(Wishlists)
         .set({
             quantity: oldWishlist.quantity - 1,
             updatedAt: new Date(),
         })
-        .where(eq(WishlistTable.id, id))
+        .where(eq(Wishlists.id, id))
         .returning()
         .then(async rows => {
             const updatedWishlistId = rows[0].id

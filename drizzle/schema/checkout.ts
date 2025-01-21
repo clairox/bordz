@@ -8,13 +8,13 @@ import {
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields, shortUuid } from './shared'
-import { CustomerTable } from './user'
-import { OrderTable } from './order'
-import { AddressTable } from './address'
-import { ProductTable } from './product'
-import { CartTable } from './cart'
+import { Customers } from './customer'
+import { Orders } from './order'
+import { Addresses } from './address'
+import { Products } from './product'
+import { Carts } from './cart'
 
-export const CheckoutTable = pgTableWithAutoFields('checkouts', {
+export const Checkouts = pgTableWithAutoFields('checkouts', {
     subtotal: integer('subtotal').default(0).notNull(),
     total: integer('total').default(0).notNull(),
     totalShipping: integer('total_shipping').default(0).notNull(),
@@ -22,31 +22,31 @@ export const CheckoutTable = pgTableWithAutoFields('checkouts', {
     email: varchar('email', { length: 320 }),
     completedAt: timestamp('completed_at'),
     paymentIntentId: varchar('payment_intent_id', { length: 200 }),
-    cartId: shortUuid('cart_id').references(() => CartTable.id, {
+    cartId: shortUuid('cart_id').references(() => Carts.id, {
         onDelete: 'set null',
     }),
-    customerId: shortUuid('customer_id').references(() => CustomerTable.id, {
+    customerId: shortUuid('customer_id').references(() => Customers.id, {
         onDelete: 'set null',
     }),
     shippingAddressId: shortUuid('shipping_address_id').references(
-        () => AddressTable.id,
+        () => Addresses.id,
         { onDelete: 'set null' }
     ),
-    orderId: shortUuid('order_id').references(() => OrderTable.id, {
+    orderId: shortUuid('order_id').references(() => Orders.id, {
         onDelete: 'cascade',
     }),
 })
 
-export const CheckoutLineItemTable = pgTableWithAutoFields(
-    'checkout_line_items',
+export const CheckoutLines = pgTableWithAutoFields(
+    'checkout_lines',
     {
         unitPrice: integer('total').default(0).notNull(),
         quantity: smallint('quantity').default(1).notNull(),
-        productId: shortUuid('product_id').references(() => ProductTable.id, {
+        productId: shortUuid('product_id').references(() => Products.id, {
             onDelete: 'set null',
         }),
         checkoutId: shortUuid('checkout_id')
-            .references(() => CheckoutTable.id, { onDelete: 'cascade' })
+            .references(() => Checkouts.id, { onDelete: 'cascade' })
             .notNull(),
     },
     table => ({
@@ -57,36 +57,33 @@ export const CheckoutLineItemTable = pgTableWithAutoFields(
     })
 )
 
-export const CheckoutRelations = relations(CheckoutTable, ({ one, many }) => ({
-    lines: many(CheckoutLineItemTable),
-    cart: one(CartTable, {
-        fields: [CheckoutTable.cartId],
-        references: [CartTable.id],
+export const CheckoutRelations = relations(Checkouts, ({ one, many }) => ({
+    lines: many(CheckoutLines),
+    cart: one(Carts, {
+        fields: [Checkouts.cartId],
+        references: [Carts.id],
     }),
-    customer: one(CustomerTable, {
-        fields: [CheckoutTable.customerId],
-        references: [CustomerTable.id],
+    customer: one(Customers, {
+        fields: [Checkouts.customerId],
+        references: [Customers.id],
     }),
-    shippingAddress: one(AddressTable, {
-        fields: [CheckoutTable.shippingAddressId],
-        references: [AddressTable.id],
+    shippingAddress: one(Addresses, {
+        fields: [Checkouts.shippingAddressId],
+        references: [Addresses.id],
     }),
-    order: one(OrderTable, {
-        fields: [CheckoutTable.orderId],
-        references: [OrderTable.id],
+    order: one(Orders, {
+        fields: [Checkouts.orderId],
+        references: [Orders.id],
     }),
 }))
 
-export const CheckoutLineItemRelations = relations(
-    CheckoutLineItemTable,
-    ({ one }) => ({
-        product: one(ProductTable, {
-            fields: [CheckoutLineItemTable.productId],
-            references: [ProductTable.id],
-        }),
-        checkout: one(CheckoutTable, {
-            fields: [CheckoutLineItemTable.checkoutId],
-            references: [CheckoutTable.id],
-        }),
-    })
-)
+export const CheckoutLineRelations = relations(CheckoutLines, ({ one }) => ({
+    product: one(Products, {
+        fields: [CheckoutLines.productId],
+        references: [Products.id],
+    }),
+    checkout: one(Checkouts, {
+        fields: [CheckoutLines.checkoutId],
+        references: [Checkouts.id],
+    }),
+}))

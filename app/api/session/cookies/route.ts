@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm'
 
 import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
-import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { Checkouts } from '@/drizzle/schema/checkout'
 import { expireCookies } from '@/utils/session'
 
 export const DELETE = async (request: NextRequest) =>
@@ -11,9 +11,9 @@ export const DELETE = async (request: NextRequest) =>
         const checkoutId = request.cookies.get('checkoutId')?.value
         if (checkoutId) {
             await db
-                .update(CheckoutTable)
+                .update(Checkouts)
                 .set({ cartId: null })
-                .where(eq(CheckoutTable.id, checkoutId))
+                .where(eq(Checkouts.id, checkoutId))
         }
 
         let response = new NextResponse(null, { status: 204 })

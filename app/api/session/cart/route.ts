@@ -10,7 +10,7 @@ import {
     getRequiredRequestCookie,
 } from '../../shared'
 import { db } from '@/drizzle/db'
-import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
+import { CartLines, Carts } from '@/drizzle/schema/cart'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import {
     CART_ID_COOKIE_MAX_AGE,
@@ -93,8 +93,8 @@ export const DELETE = async (request: NextRequest) =>
         const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
 
         const deletedCart = await db
-            .delete(CartTable)
-            .where(eq(CartTable.id, cartId))
+            .delete(Carts)
+            .where(eq(Carts.id, cartId))
             .returning()
             .then(rows => rows[0])
 
@@ -115,19 +115,19 @@ const mergeCarts = async (target: CartType, source: CartType) => {
 
     const sourceLines = await db
         .select()
-        .from(CartLineItemTable)
+        .from(CartLines)
         .where(
             and(
-                eq(CartLineItemTable.cartId, source.id),
+                eq(CartLines.cartId, source.id),
                 notInArray(
-                    CartLineItemTable.productId,
+                    CartLines.productId,
                     target.lines.map(line => line.productId)
                 )
             )
         )
 
     if (sourceLines.length) {
-        await db.insert(CartLineItemTable).values(
+        await db.insert(CartLines).values(
             sourceLines.map(line => {
                 return {
                     subtotal: line.subtotal,
@@ -140,11 +140,11 @@ const mergeCarts = async (target: CartType, source: CartType) => {
         )
     }
 
-    await db.delete(CartTable).where(eq(CartTable.id, source.id))
+    await db.delete(Carts).where(eq(Carts.id, source.id))
 
     if (sourceLines.length) {
         return await db
-            .update(CartTable)
+            .update(Carts)
             .set({
                 subtotal:
                     target.subtotal +
@@ -158,7 +158,7 @@ const mergeCarts = async (target: CartType, source: CartType) => {
                 totalQuantity: target.totalQuantity + sourceLines.length,
                 updatedAt: new Date(),
             })
-            .where(eq(CartTable.id, target.id))
+            .where(eq(Carts.id, target.id))
             .returning()
             .then(async rows => {
                 const id = rows[0].id

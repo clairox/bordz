@@ -4,14 +4,14 @@ import { eq } from 'drizzle-orm'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
-import { DefaultAddressTable } from '@/drizzle/schema/address'
+import { DefaultAddresses } from '@/drizzle/schema/address'
 
 type Props = DynamicRoutePropsWithParams<{ ownerId: string }>
 
 export const GET = async (_: NextRequest, { params: { ownerId } }: Props) =>
     await handleRoute(async () => {
-        const data = await db.query.DefaultAddressTable.findFirst({
-            where: eq(DefaultAddressTable.ownerId, ownerId),
+        const data = await db.query.DefaultAddresses.findFirst({
+            where: eq(DefaultAddresses.ownerId, ownerId),
             with: { address: true },
         })
 

@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { db } from '@/drizzle/db'
 import {
-    CategoryTable,
-    ColorTable,
-    ComponentAttributesTable,
-    ComponentTable,
-    SizeTable,
-    VendorTable,
+    Categories,
+    Colors,
+    BoardComponentAttrs,
+    BoardComponents,
+    Sizes,
+    Vendors,
 } from '@/drizzle/schema/component'
 import { count, desc, eq, inArray } from 'drizzle-orm'
 import { createUrlHandle } from '@/utils/url'
@@ -51,7 +51,7 @@ export const POST = async (request: NextRequest) =>
         validateRequestBody(data, requiredFields)
 
         const component = await db
-            .insert(ComponentTable)
+            .insert(BoardComponents)
             .values({
                 title: data.title,
                 handle: createUrlHandle(data.title),
@@ -66,7 +66,7 @@ export const POST = async (request: NextRequest) =>
             .returning()
             .then(rows => rows[0])
 
-        await db.insert(ComponentAttributesTable).values({
+        await db.insert(BoardComponentAttrs).values({
             componentId: component.id,
             categoryId: data.category,
             vendorId: data.vendor,
@@ -74,8 +74,8 @@ export const POST = async (request: NextRequest) =>
             colorId: data.color,
         })
 
-        const newComponent = await db.query.ComponentTable.findFirst({
-            where: eq(ComponentTable.id, component.id),
+        const newComponent = await db.query.BoardComponents.findFirst({
+            where: eq(BoardComponents.id, component.id),
             with: {
                 componentAttributes: {
                     with: {
@@ -97,8 +97,8 @@ export const DELETE = async (request: NextRequest) =>
         validateRequestBody(data, ['ids'])
 
         await db
-            .delete(ComponentTable)
-            .where(inArray(ComponentTable.id, data.ids))
+            .delete(BoardComponents)
+            .where(inArray(BoardComponents.id, data.ids))
         return new NextResponse(null, { status: 204 })
     })
 
@@ -117,27 +117,21 @@ const getComponents = async (
 ) => {
     return await db
         .select()
-        .from(ComponentTable)
+        .from(BoardComponents)
         .innerJoin(
-            ComponentAttributesTable,
-            eq(ComponentTable.id, ComponentAttributesTable.componentId)
+            BoardComponentAttrs,
+            eq(BoardComponents.id, BoardComponentAttrs.componentId)
         )
         .innerJoin(
-            CategoryTable,
-            eq(ComponentAttributesTable.categoryId, CategoryTable.id)
+            Categories,
+            eq(BoardComponentAttrs.categoryId, Categories.id)
         )
-        .innerJoin(SizeTable, eq(ComponentAttributesTable.sizeId, SizeTable.id))
-        .innerJoin(
-            ColorTable,
-            eq(ComponentAttributesTable.colorId, ColorTable.id)
-        )
-        .innerJoin(
-            VendorTable,
-            eq(ComponentAttributesTable.vendorId, VendorTable.id)
-        )
-        .where(category ? eq(CategoryTable.label, category) : undefined)
+        .innerJoin(Sizes, eq(BoardComponentAttrs.sizeId, Sizes.id))
+        .innerJoin(Colors, eq(BoardComponentAttrs.colorId, Colors.id))
+        .innerJoin(Vendors, eq(BoardComponentAttrs.vendorId, Vendors.id))
+        .where(category ? eq(Categories.label, category) : undefined)
         .offset(options?.offset || 0)
-        .orderBy(desc(ComponentTable.createdAt))
+        .orderBy(desc(BoardComponents.createdAt))
         .limit(options?.limit || DEFAULT_PAGE_SIZE)
         .then(rows => {
             return rows.map(row => {
@@ -161,24 +155,18 @@ const getComponentCount = async (
 ) => {
     return await db
         .select({ count: count() })
-        .from(ComponentTable)
+        .from(BoardComponents)
         .innerJoin(
-            ComponentAttributesTable,
-            eq(ComponentTable.id, ComponentAttributesTable.componentId)
+            BoardComponentAttrs,
+            eq(BoardComponents.id, BoardComponentAttrs.componentId)
         )
         .innerJoin(
-            CategoryTable,
-            eq(ComponentAttributesTable.categoryId, CategoryTable.id)
+            Categories,
+            eq(BoardComponentAttrs.categoryId, Categories.id)
         )
-        .innerJoin(SizeTable, eq(ComponentAttributesTable.sizeId, SizeTable.id))
-        .innerJoin(
-            ColorTable,
-            eq(ComponentAttributesTable.colorId, ColorTable.id)
-        )
-        .innerJoin(
-            VendorTable,
-            eq(ComponentAttributesTable.vendorId, VendorTable.id)
-        )
-        .where(category ? eq(CategoryTable.label, category) : undefined)
+        .innerJoin(Sizes, eq(BoardComponentAttrs.sizeId, Sizes.id))
+        .innerJoin(Colors, eq(BoardComponentAttrs.colorId, Colors.id))
+        .innerJoin(Vendors, eq(BoardComponentAttrs.vendorId, Vendors.id))
+        .where(category ? eq(Categories.label, category) : undefined)
         .then(rows => rows[0].count)
 }

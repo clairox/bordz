@@ -5,7 +5,7 @@ import * as jose from 'jose'
 import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
 import { decodeSessionToken, handleRoute, validateRequestBody } from '../shared'
 import { db } from '@/drizzle/db'
-import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { Checkouts } from '@/drizzle/schema/checkout'
 import { eq } from 'drizzle-orm'
 
 // TODO: delete this function
@@ -85,9 +85,9 @@ export const DELETE = async (request: NextRequest) =>
             const checkoutId = request.cookies.get('checkoutId')?.value
             if (checkoutId) {
                 await db
-                    .update(CheckoutTable)
+                    .update(Checkouts)
                     .set({ cartId: null })
-                    .where(eq(CheckoutTable.id, checkoutId))
+                    .where(eq(Checkouts.id, checkoutId))
             }
 
             const cartIdCookie = serialize('cartId', '', {

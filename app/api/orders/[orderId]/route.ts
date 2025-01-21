@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { OrderTable } from '@/drizzle/schema/order'
+import { Orders } from '@/drizzle/schema/order'
 import { handleRoute } from '../../shared'
 import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
@@ -11,8 +11,8 @@ type Props = DynamicRoutePropsWithParams<{ orderId: string }>
 
 export const GET = async (_: NextRequest, { params: { orderId } }: Props) =>
     await handleRoute(async () => {
-        const order = await db.query.OrderTable.findFirst({
-            where: eq(OrderTable.id, orderId),
+        const order = await db.query.Orders.findFirst({
+            where: eq(Orders.id, orderId),
             with: {
                 customer: true,
                 shippingAddress: true,
@@ -34,15 +34,15 @@ export const PATCH = async (
     await handleRoute(async () => {
         const data = await request.json()
 
-        const order = await db.query.OrderTable.findFirst({
-            where: eq(OrderTable.id, orderId),
+        const order = await db.query.Orders.findFirst({
+            where: eq(Orders.id, orderId),
         })
         if (!order) {
             throw createNotFoundError('Order')
         }
 
         const updatedOrder = await db
-            .update(OrderTable)
+            .update(Orders)
             .set({
                 customerId: data.customerId,
                 email: data.email,
@@ -54,7 +54,7 @@ export const PATCH = async (
                     order.total + data.totalShipping || 0 + data.totalTax || 0,
                 updatedAt: new Date(),
             })
-            .where(eq(OrderTable.id, orderId))
+            .where(eq(Orders.id, orderId))
 
         return NextResponse.json(updatedOrder)
     })

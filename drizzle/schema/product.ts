@@ -2,11 +2,11 @@ import { boolean, integer, pgEnum, varchar } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { pgTableWithAutoFields } from './shared'
-import { BoardSetupTable } from './boardSetup'
+import { Boards } from './board'
 
 export const ProductType = pgEnum('product_type', ['BOARD', 'OTHER'])
 
-export const ProductTable = pgTableWithAutoFields('products', {
+export const Products = pgTableWithAutoFields('products', {
     title: varchar('title', { length: 100 }).notNull(),
     featuredImage: varchar('featured_image', { length: 200 }),
     price: integer('price').default(0).notNull(),
@@ -15,6 +15,6 @@ export const ProductTable = pgTableWithAutoFields('products', {
     isPublic: boolean('is_public').default(false).notNull(),
 })
 
-export const ProductRelations = relations(ProductTable, ({ one }) => ({
-    boardSetup: one(BoardSetupTable),
+export const ProductRelations = relations(Products, ({ one }) => ({
+    boardSetup: one(Boards),
 }))

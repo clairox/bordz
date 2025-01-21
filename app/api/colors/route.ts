@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { db } from '@/drizzle/db'
 import { handleRoute, validateRequestBody } from '../shared'
-import { ColorTable } from '@/drizzle/schema/component'
+import { Colors } from '@/drizzle/schema/component'
 
 export const GET = async () =>
     await handleRoute(async () => {
-        const colors = await db.query.ColorTable.findMany()
+        const colors = await db.query.Colors.findMany()
         return NextResponse.json(colors)
     })
 
@@ -16,7 +16,7 @@ export const POST = async (request: NextRequest) =>
         validateRequestBody(data, ['label, value'])
 
         const newColor = await db
-            .insert(ColorTable)
+            .insert(Colors)
             .values({ label: data.label, value: data.value })
             .returning()
             .then(rows => rows[0])

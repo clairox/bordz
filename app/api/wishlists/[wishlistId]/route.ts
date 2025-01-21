@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getWishlist } from '@/drizzle/db/handlers'
+import { getWishlist } from '@/lib/db'
 import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { handleRoute } from '../../shared'

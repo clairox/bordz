@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { ComponentTable } from '@/drizzle/schema/component'
+import { BoardComponents } from '@/drizzle/schema/component'
 import { ComponentRecord } from '@/types/database'
 
 const getComponents = async (
@@ -24,23 +24,23 @@ const getComponents = async (
         griptape: null,
     }
 
-    components['deck'] = await db.query.ComponentTable.findFirst({
-        where: eq(ComponentTable.id, ids.deckId),
+    components['deck'] = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, ids.deckId),
     })
-    components['trucks'] = await db.query.ComponentTable.findFirst({
-        where: eq(ComponentTable.id, ids.trucksId),
+    components['trucks'] = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, ids.trucksId),
     })
-    components['wheels'] = await db.query.ComponentTable.findFirst({
-        where: eq(ComponentTable.id, ids.wheelsId),
+    components['wheels'] = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, ids.wheelsId),
     })
-    components['bearings'] = await db.query.ComponentTable.findFirst({
-        where: eq(ComponentTable.id, ids.bearingsId),
+    components['bearings'] = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, ids.bearingsId),
     })
-    components['hardware'] = await db.query.ComponentTable.findFirst({
-        where: eq(ComponentTable.id, ids.hardwareId),
+    components['hardware'] = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, ids.hardwareId),
     })
-    components['griptape'] = await db.query.ComponentTable.findFirst({
-        where: eq(ComponentTable.id, ids.griptapeId),
+    components['griptape'] = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, ids.griptapeId),
     })
 
     return components

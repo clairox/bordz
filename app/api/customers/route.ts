@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { desc, inArray } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
-import { CustomerTable } from '@/drizzle/schema/user'
+import { Customers } from '@/drizzle/schema/customer'
 import {
     calculateNextPageNumber,
     getRequestOptionsParams,
     handleRoute,
     validateRequestBody,
 } from '../shared'
-import { AddressTable } from '@/drizzle/schema/address'
+import { Addresses } from '@/drizzle/schema/address'
 import { CustomerQueryResult } from '@/types/queries'
 
 export const GET = async (request: NextRequest) =>
@@ -17,12 +17,12 @@ export const GET = async (request: NextRequest) =>
         const { page, size } = getRequestOptionsParams(request)
 
         const customers: CustomerQueryResult[] =
-            (await db.query.CustomerTable.findMany({
+            (await db.query.Customers.findMany({
                 limit: size,
                 offset: (page - 1) * size,
                 with: {
                     defaultAddress: { with: { address: true } },
-                    addresses: { orderBy: [desc(AddressTable.createdAt)] },
+                    addresses: { orderBy: [desc(Addresses.createdAt)] },
                 },
             }).then(rows => {
                 if (rows.length > 0) {
@@ -35,11 +35,7 @@ export const GET = async (request: NextRequest) =>
                 }
             })) ?? []
 
-        const nextPage = await calculateNextPageNumber(
-            page,
-            size,
-            CustomerTable
-        )
+        const nextPage = await calculateNextPageNumber(page, size, Customers)
 
         return NextResponse.json({ data: customers, nextPage })
     })
@@ -51,7 +47,7 @@ export const POST = async (request: NextRequest) =>
         validateRequestBody(data, requiredFields)
 
         const customer = await db
-            .insert(CustomerTable)
+            .insert(Customers)
             .values({
                 email: data.email,
                 firstName: data.firstName,
@@ -70,8 +66,6 @@ export const DELETE = async (request: NextRequest) =>
         const data = await request.json()
         validateRequestBody(data, ['ids'])
 
-        await db
-            .delete(CustomerTable)
-            .where(inArray(CustomerTable.id, data.ids))
+        await db.delete(Customers).where(inArray(Customers.id, data.ids))
         return new NextResponse(null, { status: 204 })
     })

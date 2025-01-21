@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 
-import { CheckoutTable } from '@/drizzle/schema/checkout'
+import { Checkouts } from '@/drizzle/schema/checkout'
 import { db } from '@/drizzle/db'
 import { CartRecord } from '@/types/database'
 import { calculateTaxManually } from '@/utils/domain'
@@ -13,14 +13,14 @@ const updateCheckout = async (id: string, updatedCart: CartRecord) => {
     const total = totalTax + totalShipping + updatedCart.subtotal
 
     const updatedCheckout = await db
-        .update(CheckoutTable)
+        .update(Checkouts)
         .set({
             subtotal: updatedCart.subtotal,
             total,
             totalTax,
             updatedAt: new Date(),
         })
-        .where(eq(CheckoutTable.id, id))
+        .where(eq(Checkouts.id, id))
         .returning()
         .then(async rows => await getCheckout(rows[0].id))
 
