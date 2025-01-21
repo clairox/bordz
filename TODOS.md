@@ -40,7 +40,6 @@
 -   [x] Automatically add ' \*' to form field labels if required
 -   [x] Return response.json() and handle error inside fetchAbsolute
 -   [x] Move id to mutation fn in data mutation hooks
--   [ ] BUG: api calls that require cookies don't work with suspense
 -   [x] Center the bordz logo in the header
 -   [x] Move customer provider logic back into provider
 
