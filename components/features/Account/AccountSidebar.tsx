@@ -5,12 +5,20 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 import { useSignOut } from '@/hooks/auth'
+import { useCustomer } from '@/context/CustomerContext'
 
 const AccountSidebar = () => {
+    const customer = useCustomer()
     const pathname = usePathname()
 
     return (
         <aside className="flex flex-col h-full border-r border-b border-black">
+            <div className="px-6 pt-6 pb-4 border-b border-gray-400 bg-white">
+                <h1 className="mb-2 text-2xl">Your Account</h1>
+                <p className="text-xl">
+                    Hello, {customer && customer.data?.firstName + '!'}
+                </p>
+            </div>
             <SidebarMenuItem
                 href="/account/settings"
                 isSelected={pathname === '/account/settings'}
