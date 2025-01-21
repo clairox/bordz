@@ -20,10 +20,10 @@ const withAttributes = (
     }
 }
 
-export const getBoardByProductId = async (
+export async function getBoardByProductId(
     productId: string,
     full: boolean = false
-): Promise<BoardSetupQueryResult | undefined> => {
+): Promise<BoardSetupQueryResult | undefined> {
     return await db.query.BoardSetupTable.findFirst({
         where: eq(BoardSetupTable.productId, productId),
         with: {
