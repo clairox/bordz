@@ -9,6 +9,7 @@ type ButtonAsyncProps = React.PropsWithChildren<
         loading: boolean
         success: boolean
         shouldReset?: boolean
+        onReset?: () => void
     }
 >
 
@@ -17,6 +18,7 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
     loading,
     success,
     shouldReset = false,
+    onReset,
     ...props
 }) => {
     const [content, setContent] = useState<React.ReactNode>(children)
@@ -44,10 +46,11 @@ const ButtonAsync: React.FC<ButtonAsyncProps> = ({
                 setTimeout(() => {
                     setContent(children)
                     setDisabled(false)
+                    onReset?.()
                 }, 3000)
             }
         }
-    }, [success, children, shouldReset])
+    }, [success, children, shouldReset, onReset])
 
     return (
         <Button {...props} disabled={disabled} className="w-fit">

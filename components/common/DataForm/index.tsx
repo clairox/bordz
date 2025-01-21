@@ -345,6 +345,8 @@ const DataForm = <
                         variant={submitButtonVariant}
                         loading={loading}
                         success={success}
+                        shouldReset={resetOnSuccess}
+                        onReset={() => setSuccess(false)}
                     >
                         {submitButtonContent}
                     </ButtonAsync>
