@@ -8,6 +8,7 @@ import { db } from '@/drizzle/db'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { eq } from 'drizzle-orm'
 
+// TODO: delete this function
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
         const data = await request.json()

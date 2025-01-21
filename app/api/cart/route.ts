@@ -17,6 +17,7 @@ import {
     DEFAULT_COOKIE_CONFIG,
 } from '@/utils/constants'
 import { CartLineRecord, CartRecord } from '@/types/database'
+import { expireCookies } from '@/utils/session/expireCookie'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -101,13 +102,8 @@ export const DELETE = async (request: NextRequest) =>
             throw createNotFoundError('Cart')
         }
 
-        const cookie = serialize('cartId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
-
-        const response = new NextResponse(null, { status: 204 })
-        response.headers.append('Set-Cookie', cookie)
+        let response = new NextResponse(null, { status: 204 })
+        response = expireCookies('cartId', response)
         return response
     })
 

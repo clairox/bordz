@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serialize } from 'cookie'
 import { eq } from 'drizzle-orm'
 
 import {
@@ -12,7 +11,8 @@ import { CartTable } from '@/drizzle/schema/cart'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
 import { createConflictError, createInternalServerError } from '@/lib/errors'
-import { DEFAULT_COOKIE_CONFIG, UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
+import { expireCookies } from '@/utils/session/expireCookie'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -34,22 +34,9 @@ export const POST = async (request: NextRequest) =>
 
         await db.delete(CartTable).where(eq(CartTable.id, cartId))
 
-        const cartIdCookie = serialize('cartId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
-        const checkoutIdCookie = serialize('checkoutId', '', {
-            ...DEFAULT_COOKIE_CONFIG,
-            maxAge: -1,
-        })
+        let response = NextResponse.json({ orderId: order.id }, { status: 200 })
 
-        const response = NextResponse.json(
-            { orderId: order.id },
-            { status: 200 }
-        )
-        response.headers.append('Set-Cookie', cartIdCookie)
-        response.headers.append('Set-Cookie', checkoutIdCookie)
-
+        response = expireCookies(['cartId', 'checkoutId'], response)
         return response
     })
 

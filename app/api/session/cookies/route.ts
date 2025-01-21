@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { eq } from 'drizzle-orm'
+
 import { handleRoute } from '../../shared'
-import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
-import { serialize } from 'cookie'
 import { db } from '@/drizzle/db'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
-import { eq } from 'drizzle-orm'
+import { expireCookies } from '@/utils/session/expireCookie'
 
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -17,36 +17,9 @@ export const DELETE = async (request: NextRequest) =>
         }
 
         let response = new NextResponse(null, { status: 204 })
-        response = appendExpiredCartCookie(response)
-        response = appendExpiredWishlistCookie(response)
-        response = appendExpiredCheckoutCookie(response)
-
+        response = expireCookies(
+            ['cartId', 'wishlistId', 'checkoutId'],
+            response
+        )
         return response
     })
-
-const appendExpiredCartCookie = (response: NextResponse): NextResponse => {
-    const cookie = serialize('cartId', '', {
-        ...DEFAULT_COOKIE_CONFIG,
-        maxAge: -1,
-    })
-    response.headers.append('Set-Cookie', cookie)
-    return response
-}
-
-const appendExpiredWishlistCookie = (response: NextResponse): NextResponse => {
-    const cookie = serialize('wishlistId', '', {
-        ...DEFAULT_COOKIE_CONFIG,
-        maxAge: -1,
-    })
-    response.headers.append('Set-Cookie', cookie)
-    return response
-}
-
-const appendExpiredCheckoutCookie = (response: NextResponse): NextResponse => {
-    const cookie = serialize('cartId', '', {
-        ...DEFAULT_COOKIE_CONFIG,
-        maxAge: -1,
-    })
-    response.headers.append('Set-Cookie', cookie)
-    return response
-}
