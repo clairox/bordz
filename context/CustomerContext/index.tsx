@@ -1,9 +1,12 @@
 'use client'
 
 import { createContext } from 'react'
-import { UseQueryResult } from '@tanstack/react-query'
+import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
-import { useProvideCustomer } from './useProvideCustomer'
+import { useSupabase } from '../SupabaseContext'
+import { useGetSessionUserRole } from '@/hooks/auth'
+import { fetchCustomer } from '@/lib/api'
+import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 
 type CustomerContextValue = UseQueryResult<Customer | null>
 type CustomerProviderProps = React.PropsWithChildren<{
@@ -18,7 +21,38 @@ const CustomerProvider: React.FC<CustomerProviderProps> = ({
     initialData,
     children,
 }) => {
-    const customer = useProvideCustomer(initialData)
+    const supabase = useSupabase()
+    const getSessionUserRole = useGetSessionUserRole()
+
+    const customer = useQuery<Customer | null>({
+        queryKey: ['customer'],
+        queryFn: async () => {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession()
+            if (!session) {
+                return null
+            }
+
+            const {
+                data: { user },
+                error,
+            } = await supabase.auth.getUser(session.access_token)
+
+            if (error) {
+                throw error
+            }
+
+            const userRole = await getSessionUserRole()
+            if (!userRole || userRole !== 'customer') {
+                return null
+            }
+
+            const response = await fetchCustomer(user!.id)
+            return mapCustomerResponseToCustomer(response)
+        },
+        initialData,
+    })
 
     return (
         <CustomerContext.Provider value={customer}>
