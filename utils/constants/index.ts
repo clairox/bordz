@@ -12,6 +12,8 @@ export const DEFAULT_PAGE_NUMBER = 1
 export const DEFAULT_SORT_KEY = 'date-desc'
 export const DEFAULT_ITEM_GRID_COLUMN_COUNT = 4
 
+export const UNEXPECTED_ERROR_TEXT = 'An unexpected error has occurred.'
+
 export const CATEGORIES: Category['label'][] = [
     'Decks',
     'Trucks',

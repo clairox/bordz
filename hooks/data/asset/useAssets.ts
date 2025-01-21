@@ -1,5 +1,9 @@
-import { useSupabase } from '@/context/SupabaseContext'
+'use client'
+
 import { useSuspenseQuery } from '@tanstack/react-query'
+
+import { useSupabase } from '@/context/SupabaseContext'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 export const useAssets = (
     bucket: string,
@@ -14,7 +18,7 @@ export const useAssets = (
             throw error
         }
         if (!data) {
-            throw new Error('An unexpected error has occurred.')
+            throw new Error(UNEXPECTED_ERROR_TEXT)
         }
         return data
             .filter(item => item.name !== '.emptyFolderPlaceholder')
@@ -38,7 +42,7 @@ export const useAssets = (
             throw error
         }
         if (!data) {
-            throw new Error('An unexpected error has occurred.')
+            throw new Error(UNEXPECTED_ERROR_TEXT)
         }
 
         return data.map(item => ({

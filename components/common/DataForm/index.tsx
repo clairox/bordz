@@ -30,6 +30,7 @@ import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
 import { ButtonProps } from '@/components/ui/Button'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -180,10 +181,10 @@ const DataForm = <
                 if (errorMessage) {
                     showMessage(errorMessage)
                 } else {
-                    showMessage('An unexpected error has occurred.')
+                    showMessage(UNEXPECTED_ERROR_TEXT)
                 }
             } else {
-                showMessage('An unexpected error has occurred.')
+                showMessage(UNEXPECTED_ERROR_TEXT)
             }
         }
 

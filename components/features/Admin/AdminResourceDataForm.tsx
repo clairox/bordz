@@ -17,6 +17,7 @@ import { useFormMessage } from '@/hooks/forms'
 import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
 import { SelectedAssets } from '../Assets'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -106,7 +107,7 @@ const AdminResourceDataForm = <
             setSuccess(true)
         } catch (error) {
             console.error(error)
-            showMessage('An unexpected error has occurred.')
+            showMessage(UNEXPECTED_ERROR_TEXT)
         }
 
         setLoading(false)

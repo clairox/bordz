@@ -34,8 +34,7 @@
 -   [ ] Change createBadRequestError to handle Missing required fields:
 -   [ ] Change validateRequestBody to validateRequestData
 -   [ ] Validate request body with zod
--   [ ] Use bucket arg with useImages hook
--   [ ] Create default unexpected error text constant
+-   [x] Create default unexpected error text constant
 -   [ ] Use numbers where necessary in form schemas
 -   [x] Call useParams with <Record<string, string>>
 -   [x] Automatically add ' \*' to form field labels if required

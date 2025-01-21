@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
 import {
-    boardSetup,
     getCart,
     getProduct,
     getRequiredRequestCookie,
@@ -19,6 +18,7 @@ import {
     createInternalServerError,
     createNotFoundError,
 } from '@/lib/errors'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -111,7 +111,7 @@ const createCartLine = async (
         if ((error as Error).message.includes('cart_id_product_id_idx')) {
             throw createConflictError('Cart line')
         } else {
-            throw createInternalServerError('An unexpected error occurred.')
+            throw createInternalServerError(UNEXPECTED_ERROR_TEXT)
         }
     }
 }
@@ -179,7 +179,7 @@ const createCheckoutLine = async (
         if ((error as Error).message.includes('checkout_id_product_id_idx')) {
             throw createConflictError('Checkout line')
         } else {
-            throw createInternalServerError('An unexpected error occurred.')
+            throw createInternalServerError(UNEXPECTED_ERROR_TEXT)
         }
     }
 }

@@ -13,6 +13,7 @@ import {
 import { useCreateAddress } from '@/hooks/data/address'
 import { useUpdateCheckout } from '@/hooks/data/checkout'
 import { useSessionCustomer } from '@/hooks/session'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 const CheckoutForm = () => {
     const stripe = useStripe()
@@ -122,7 +123,7 @@ const CheckoutForm = () => {
             setMessage(error.message!)
             setSubmitting(false)
         } else {
-            setMessage('An unexpected error occurred.')
+            setMessage(UNEXPECTED_ERROR_TEXT)
             setSubmitting(false)
         }
     }

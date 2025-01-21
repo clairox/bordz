@@ -19,6 +19,7 @@ import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'
 import { db } from '@/drizzle/db'
 import { ProductRecord } from '@/types/database'
 import { SortKey } from '@/types/sorting'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -139,7 +140,7 @@ const createWishlistLine = async (
             throw createConflictError('Wishlist line')
         } else {
             console.error(error)
-            throw createInternalServerError('An unexpected error occurred.')
+            throw createInternalServerError(UNEXPECTED_ERROR_TEXT)
         }
     }
 }

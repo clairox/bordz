@@ -8,6 +8,7 @@ import { useSupabase } from '@/context/SupabaseContext'
 import { CustomerCreateArgs } from '@/types/api'
 import { createCustomer } from '@/lib/api'
 import { fetchSessionData } from '@/utils/session'
+import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 export const useSignUp = () => {
     const supabase = useSupabase()
@@ -28,7 +29,7 @@ export const useSignUp = () => {
             }
 
             if (!session) {
-                throw new Error('An unexpected error has occurred.')
+                throw new Error(UNEXPECTED_ERROR_TEXT)
             }
 
             return session

@@ -12,7 +12,7 @@ import { CartTable } from '@/drizzle/schema/cart'
 import { CheckoutTable } from '@/drizzle/schema/checkout'
 import { OrderLineItemTable, OrderTable } from '@/drizzle/schema/order'
 import { createConflictError, createInternalServerError } from '@/lib/errors'
-import { DEFAULT_COOKIE_CONFIG } from '@/utils/constants'
+import { DEFAULT_COOKIE_CONFIG, UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -112,7 +112,7 @@ const createOrder = async (checkout: Checkout) => {
         if ((error as Error).message.includes('order_id_product_id_idx')) {
             throw createConflictError('Order line')
         } else {
-            throw createInternalServerError('An unexpected error occurred.')
+            throw createInternalServerError(UNEXPECTED_ERROR_TEXT)
         }
     }
 }
@@ -129,7 +129,7 @@ const createOrderLines = async (
                     title: line.product?.title ?? 'Item ' + idx,
                     total: line.unitPrice * line.quantity,
                     quantity: line.quantity,
-                    productId: line.productId,
+                    productId: line.product?.id,
                     orderId: newOrderId,
                 }
             })
