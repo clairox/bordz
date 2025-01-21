@@ -8,7 +8,7 @@ import {
     getCartByOwnerId,
     handleRoute,
     getRequiredRequestCookie,
-} from '../shared'
+} from '../../shared'
 import { db } from '@/drizzle/db'
 import { CartLineItemTable, CartTable } from '@/drizzle/schema/cart'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'

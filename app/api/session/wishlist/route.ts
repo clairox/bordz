@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { and, eq, notInArray } from 'drizzle-orm'
 import { serialize } from 'cookie'
 
-import { getWishlist, handleRoute } from '../shared'
+import { getWishlist, handleRoute } from '../../shared'
 import { db } from '@/drizzle/db'
 import { WishlistLineRecord, WishlistRecord } from '@/types/database'
 import { WishlistLineItemTable, WishlistTable } from '@/drizzle/schema/wishlist'

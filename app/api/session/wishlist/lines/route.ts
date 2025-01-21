@@ -9,7 +9,7 @@ import {
     getWishlist,
     handleRoute,
     validateRequestBody,
-} from '../../shared'
+} from '../../../shared'
 import {
     createConflictError,
     createInternalServerError,

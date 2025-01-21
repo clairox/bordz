@@ -28,6 +28,9 @@
 -   [x] Reorganize file structure
 -   [x] Figure out a better naming convention for List and ListItem components
 -   [ ] Use unauthorized error for missing session token
+-   [x] Move /api/cart to /api/session/cart
+-   [x] Move /api/wishlist to /api/session/wishlist
+-   [xj Move /api/checkout to /api/session/checkout
 -   [x] Remove 'Query' and 'Mutation' from react-query query and mutation variable names
 -   [ ] Add 'recommended' (or something) sort key based on views (?)
 -   [x] Paginate admin tables

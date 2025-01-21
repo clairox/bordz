@@ -8,7 +8,7 @@ import {
 export const fetchSessionWishlist = async (
     customerId?: string
 ): Promise<WishlistResponse> => {
-    return await fetchAbsolute<WishlistResponse>('/wishlist', {
+    return await fetchAbsolute<WishlistResponse>('/session/wishlist', {
         method: 'POST',
         body: JSON.stringify({ customerId }),
     })
@@ -37,14 +37,14 @@ export const fetchWishlistLines = async ({
     }
 
     const paramString = params.length ? '?' + params.join('&') : ''
-    const path = '/wishlist/lines' + paramString
+    const path = '/session/wishlist/lines' + paramString
     return await fetchAbsolute<WishlistLinesResponse>(path)
 }
 
 export const createWishlistLine = async (
     productId: string
 ): Promise<WishlistResponse> => {
-    return await fetchAbsolute<WishlistResponse>(`/wishlist/lines`, {
+    return await fetchAbsolute<WishlistResponse>(`/session/wishlist/lines`, {
         method: 'POST',
         body: JSON.stringify({ productId }),
     })
@@ -53,7 +53,10 @@ export const createWishlistLine = async (
 export const deleteWishlistLine = async (
     lineId: string
 ): Promise<WishlistResponse> => {
-    return await fetchAbsolute<WishlistResponse>(`/wishlist/lines/${lineId}`, {
-        method: 'DELETE',
-    })
+    return await fetchAbsolute<WishlistResponse>(
+        `/session/wishlist/lines/${lineId}`,
+        {
+            method: 'DELETE',
+        }
+    )
 }
