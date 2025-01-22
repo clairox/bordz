@@ -1,14 +1,14 @@
 import {
     AddressRecord,
-    BoardSetupRecord,
+    BoardRecord,
     CartLineRecord,
     CartRecord,
     CategoryRecord,
     CheckoutLineRecord,
     CheckoutRecord,
     ColorRecord,
-    ComponentAttributesRecord,
-    ComponentRecord,
+    BoardComponentAttrsRecord,
+    BoardComponentRecord,
     CustomerRecord,
     OrderLineRecord,
     OrderRecord,
@@ -18,22 +18,22 @@ import {
     WishlistLineRecord,
 } from './database'
 
-type BoardSetupQueryResult = BoardSetupRecord & {
-    deck: ComponentSummaryQueryResult
-    trucks: ComponentSummaryQueryResult
-    wheels: ComponentSummaryQueryResult
-    bearings: ComponentSummaryQueryResult
-    hardware: ComponentSummaryQueryResult
-    griptape: ComponentSummaryQueryResult
+type BoardQueryResult = BoardRecord & {
+    deck: BoardComponentSummaryQueryResult
+    trucks: BoardComponentSummaryQueryResult
+    wheels: BoardComponentSummaryQueryResult
+    bearings: BoardComponentSummaryQueryResult
+    hardware: BoardComponentSummaryQueryResult
+    griptape: BoardComponentSummaryQueryResult
 }
 
-type BoardFullQueryResult = BoardSetupRecord & {
-    deck: ComponentQueryResult
-    trucks: ComponentQueryResult
-    wheels: ComponentQueryResult
-    bearings: ComponentQueryResult
-    hardware: ComponentQueryResult
-    griptape: ComponentQueryResult
+type BoardFullQueryResult = BoardRecord & {
+    deck: BoardComponentQueryResult
+    trucks: BoardComponentQueryResult
+    wheels: BoardComponentQueryResult
+    bearings: BoardComponentQueryResult
+    hardware: BoardComponentQueryResult
+    griptape: BoardComponentQueryResult
 }
 
 type CartQueryResult = CartRecord & {
@@ -51,13 +51,13 @@ type CheckoutLineQueryResult = CheckoutLineRecord & {
     product: ProductQueryResult
 }
 
-type ComponentQueryResult = ComponentRecord & {
-    componentAttributes: ComponentAttributesQueryResult
+type BoardComponentQueryResult = BoardComponentRecord & {
+    attrs: BoardComponentAttrsQueryResult
 }
 
-type ComponentSummaryQueryResult = ComponentRecord
+type BoardComponentSummaryQueryResult = BoardComponentRecord
 
-type ComponentAttributesQueryResult = ComponentAttributesRecord & {
+type BoardComponentAttrsQueryResult = BoardComponentAttrsRecord & {
     category: CategoryRecord
     vendor: VendorRecord
     size: SizeRecord

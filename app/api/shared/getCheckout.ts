@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { Checkouts } from '@/drizzle/schema/checkout'
-import { boardSetup } from './'
+import { board } from './'
 
 const getCheckout = async (id: string) => {
     return await db.query.Checkouts.findFirst({
@@ -12,7 +12,7 @@ const getCheckout = async (id: string) => {
                 with: {
                     product: {
                         with: {
-                            boardSetup,
+                            board,
                         },
                     },
                 },

@@ -22,6 +22,6 @@
     },
     "types": ["vitest/globals"],
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "vitest.config.mts", "hooks/data/component/useLoadSelectedComponents/useLoadSelectedComponents", "components/features/Wishlist/AddToWishlistButton"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "vitest.config.mts", "hooks/data/boardComponent/useLoadSelectedComponents/useLoadSelectedBoardComponents", "components/features/Wishlist/AddToWishlistButton"],
   "exclude": ["node_modules"]
 }

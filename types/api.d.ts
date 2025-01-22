@@ -1,11 +1,11 @@
 import { AddressRecord, WishlistRecord } from './database'
 import {
     BoardFullQueryResult,
-    BoardSetupQueryResult,
+    BoardQueryResult,
     CartLineQueryResult,
     CartQueryResult,
     CheckoutQueryResult,
-    ComponentQueryResult,
+    BoardComponentQueryResult,
     CustomerQueryResult,
     OrderQueryResult,
     ProductQueryResult,
@@ -15,12 +15,12 @@ import { SortKey } from './sorting'
 
 /* Responses */
 type AddressResponse = AddressRecord
-type BoardResponse = BoardSetupQueryResult
+type BoardResponse = BoardQueryResult
 type BoardFullResponse = BoardFullQueryResult
 type CartResponse = CartQueryResult
 type CartLineResponse = CartLineQueryResult
 type CheckoutResponse = CheckoutQueryResult
-type ComponentResponse = ComponentQueryResult
+type BoardComponentResponse = BoardComponentQueryResult
 type CustomerResponse = CustomerQueryResult
 type OrderResponse = OrderQueryResult
 type ProductResponse = ProductQueryResult
@@ -43,7 +43,7 @@ type AddressCreateArgs = {
     ownerId?: string
     isCustomerDefault?: boolean
 }
-type ComponentCreateArgs = {
+type BoardComponentCreateArgs = {
     title: string
     price: number
     images?: string[]
@@ -86,7 +86,7 @@ type CheckoutUpdateArgs = Partial<{
     totalShipping: number
     paymentIntentId: string
 }>
-type ComponentUpdateArgs = Partial<{
+type BoardComponentUpdateArgs = Partial<{
     title: string
     price: number
     image: string[]

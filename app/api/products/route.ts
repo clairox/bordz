@@ -7,16 +7,16 @@ import { Boards } from '@/drizzle/schema/board'
 import { createNotFoundError } from '@/lib/errors'
 import {
     calculateNextPageNumber,
-    getComponents,
-    getComponentsOverallAvailability,
-    getComponentsTotalPrice,
+    getBoardComponents,
+    getBoardComponentsOverallAvailability,
+    getBoardComponentsTotalPrice,
     getRequestOptionsParams,
     handleRoute,
     validateRequestBody,
 } from '../shared'
-import { ComponentRecord } from '@/types/database'
+import { BoardComponentRecord } from '@/types/database'
 import { SortKey } from '@/types/sorting'
-import { BoardComponents } from '@/drizzle/schema/component'
+import { BoardComponents } from '@/drizzle/schema/boardComponent'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -67,7 +67,7 @@ export const POST = async (request: NextRequest) =>
             ]
             validateRequestBody(data, requiredFields)
 
-            const components = await getComponents({
+            const boardComponents = await getBoardComponents({
                 deckId: data.deckId,
                 trucksId: data.trucksId,
                 wheelsId: data.wheelsId,
@@ -77,22 +77,25 @@ export const POST = async (request: NextRequest) =>
             })
 
             if (
-                Object.values(components).some(component => component == null)
+                Object.values(boardComponents).some(
+                    boardComponent => boardComponent == null
+                )
             ) {
-                throw createNotFoundError('Component')
+                throw createNotFoundError('BoardComponent')
             }
 
-            const validComponents = components as Record<
+            const validBoardComponents = boardComponents as Record<
                 string,
-                ComponentRecord
+                BoardComponentRecord
             >
 
-            const totalPrice = getComponentsTotalPrice(validComponents)
+            const totalPrice =
+                getBoardComponentsTotalPrice(validBoardComponents)
             const availability =
-                getComponentsOverallAvailability(validComponents)
+                getBoardComponentsOverallAvailability(validBoardComponents)
 
             const { deck, trucks, wheels, bearings, hardware, griptape } =
-                validComponents
+                validBoardComponents
 
             const numberOfBoardsWithSameDeck = await db
                 .select({ count: count() })

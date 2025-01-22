@@ -9,23 +9,23 @@ import { CATEGORIES } from '@/utils/constants'
 import { getCategoryFromType } from '@/utils/domain'
 
 const SLMenu: React.FC = () => {
-    const { activeComponentType } = useSkateLabContext()
+    const { activeBoardComponentType } = useSkateLabContext()
 
     const [currentSection, setCurrentSection] = useState<Category['label']>(
         () => {
-            if (activeComponentType === 'none') {
+            if (activeBoardComponentType === 'none') {
                 return CATEGORIES[0]
             }
 
-            return getCategoryFromType(activeComponentType)
+            return getCategoryFromType(activeBoardComponentType)
         }
     )
 
     useEffect(() => {
-        if (activeComponentType !== 'none') {
-            setCurrentSection(getCategoryFromType(activeComponentType))
+        if (activeBoardComponentType !== 'none') {
+            setCurrentSection(getCategoryFromType(activeBoardComponentType))
         }
-    }, [activeComponentType])
+    }, [activeBoardComponentType])
 
     return (
         <div className="absolute left-0 w-56 h-full border-r border-black pointer-events-auto">

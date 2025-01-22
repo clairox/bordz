@@ -1,8 +1,8 @@
 import * as address from './address'
-import * as boardSetup from './board'
+import * as board from './board'
 import * as cart from './cart'
 import * as checkout from './checkout'
-import * as component from './component'
+import * as boardComponent from './boardComponent'
 import * as order from './order'
 import * as product from './product'
 import * as user from './customer'
@@ -10,10 +10,10 @@ import * as wishlist from './wishlist'
 
 const schema = {
     ...address,
-    ...boardSetup,
+    ...board,
     ...cart,
     ...checkout,
-    ...component,
+    ...boardComponent,
     ...order,
     ...product,
     ...user,

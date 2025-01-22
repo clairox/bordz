@@ -5,7 +5,7 @@ import { Euler, Group, Matrix4, Mesh, Object3D, Vector3 } from 'three'
 
 import { useSkateLabContext } from '@/context/SkateLabContext'
 
-type ComponentFocusData = {
+type BoardComponentFocusData = {
     focusRef: RefObject<Object3D>
     boardRotation: Euler
     cameraOffset: Vector3
@@ -13,7 +13,7 @@ type ComponentFocusData = {
 }
 
 export const useCameraFocus = () => {
-    const { activeComponentType } = useSkateLabContext()
+    const { activeBoardComponentType } = useSkateLabContext()
 
     const [focusTarget, setFocusTarget] = useState(new Vector3(0))
     const [boardRotation, setBoardRotation] = useState(
@@ -32,63 +32,65 @@ export const useCameraFocus = () => {
     const hardwareFocusRef = useRef<Mesh>(null)
     const griptapeFocusRef = useRef<Mesh>(null)
 
-    const componentFoci: Record<ComponentTypeOrNone, ComponentFocusData> =
-        useMemo(() => {
-            return {
-                none: {
-                    focusRef: boardFocusRef,
-                    boardRotation: new Euler(Math.PI / -5, 0, 0),
-                    cameraOffset: new Vector3(50, 40, 40),
-                    cameraZoom: 10,
-                },
-                deck: {
-                    focusRef: deckFocusRef,
-                    boardRotation: new Euler(0),
-                    cameraOffset: new Vector3(0, 0, 100),
-                    cameraZoom: 10,
-                },
-                trucks: {
-                    focusRef: trucksFocusRef,
-                    boardRotation: new Euler(Math.PI / 2, Math.PI, 0),
-                    cameraOffset: new Vector3(0, 0, 100),
-                    cameraZoom: 20,
-                },
-                wheels: {
-                    focusRef: wheelsFocusRef,
-                    boardRotation: new Euler(Math.PI / -5, 0, 0),
-                    cameraOffset: new Vector3(100, 0, 50),
-                    cameraZoom: 40,
-                },
-                bearings: {
-                    focusRef: bearingsFocusRef,
-                    boardRotation: new Euler(Math.PI / -5, 0, 0),
-                    cameraOffset: new Vector3(100, 0, 0),
-                    cameraZoom: 90,
-                },
-                hardware: {
-                    focusRef: hardwareFocusRef,
-                    boardRotation: new Euler(0),
-                    cameraOffset: new Vector3(40, 0, -100),
-                    cameraZoom: 20,
-                },
-                griptape: {
-                    focusRef: griptapeFocusRef,
-                    boardRotation: new Euler(0),
-                    cameraOffset: new Vector3(0, 0, -100),
-                    cameraZoom: 10,
-                },
-            }
-        }, [])
+    const boardComponentFoci: Record<
+        BoardComponentTypeOrNone,
+        BoardComponentFocusData
+    > = useMemo(() => {
+        return {
+            none: {
+                focusRef: boardFocusRef,
+                boardRotation: new Euler(Math.PI / -5, 0, 0),
+                cameraOffset: new Vector3(50, 40, 40),
+                cameraZoom: 10,
+            },
+            deck: {
+                focusRef: deckFocusRef,
+                boardRotation: new Euler(0),
+                cameraOffset: new Vector3(0, 0, 100),
+                cameraZoom: 10,
+            },
+            trucks: {
+                focusRef: trucksFocusRef,
+                boardRotation: new Euler(Math.PI / 2, Math.PI, 0),
+                cameraOffset: new Vector3(0, 0, 100),
+                cameraZoom: 20,
+            },
+            wheels: {
+                focusRef: wheelsFocusRef,
+                boardRotation: new Euler(Math.PI / -5, 0, 0),
+                cameraOffset: new Vector3(100, 0, 50),
+                cameraZoom: 40,
+            },
+            bearings: {
+                focusRef: bearingsFocusRef,
+                boardRotation: new Euler(Math.PI / -5, 0, 0),
+                cameraOffset: new Vector3(100, 0, 0),
+                cameraZoom: 90,
+            },
+            hardware: {
+                focusRef: hardwareFocusRef,
+                boardRotation: new Euler(0),
+                cameraOffset: new Vector3(40, 0, -100),
+                cameraZoom: 20,
+            },
+            griptape: {
+                focusRef: griptapeFocusRef,
+                boardRotation: new Euler(0),
+                cameraOffset: new Vector3(0, 0, -100),
+                cameraZoom: 10,
+            },
+        }
+    }, [])
 
     useEffect(() => {
         const {
-            focusRef: { current: targetComponent },
+            focusRef: { current: targetBoardComponent },
             boardRotation,
             cameraOffset,
             cameraZoom,
-        } = componentFoci[activeComponentType]
+        } = boardComponentFoci[activeBoardComponentType]
 
-        if (!targetComponent) {
+        if (!targetBoardComponent) {
             return
         }
 
@@ -96,24 +98,24 @@ export const useCameraFocus = () => {
             return
         }
 
-        const targetComponentPosition = new Vector3()
-        targetComponent.getWorldPosition(targetComponentPosition)
-        boardFocusRef.current.worldToLocal(targetComponentPosition)
+        const targetBoardComponentPosition = new Vector3()
+        targetBoardComponent.getWorldPosition(targetBoardComponentPosition)
+        boardFocusRef.current.worldToLocal(targetBoardComponentPosition)
 
         const rotationMatrix = new Matrix4()
         rotationMatrix.makeRotationFromEuler(boardRotation)
 
-        targetComponentPosition.applyMatrix4(rotationMatrix)
+        targetBoardComponentPosition.applyMatrix4(rotationMatrix)
 
         const cameraPosition = new Vector3().addVectors(
-            targetComponentPosition,
+            targetBoardComponentPosition,
             cameraOffset
         )
 
-        setFocusTarget(targetComponentPosition)
+        setFocusTarget(targetBoardComponentPosition)
         setCameraProps({ position: cameraPosition, zoom: cameraZoom })
         setBoardRotation(boardRotation)
-    }, [componentFoci, activeComponentType])
+    }, [boardComponentFoci, activeBoardComponentType])
 
     return {
         focusTarget,

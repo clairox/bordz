@@ -1,5 +1,7 @@
-export const getCategoryFromType = (type: ComponentType): Category['label'] => {
-    const componentTypeAsCategory = {
+export const getCategoryFromType = (
+    type: BoardComponentType
+): Category['label'] => {
+    const boardComponentTypeAsCategory = {
         deck: 'Decks',
         trucks: 'Trucks',
         wheels: 'Wheels',
@@ -8,5 +10,5 @@ export const getCategoryFromType = (type: ComponentType): Category['label'] => {
         griptape: 'Griptape',
     }
 
-    return componentTypeAsCategory[type]
+    return boardComponentTypeAsCategory[type]
 }

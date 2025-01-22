@@ -6,15 +6,15 @@ import { Boards } from '@/drizzle/schema/board'
 import { Products } from '@/drizzle/schema/product'
 import { createInternalServerError, createNotFoundError } from '@/lib/errors'
 import {
-    getBoardSetup,
-    getComponents,
-    getComponentsOverallAvailability,
-    getComponentsTotalPrice,
+    getBoard,
+    getBoardComponents,
+    getBoardComponentsOverallAvailability,
+    getBoardComponentsTotalPrice,
     getProduct,
     handleRoute,
     validateRequestBody,
 } from '../../shared'
-import { ComponentRecord } from '@/types/database'
+import { BoardComponentRecord } from '@/types/database'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 
 type Props = DynamicRoutePropsWithParams<{ productId: string }>
@@ -51,7 +51,7 @@ export const PATCH = async (
             ]
             validateRequestBody(data, requiredFields)
 
-            const components = await getComponents({
+            const boardComponents = await getBoardComponents({
                 deckId: data.deckId,
                 trucksId: data.trucksId,
                 wheelsId: data.wheelsId,
@@ -61,19 +61,22 @@ export const PATCH = async (
             })
 
             if (
-                Object.values(components).some(component => component == null)
+                Object.values(boardComponents).some(
+                    boardComponent => boardComponent == null
+                )
             ) {
-                throw createNotFoundError('Component')
+                throw createNotFoundError('BoardComponent')
             }
 
-            const validComponents = components as Record<
+            const validBoardComponents = boardComponents as Record<
                 string,
-                ComponentRecord
+                BoardComponentRecord
             >
 
-            const totalPrice = getComponentsTotalPrice(validComponents)
+            const totalPrice =
+                getBoardComponentsTotalPrice(validBoardComponents)
             const availability =
-                getComponentsOverallAvailability(validComponents)
+                getBoardComponentsOverallAvailability(validBoardComponents)
 
             const updatedProduct = await updateProduct(productId, {
                 price: totalPrice,
@@ -82,9 +85,10 @@ export const PATCH = async (
             })
 
             const { deck, trucks, wheels, bearings, hardware, griptape } =
-                validComponents
+                validBoardComponents
 
-            await updateBoardSetup(updatedProduct.boardSetup!.id, {
+            // BUG: Handle this
+            await updateBoard(updatedProduct.board!.id, {
                 deckId: deck.id,
                 trucksId: trucks.id,
                 wheelsId: wheels.id,
@@ -138,7 +142,7 @@ const updateProduct = async (
     return updatedProduct
 }
 
-const updateBoardSetup = async (
+const updateBoard = async (
     id: string,
     values: {
         deckId?: string
@@ -149,7 +153,7 @@ const updateBoardSetup = async (
         griptapeId?: string
     }
 ) => {
-    const updatedBoardSetup = await db
+    const updatedBoard = await db
         .update(Boards)
         .set({
             deckId: values.deckId,
@@ -162,11 +166,11 @@ const updateBoardSetup = async (
         })
         .where(eq(Boards.id, id))
         .returning()
-        .then(async rows => await getBoardSetup(rows[0].id))
+        .then(async rows => await getBoard(rows[0].id))
 
-    if (!updatedBoardSetup) {
+    if (!updatedBoard) {
         throw createInternalServerError('Failed to update board setup')
     }
 
-    return updatedBoardSetup
+    return updatedBoard
 }

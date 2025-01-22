@@ -46,7 +46,7 @@ const SLUserInterface: React.FC = () => {
 }
 
 const SLConfirmation: React.FC = () => {
-    const { selectedComponents, addBoardSetupToCart, addBoardSetupToWishlist } =
+    const { selectedBoardComponents, addBoardToCart, addBoardToWishlist } =
         useSkateLabContext()
 
     const router = useRouter()
@@ -54,12 +54,12 @@ const SLConfirmation: React.FC = () => {
     const [shouldPublish, setShouldPublish] = useState(false)
 
     const addToCart = async () => {
-        await addBoardSetupToCart(shouldPublish)
+        await addBoardToCart(shouldPublish)
         router.push('/cart')
     }
 
     const addToWishlist = async () => {
-        await addBoardSetupToWishlist(shouldPublish)
+        await addBoardToWishlist(shouldPublish)
         router.push('/wishlist')
     }
 
@@ -71,28 +71,28 @@ const SLConfirmation: React.FC = () => {
             <div className="flex flex-col gap-3 mb-6">
                 <ul className="flex flex-col gap-2">
                     <CompletedBoardDetails
-                        componentType="deck"
-                        component={selectedComponents.deck!}
+                        boardComponentType="deck"
+                        boardComponent={selectedBoardComponents.deck!}
                     />
                     <CompletedBoardDetails
-                        componentType="trucks"
-                        component={selectedComponents.trucks!}
+                        boardComponentType="trucks"
+                        boardComponent={selectedBoardComponents.trucks!}
                     />
                     <CompletedBoardDetails
-                        componentType="wheels"
-                        component={selectedComponents.wheels!}
+                        boardComponentType="wheels"
+                        boardComponent={selectedBoardComponents.wheels!}
                     />
                     <CompletedBoardDetails
-                        componentType="bearings"
-                        component={selectedComponents.bearings!}
+                        boardComponentType="bearings"
+                        boardComponent={selectedBoardComponents.bearings!}
                     />
                     <CompletedBoardDetails
-                        componentType="hardware"
-                        component={selectedComponents.hardware!}
+                        boardComponentType="hardware"
+                        boardComponent={selectedBoardComponents.hardware!}
                     />
                     <CompletedBoardDetails
-                        componentType="griptape"
-                        component={selectedComponents.griptape!}
+                        boardComponentType="griptape"
+                        boardComponent={selectedBoardComponents.griptape!}
                     />
                 </ul>
                 <div className="flex justify-between">
@@ -101,12 +101,11 @@ const SLConfirmation: React.FC = () => {
                     </span>
                     <p className="text-xl">
                         <PriceRepr
-                            value={Object.values(selectedComponents).reduce(
-                                (price, component) => {
-                                    return price + component!.price
-                                },
-                                0
-                            )}
+                            value={Object.values(
+                                selectedBoardComponents
+                            ).reduce((price, boardComponent) => {
+                                return price + boardComponent!.price
+                            }, 0)}
                         />
                     </p>
                 </div>
@@ -137,21 +136,23 @@ const SLConfirmation: React.FC = () => {
 }
 
 type CompletedBoardDetailsProps = {
-    componentType: ComponentType
-    component: Component
+    boardComponentType: BoardComponentType
+    boardComponent: BoardComponent
 }
 
 const CompletedBoardDetails: React.FC<CompletedBoardDetailsProps> = ({
-    componentType,
-    component,
+    boardComponentType,
+    boardComponent,
 }) => {
     return (
         <li>
-            <p className="font-semibold text-lg">{capitalize(componentType)}</p>
+            <p className="font-semibold text-lg">
+                {capitalize(boardComponentType)}
+            </p>
             <div className="flex justify-between">
-                <p className="w-[600px] line-clamp-2">{component.title}</p>
+                <p className="w-[600px] line-clamp-2">{boardComponent.title}</p>
                 <p>
-                    <PriceRepr value={component.price} />
+                    <PriceRepr value={boardComponent.price} />
                 </p>
             </div>
         </li>

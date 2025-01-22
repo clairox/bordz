@@ -6,7 +6,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, OrthographicCamera } from '@react-three/drei'
 
-import { SL3DComponent } from './'
+import { SL3DBoardComponent } from './'
 import { useSkateLabContext } from '@/context/SkateLabContext'
 import { useSupabase } from '@/context/SupabaseContext'
 import { useCameraFocus } from '@/hooks/skateLab'
@@ -22,29 +22,32 @@ const defaultModels = {
 }
 
 export const SL3DViewport: React.FC = () => {
-    const { selectedComponents, setActiveComponentType } = useSkateLabContext()
+    const { selectedBoardComponents, setActiveBoardComponentType } =
+        useSkateLabContext()
 
     const { focusTarget, boardRotation, cameraProps, focusRefs } =
         useCameraFocus()
 
     const [models, setModels] =
-        useState<Record<ComponentType, { object: Object3D; uri?: string }>>(
-            defaultModels
-        )
+        useState<
+            Record<BoardComponentType, { object: Object3D; uri?: string }>
+        >(defaultModels)
 
     const supabase = useSupabase()
 
     useEffect(() => {
-        const keys = Object.keys(selectedComponents) as ComponentType[]
+        const keys = Object.keys(
+            selectedBoardComponents
+        ) as BoardComponentType[]
 
         keys.forEach(key => {
-            const component = selectedComponents[key]
+            const boardComponent = selectedBoardComponents[key]
 
-            if (models[key].uri === component?.model) {
+            if (models[key].uri === boardComponent?.model) {
                 return
             }
 
-            if (!component || !component.model) {
+            if (!boardComponent || !boardComponent.model) {
                 setModels(prev => {
                     return { ...prev, [key]: defaultModels[key] }
                 })
@@ -53,10 +56,12 @@ export const SL3DViewport: React.FC = () => {
 
             const {
                 data: { publicUrl },
-            } = supabase.storage.from('models').getPublicUrl(component.model)
+            } = supabase.storage
+                .from('models')
+                .getPublicUrl(boardComponent.model)
 
             if (!publicUrl) {
-                throw new Error('Component model not found')
+                throw new Error('BoardComponent model not found')
             }
 
             const fbxLoader = new FBXLoader()
@@ -65,14 +70,14 @@ export const SL3DViewport: React.FC = () => {
                 fbx => {
                     if (!fbx) {
                         throw new Error(
-                            'An error has occurred while loading component model'
+                            'An error has occurred while loading boardComponent model'
                         )
                     }
 
                     setModels(prev => {
                         return {
                             ...prev,
-                            [key]: { object: fbx, uri: component.model },
+                            [key]: { object: fbx, uri: boardComponent.model },
                         }
                     })
                 },
@@ -82,10 +87,10 @@ export const SL3DViewport: React.FC = () => {
                 }
             )
         })
-    }, [selectedComponents, models, supabase])
+    }, [selectedBoardComponents, models, supabase])
 
     return (
-        <Canvas onPointerMissed={() => setActiveComponentType('none')}>
+        <Canvas onPointerMissed={() => setActiveBoardComponentType('none')}>
             <OrthographicCamera
                 makeDefault
                 {...cameraProps}
@@ -93,7 +98,7 @@ export const SL3DViewport: React.FC = () => {
                 far={1000}
             />
             <group ref={focusRefs.board} rotation={boardRotation}>
-                <SL3DComponent
+                <SL3DBoardComponent
                     type={'deck'}
                     render={(visible, handleClick) => (
                         <primitive
@@ -107,7 +112,7 @@ export const SL3DViewport: React.FC = () => {
                         />
                     )}
                 />
-                <SL3DComponent
+                <SL3DBoardComponent
                     type={'trucks'}
                     render={(visible, handleClick) => (
                         <Fragment>
@@ -131,7 +136,7 @@ export const SL3DViewport: React.FC = () => {
                         </Fragment>
                     )}
                 />
-                <SL3DComponent
+                <SL3DBoardComponent
                     type={'wheels'}
                     render={(visible, handleClick) => (
                         <Fragment>
@@ -171,7 +176,7 @@ export const SL3DViewport: React.FC = () => {
                         </Fragment>
                     )}
                 />
-                <SL3DComponent
+                <SL3DBoardComponent
                     type={'bearings'}
                     render={(visible, handleClick) => (
                         <Fragment>
@@ -211,7 +216,7 @@ export const SL3DViewport: React.FC = () => {
                         </Fragment>
                     )}
                 />
-                <SL3DComponent
+                <SL3DBoardComponent
                     type={'hardware'}
                     render={(visible, handleClick) => (
                         <Fragment>
@@ -235,7 +240,7 @@ export const SL3DViewport: React.FC = () => {
                         </Fragment>
                     )}
                 />
-                <SL3DComponent
+                <SL3DBoardComponent
                     type={'griptape'}
                     render={(visible, handleClick) => (
                         <primitive

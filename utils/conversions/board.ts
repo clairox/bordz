@@ -1,23 +1,21 @@
-import { BoardFullQueryResult, BoardSetupQueryResult } from '@/types/queries'
+import { BoardFullQueryResult, BoardQueryResult } from '@/types/queries'
 import {
-    mapComponentResponseToComponent,
-    mapComponentResponseToComponentSummary,
+    mapBoardComponentResponseToBoardComponent,
+    mapBoardComponentResponseToBoardComponentSummary,
 } from '.'
 
-export const mapBoardResponseToBoard = (
-    response: BoardSetupQueryResult
-): Board => {
+export const mapBoardResponseToBoard = (response: BoardQueryResult): Board => {
     const { deck, trucks, wheels, bearings, hardware, griptape } = response
 
     return {
         id: response.id,
         productId: response.productId,
-        deck: mapComponentResponseToComponentSummary(deck),
-        trucks: mapComponentResponseToComponentSummary(trucks),
-        wheels: mapComponentResponseToComponentSummary(wheels),
-        bearings: mapComponentResponseToComponentSummary(bearings),
-        hardware: mapComponentResponseToComponentSummary(hardware),
-        griptape: mapComponentResponseToComponentSummary(griptape),
+        deck: mapBoardComponentResponseToBoardComponentSummary(deck),
+        trucks: mapBoardComponentResponseToBoardComponentSummary(trucks),
+        wheels: mapBoardComponentResponseToBoardComponentSummary(wheels),
+        bearings: mapBoardComponentResponseToBoardComponentSummary(bearings),
+        hardware: mapBoardComponentResponseToBoardComponentSummary(hardware),
+        griptape: mapBoardComponentResponseToBoardComponentSummary(griptape),
     }
 }
 
@@ -29,11 +27,11 @@ export const mapBoardResponseToBoardFull = (
     return {
         id: response.id,
         productId: response.productId,
-        deck: mapComponentResponseToComponent(deck),
-        trucks: mapComponentResponseToComponent(trucks),
-        wheels: mapComponentResponseToComponent(wheels),
-        bearings: mapComponentResponseToComponent(bearings),
-        hardware: mapComponentResponseToComponent(hardware),
-        griptape: mapComponentResponseToComponent(griptape),
+        deck: mapBoardComponentResponseToBoardComponent(deck),
+        trucks: mapBoardComponentResponseToBoardComponent(trucks),
+        wheels: mapBoardComponentResponseToBoardComponent(wheels),
+        bearings: mapBoardComponentResponseToBoardComponent(bearings),
+        hardware: mapBoardComponentResponseToBoardComponent(hardware),
+        griptape: mapBoardComponentResponseToBoardComponent(griptape),
     }
 }

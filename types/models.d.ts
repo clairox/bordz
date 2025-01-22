@@ -22,23 +22,23 @@ type AssetData = {
 type Board = {
     id: string
     productId: string
-    deck: ComponentSummary
-    trucks: ComponentSummary
-    wheels: ComponentSummary
-    bearings: ComponentSummary
-    hardware: ComponentSummary
-    griptape: ComponentSummary
+    deck: BoardComponentSummary
+    trucks: BoardComponentSummary
+    wheels: BoardComponentSummary
+    bearings: BoardComponentSummary
+    hardware: BoardComponentSummary
+    griptape: BoardComponentSummary
 }
 
 type BoardFull = {
     id: string
     productId: string
-    deck: Component
-    trucks: Component
-    wheels: Component
-    bearings: Component
-    hardware: Component
-    griptape: Component
+    deck: BoardComponent
+    trucks: BoardComponent
+    wheels: BoardComponent
+    bearings: BoardComponent
+    hardware: BoardComponent
+    griptape: BoardComponent
 }
 
 type Cart = {
@@ -84,7 +84,7 @@ type CheckoutLine = {
     unitPrice: number
 }
 
-type Component = {
+type BoardComponent = {
     id: string
     title: string
     description?: string
@@ -102,7 +102,7 @@ type Component = {
     vendor: Vendor
 }
 
-type ComponentSummary = {
+type BoardComponentSummary = {
     id: string
     title: string
     featuredImage?: string
@@ -202,7 +202,7 @@ type WishlistLine = {
     product: Product
 }
 
-/* Component Attributes */
+/* BoardComponent Attributes */
 
 type Color = {
     id: string

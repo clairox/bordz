@@ -7,10 +7,10 @@ import {
     BoardComponents,
     Sizes,
     Vendors,
-} from './schema/component'
+} from './schema/boardComponent'
 
 const seed = async () => {
-    const components = [
+    const boardComponents = [
         {
             title: 'Baker Deck',
             price: 6995,
@@ -161,35 +161,35 @@ const seed = async () => {
         ])
         .returning()
 
-    console.log('Clearing components...')
+    console.log('Clearing boardComponents...')
     await db.delete(BoardComponents)
     console.log('Done!')
 
-    for (let i = 0; i < components.length; i++) {
-        const component = components[i]
-        console.log(`Creating '${component.title}'...`)
+    for (let i = 0; i < boardComponents.length; i++) {
+        const boardComponent = boardComponents[i]
+        console.log(`Creating '${boardComponent.title}'...`)
 
-        const newComponent = await db
+        const newBoardComponent = await db
             .insert(BoardComponents)
             .values({
-                ...component,
-                handle: createUrlHandle(component.title),
+                ...boardComponent,
+                handle: createUrlHandle(boardComponent.title),
             })
             .returning()
             .then(rows => rows[0])
 
         const createBoardComponentAttrs = async (
-            component: typeof newComponent
+            boardComponent: typeof newBoardComponent
         ) => {
             const attributes = {
-                componentId: '',
+                boardComponentId: '',
                 categoryId: '',
                 vendorId: '',
                 sizeId: '',
                 colorId: '',
             }
 
-            switch (component.title) {
+            switch (boardComponent.title) {
                 case 'Baker Deck':
                     attributes.vendorId = vendors.find(
                         vendor => vendor.name === 'Baker'
@@ -346,29 +346,29 @@ const seed = async () => {
                     break
             }
 
-            if (component.title.endsWith('Deck')) {
+            if (boardComponent.title.endsWith('Deck')) {
                 attributes.categoryId = categories.find(
                     category => category.label === 'Decks'
                 )!.id
 
                 attributes.sizeId = sizes.find(size => size.label === '8.0')!.id
-            } else if (component.title.endsWith('Trucks')) {
+            } else if (boardComponent.title.endsWith('Trucks')) {
                 attributes.categoryId = categories.find(
                     category => category.label === 'Trucks'
                 )!.id
 
                 attributes.sizeId = sizes.find(size => size.label === '144')!.id
-            } else if (component.title.endsWith('Wheels')) {
+            } else if (boardComponent.title.endsWith('Wheels')) {
                 attributes.categoryId = categories.find(
                     category => category.label === 'Wheels'
                 )!.id
-            } else if (component.title.endsWith('Hardware')) {
+            } else if (boardComponent.title.endsWith('Hardware')) {
                 attributes.categoryId = categories.find(
                     category => category.label === 'Hardware'
                 )!.id
 
                 attributes.sizeId = sizes.find(size => size.label === '1.5')!.id
-            } else if (component.title.endsWith('Bearings')) {
+            } else if (boardComponent.title.endsWith('Bearings')) {
                 attributes.categoryId = categories.find(
                     category => category.label === 'Bearings'
                 )!.id
@@ -376,7 +376,7 @@ const seed = async () => {
                 attributes.sizeId = sizes.find(
                     size => size.label === 'One Size'
                 )!.id
-            } else if (component.title.endsWith('Griptape')) {
+            } else if (boardComponent.title.endsWith('Griptape')) {
                 attributes.categoryId = categories.find(
                     category => category.label === 'Griptape'
                 )!.id
@@ -386,12 +386,12 @@ const seed = async () => {
                 )!.id
             }
 
-            attributes.componentId = component.id
+            attributes.boardComponentId = boardComponent.id
 
             await db.insert(BoardComponentAttrs).values(attributes)
         }
 
-        await createBoardComponentAttrs(newComponent)
+        await createBoardComponentAttrs(newBoardComponent)
         console.log('Done!')
     }
 

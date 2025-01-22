@@ -2,17 +2,17 @@
 
 import { eq } from 'drizzle-orm'
 
-import { BoardSetupQueryResult } from '@/types/queries'
+import { BoardQueryResult } from '@/types/queries'
 import { db } from '@/drizzle/db'
 import { Boards } from '@/drizzle/schema/board'
 
 const withAttributes = (
     value: boolean = false
-): { with: { componentAttributes: true } } | true => {
+): { with: { attrs: true } } | true => {
     if (value) {
         return {
             with: {
-                componentAttributes: true,
+                attrs: true,
             },
         }
     } else {
@@ -23,7 +23,7 @@ const withAttributes = (
 export async function getBoardByProductId(
     productId: string,
     full: boolean = false
-): Promise<BoardSetupQueryResult | undefined> {
+): Promise<BoardQueryResult | undefined> {
     return await db.query.Boards.findFirst({
         where: eq(Boards.productId, productId),
         with: {

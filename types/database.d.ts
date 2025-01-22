@@ -9,22 +9,22 @@ import {
     BoardComponents,
     Sizes,
     Vendors,
-} from '@/drizzle/schema/component'
+} from '@/drizzle/schema/boardComponent'
 import { OrderLines, Orders } from '@/drizzle/schema/order'
 import { Products } from '@/drizzle/schema/product'
 import { Customers } from '@/drizzle/schema/customer'
 import { WishlistItems, Wishlists } from '@/drizzle/schema/wishlist'
 
 type AddressRecord = typeof Addresses.$inferSelect
-type BoardSetupRecord = typeof Boards.$inferSelect
+type BoardRecord = typeof Boards.$inferSelect
 type CartRecord = typeof Carts.$inferSelect
 type CartLineRecord = typeof CartLines.$inferSelect
 type CategoryRecord = typeof Categories.$inferSelect
 type CheckoutRecord = typeof Checkouts.$inferSelect
 type CheckoutLineRecord = typeof CheckoutLines.$inferSelect
 type ColorRecord = typeof Colors.$inferSelect
-type ComponentRecord = typeof BoardComponents.$inferSelect
-type ComponentAttributesRecord = typeof BoardComponentAttrs.$inferSelect
+type BoardComponentRecord = typeof BoardComponents.$inferSelect
+type BoardComponentAttrsRecord = typeof BoardComponentAttrs.$inferSelect
 type OrderRecord = typeof Orders.$inferSelect
 type OrderLineRecord = typeof OrderLines.$inferSelect
 type ProductRecord = typeof Products.$inferSelect

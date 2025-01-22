@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { db } from '@/drizzle/db'
 import { handleRoute, validateRequestBody } from '../shared'
-import { Colors } from '@/drizzle/schema/component'
+import { Colors } from '@/drizzle/schema/boardComponent'
 
 export const GET = async () =>
     await handleRoute(async () => {

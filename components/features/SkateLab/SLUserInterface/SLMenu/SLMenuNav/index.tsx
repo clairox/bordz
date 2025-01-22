@@ -9,7 +9,7 @@ type SLMenuNavProps = {
     currentSection: Category['label']
 }
 const SLMenuNav: React.FC<SLMenuNavProps> = ({ currentSection }) => {
-    const { setActiveComponentType } = useSkateLabContext()
+    const { setActiveBoardComponentType } = useSkateLabContext()
 
     const isFirstSection = CATEGORIES.indexOf(currentSection) === 0
     const isLastSection =
@@ -43,7 +43,7 @@ const SLMenuNav: React.FC<SLMenuNavProps> = ({ currentSection }) => {
             throw new Error(`Invalid direction input: ${direction}`)
         }
 
-        setActiveComponentType(getTypeFromCategory(sectionToNavigateTo))
+        setActiveBoardComponentType(getTypeFromCategory(sectionToNavigateTo))
     }
 
     return (

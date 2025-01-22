@@ -1,7 +1,7 @@
 'use client'
 
-import SLComponentList from '../SLComponentList'
-import { useComponents } from '@/hooks/data/component'
+import SLBoardComponentList from '../SLBoardComponentList'
+import { useBoardComponents } from '@/hooks/data/boardComponent'
 import InfiniteList from '@/components/common/InfiniteList'
 import { Fragment } from 'react'
 
@@ -10,7 +10,7 @@ type SLMenuSectionProps = {
 }
 
 const SLMenuSection: React.FC<SLMenuSectionProps> = ({ section }) => {
-    const { data, hasNextPage, fetchNextPage } = useComponents({
+    const { data, hasNextPage, fetchNextPage } = useBoardComponents({
         size: 10,
         category: section,
     })
@@ -24,7 +24,7 @@ const SLMenuSection: React.FC<SLMenuSectionProps> = ({ section }) => {
                     fetchNextPage={fetchNextPage}
                     render={items => (
                         <Fragment>
-                            <SLComponentList components={items} />
+                            <SLBoardComponentList boardComponents={items} />
                             <div className="h-full border-t border-black">
                                 <p className="py-2 text-center text-gray-700">
                                     Showing {items.length} of {items.length}

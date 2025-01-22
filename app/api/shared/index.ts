@@ -1,14 +1,14 @@
-import boardSetup from './boardSetup'
+import board from './board'
 import calculateNextPageNumber from './calculateNextPageNumber'
 import decodeSessionToken from './decodeSessionToken'
 import handleRoute from './handleRoute'
-import getBoardSetup from './getBoardSetup'
+import getBoard from './getBoard'
 import getCart from './getCart'
 import getCartByOwnerId from './getCartByOwnerId'
 import getCheckout from './getCheckout'
-import getComponents from './getComponents'
-import getComponentsOverallAvailability from './getComponentsOverallAvailability'
-import getComponentsTotalPrice from './getComponentsTotalPrice'
+import getBoardComponents from './getBoardComponents'
+import getBoardComponentsOverallAvailability from './getBoardComponentsOverallAvailability'
+import getBoardComponentsTotalPrice from './getBoardComponentsTotalPrice'
 import getCustomerByUserId from './getCustomer'
 import getProduct from './getProduct'
 import getRequestOptionsParams from './getRequestOptions'
@@ -19,17 +19,17 @@ import updateCheckout from './updateCheckout'
 import validateRequestBody from './validateRequestBody'
 
 export {
-    boardSetup,
+    board,
     calculateNextPageNumber,
     decodeSessionToken,
     handleRoute,
-    getBoardSetup,
+    getBoard,
     getCart,
     getCartByOwnerId,
     getCheckout,
-    getComponents,
-    getComponentsOverallAvailability,
-    getComponentsTotalPrice,
+    getBoardComponents,
+    getBoardComponentsOverallAvailability,
+    getBoardComponentsTotalPrice,
     getCustomerByUserId,
     getProduct,
     getRequestOptionsParams,

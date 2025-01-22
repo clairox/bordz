@@ -16,5 +16,5 @@ export const Products = pgTableWithAutoFields('products', {
 })
 
 export const ProductRelations = relations(Products, ({ one }) => ({
-    boardSetup: one(Boards),
+    board: one(Boards),
 }))

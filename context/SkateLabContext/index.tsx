@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 
-import { useLoadSelectedComponents } from '@/hooks/data/component'
+import { useLoadSelectedBoardComponents } from '@/hooks/data/boardComponent'
 import { useAddCartLine } from '@/hooks/data/cart'
 import { useAddWishlistLine } from '@/hooks/data/wishlist'
 import fetchAbsolute from '@/lib/fetchAbsolute'
@@ -12,18 +12,24 @@ import { ProductResponse } from '@/types/api'
 import { mapProductResponseToProduct } from '@/utils/conversions'
 
 type SkateLabContextValue = {
-    selectedComponents: Record<ComponentType, Component | undefined>
+    selectedBoardComponents: Record<
+        BoardComponentType,
+        BoardComponent | undefined
+    >
     associatedProductId: string | undefined
-    activeComponentType: ComponentTypeOrNone
+    activeBoardComponentType: BoardComponentTypeOrNone
     mode: SkateLabMode
     isComplete: boolean
     isTouched: boolean
     loading: boolean
-    selectComponent: (type: ComponentType, component: Component) => void
-    setActiveComponentType: (type: ComponentTypeOrNone) => void
+    selectBoardComponent: (
+        type: BoardComponentType,
+        boardComponent: BoardComponent
+    ) => void
+    setActiveBoardComponentType: (type: BoardComponentTypeOrNone) => void
     finishEditing: () => Promise<void>
-    addBoardSetupToCart: (publish?: boolean) => Promise<void>
-    addBoardSetupToWishlist: (publish?: boolean) => Promise<void>
+    addBoardToCart: (publish?: boolean) => Promise<void>
+    addBoardToWishlist: (publish?: boolean) => Promise<void>
     reset: () => void
 }
 
@@ -42,33 +48,38 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
 
     const {
         data: { productId: associatedProductId, ...board },
-    } = useLoadSelectedComponents(mode, id)
+    } = useLoadSelectedBoardComponents(mode, id)
 
     const [loading, setLoading] = useState(true)
 
-    const [selectedComponents, setSelectedComponents] =
-        useState<Record<ComponentType, Component | undefined>>(board)
-    const [activeComponentType, setActiveComponentType] =
-        useState<ComponentTypeOrNone>('none')
+    const [selectedBoardComponents, setSelectedBoardComponents] =
+        useState<Record<BoardComponentType, BoardComponent | undefined>>(board)
+    const [activeBoardComponentType, setActiveBoardComponentType] =
+        useState<BoardComponentTypeOrNone>('none')
 
-    const isComplete = !Object.values(selectedComponents).includes(undefined)
-    const isTouched = !Object.values(selectedComponents).every(
-        component => component == undefined
+    const isComplete = !Object.values(selectedBoardComponents).includes(
+        undefined
+    )
+    const isTouched = !Object.values(selectedBoardComponents).every(
+        boardComponent => boardComponent == undefined
     )
 
-    const selectComponent = (type: ComponentType, component: Component) => {
-        setSelectedComponents(prev => {
-            const updatedSelectedComponents = { ...prev }
-            updatedSelectedComponents[type] = component
-            return updatedSelectedComponents
+    const selectBoardComponent = (
+        type: BoardComponentType,
+        boardComponent: BoardComponent
+    ) => {
+        setSelectedBoardComponents(prev => {
+            const updatedSelectedBoardComponents = { ...prev }
+            updatedSelectedBoardComponents[type] = boardComponent
+            return updatedSelectedBoardComponents
         })
     }
 
-    const createProductFromSelectedComponents = async (
+    const createProductFromSelectedBoardComponents = async (
         publish?: boolean
     ): Promise<Product> => {
         const { deck, trucks, wheels, bearings, hardware, griptape } =
-            selectedComponents
+            selectedBoardComponents
 
         const data = await fetchAbsolute<ProductResponse>('/products', {
             method: 'POST',
@@ -89,13 +100,13 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     const { mutateAsync: addCartLine } = useAddCartLine()
     const { mutateAsync: addWishlistLine } = useAddWishlistLine()
 
-    const { mutateAsync: updateBoardSetup } = useMutation({
+    const { mutateAsync: updateBoard } = useMutation({
         mutationFn: async ({
             id,
-            components,
+            boardComponents,
         }: {
             id: string
-            components: Record<ComponentType, string>
+            boardComponents: Record<BoardComponentType, string>
         }) => {
             const data = await fetchAbsolute<ProductResponse>(
                 `/products/${id}`,
@@ -103,12 +114,12 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
                     method: 'PATCH',
                     body: JSON.stringify({
                         type: 'board',
-                        deckId: components.deck,
-                        trucksId: components.trucks,
-                        wheelsId: components.wheels,
-                        bearingsId: components.bearings,
-                        hardwareId: components.hardware,
-                        griptapeId: components.griptape,
+                        deckId: boardComponents.deck,
+                        trucksId: boardComponents.trucks,
+                        wheelsId: boardComponents.wheels,
+                        bearingsId: boardComponents.bearings,
+                        hardwareId: boardComponents.hardware,
+                        griptapeId: boardComponents.griptape,
                     }),
                 }
             )
@@ -130,9 +141,9 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         //     return
         // }
         //
-        // await updateBoardSetup({
+        // await updateBoard({
         //     id: productId,
-        //     components: selectedComponents as Record<ComponentType, string>,
+        //     boardComponents: selectedBoardComponents as Record<BoardComponentType, string>,
         // })
         //
         // queryClient.invalidateQueries({ queryKey: ['cart'] })
@@ -140,34 +151,34 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         setLoading(false)
     }
 
-    const addBoardSetupToCart = async (publish?: boolean) => {
+    const addBoardToCart = async (publish?: boolean) => {
         if (!isComplete) {
             return
         }
 
         setLoading(true)
 
-        const product = await createProductFromSelectedComponents(publish)
+        const product = await createProductFromSelectedBoardComponents(publish)
         await addCartLine({ productId: product.id })
 
         setLoading(false)
     }
 
-    const addBoardSetupToWishlist = async (publish?: boolean) => {
+    const addBoardToWishlist = async (publish?: boolean) => {
         if (!isComplete) {
             return
         }
 
         setLoading(true)
 
-        const product = await createProductFromSelectedComponents(publish)
+        const product = await createProductFromSelectedBoardComponents(publish)
         await addWishlistLine({ productId: product.id })
 
         setLoading(false)
     }
 
     const reset = () => {
-        setSelectedComponents({
+        setSelectedBoardComponents({
             deck: undefined,
             trucks: undefined,
             wheels: undefined,
@@ -180,18 +191,18 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     return (
         <SkateLabContext.Provider
             value={{
-                selectedComponents,
+                selectedBoardComponents,
                 associatedProductId,
-                activeComponentType,
+                activeBoardComponentType,
                 mode,
                 isComplete,
                 isTouched,
                 loading,
-                selectComponent,
-                setActiveComponentType,
+                selectBoardComponent,
+                setActiveBoardComponentType,
                 finishEditing,
-                addBoardSetupToCart,
-                addBoardSetupToWishlist,
+                addBoardToCart,
+                addBoardToWishlist,
                 reset,
             }}
         >
