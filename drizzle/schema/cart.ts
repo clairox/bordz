@@ -28,12 +28,15 @@ export const CartLines = pgTableWithAutoFields(
             .references(() => Carts.id, { onDelete: 'cascade' })
             .notNull(),
     },
-    table => ({
-        cartIdProductIdIdx: uniqueIndex('cart_id_product_id_idx').on(
-            table.cartId,
-            table.productId
-        ),
-    })
+    table => [
+        uniqueIndex('cart_id_product_id_idx').on(table.cartId, table.productId),
+    ]
+    // table => ({
+    //     cartIdProductIdIdx: uniqueIndex('cart_id_product_id_idx').on(
+    //         table.cartId,
+    //         table.productId
+    //     ),
+    // })
 )
 
 export const CartRelations = relations(Carts, ({ one, many }) => ({

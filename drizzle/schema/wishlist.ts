@@ -26,12 +26,18 @@ export const WishlistItems = pgTableWithAutoFields(
             })
             .notNull(),
     },
-    table => ({
-        wishlistIdProductIdIdx: uniqueIndex('wishlist_id_product_id_idx').on(
+    table => [
+        uniqueIndex('wishlist_id_product_id_idx').on(
             table.wishlistId,
             table.productId
         ),
-    })
+    ]
+    // table => ({
+    //     wishlistIdProductIdIdx: uniqueIndex('wishlist_id_product_id_idx').on(
+    //         table.wishlistId,
+    //         table.productId
+    //     ),
+    // })
 )
 
 export const WishlistRelations = relations(Wishlists, ({ one, many }) => ({

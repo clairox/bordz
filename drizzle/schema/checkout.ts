@@ -49,12 +49,18 @@ export const CheckoutLines = pgTableWithAutoFields(
             .references(() => Checkouts.id, { onDelete: 'cascade' })
             .notNull(),
     },
-    table => ({
-        checkoutIdProductIdIdx: uniqueIndex('checkout_id_product_id_idx').on(
+    table => [
+        uniqueIndex('checkout_id_product_id_idx').on(
             table.checkoutId,
             table.productId
         ),
-    })
+    ]
+    // table => ({
+    //     checkoutIdProductIdIdx: uniqueIndex('checkout_id_product_id_idx').on(
+    //         table.checkoutId,
+    //         table.productId
+    //     ),
+    // })
 )
 
 export const CheckoutRelations = relations(Checkouts, ({ one, many }) => ({

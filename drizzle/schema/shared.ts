@@ -16,6 +16,7 @@ import {
     pgTable,
     timestamp,
     PgCustomColumnBuilder,
+    PgTableExtraConfigValue,
 } from 'drizzle-orm/pg-core'
 
 type GeneratedPrimaryKey = IsPrimaryKey<
@@ -62,7 +63,7 @@ export const pgTableWithAutoFields = <
     columns: TColumnsMap,
     extraConfig?: (
         self: BuildExtraConfigColumns<TTableName, TColumnsMap, 'pg'>
-    ) => PgTableExtraConfig
+    ) => PgTableExtraConfigValue[]
 ): PgTableWithColumns<{
     name: TTableName
     schema: undefined

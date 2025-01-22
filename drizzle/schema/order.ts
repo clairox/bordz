@@ -35,12 +35,18 @@ export const OrderLines = pgTableWithAutoFields(
             .references(() => Orders.id, { onDelete: 'cascade' })
             .notNull(),
     },
-    table => ({
-        orderIdProductIdIdx: uniqueIndex('order_id_product_id_idx').on(
+    table => [
+        uniqueIndex('order_id_product_id_idx').on(
             table.orderId,
             table.productId
         ),
-    })
+    ]
+    // table => ({
+    //     orderIdProductIdIdx: uniqueIndex('order_id_product_id_idx').on(
+    //         table.orderId,
+    //         table.productId
+    //     ),
+    // })
 )
 
 export const OrderRelations = relations(Orders, ({ one, many }) => ({

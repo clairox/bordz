@@ -31,11 +31,16 @@ export const Addresses = pgTableWithAutoFields(
             onDelete: 'set null',
         }),
     },
-    table => ({
-        ownerIdFullNameAddressIdx: uniqueIndex('owner_id_full_name_address_idx')
+    table => [
+        uniqueIndex('owner_id_full_name_address_idx')
             .on(table.ownerId, table.fullName, table.formatted)
             .where(isNotNull(table.ownerId)),
-    })
+    ]
+    // table => ({
+    //     ownerIdFullNameAddressIdx: uniqueIndex('owner_id_full_name_address_idx')
+    //         .on(table.ownerId, table.fullName, table.formatted)
+    //         .where(isNotNull(table.ownerId)),
+    // })
 )
 
 export const AddressRelations = relations(Addresses, ({ one }) => ({
