@@ -18,7 +18,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "api/*": ["./app/api/*"],
+      "services/*": ["./lib/services/*"],
+      "db/*": ["./lib/db/*"]
     },
     "types": ["vitest/globals"],
   },
