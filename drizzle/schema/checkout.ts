@@ -33,13 +33,14 @@ export const Checkouts = pgTableWithAutoFields('checkouts', {
         { onDelete: 'set null' }
     ),
     orderId: shortUuid('order_id').references(() => Orders.id, {
-        onDelete: 'cascade',
+        onDelete: 'set null',
     }),
 })
 
 export const CheckoutLines = pgTableWithAutoFields(
     'checkout_lines',
     {
+        // TODO: Figure this out
         unitPrice: integer('total').default(0).notNull(),
         quantity: smallint('quantity').default(1).notNull(),
         productId: shortUuid('product_id').references(() => Products.id, {
@@ -55,12 +56,6 @@ export const CheckoutLines = pgTableWithAutoFields(
             table.productId
         ),
     ]
-    // table => ({
-    //     checkoutIdProductIdIdx: uniqueIndex('checkout_id_product_id_idx').on(
-    //         table.checkoutId,
-    //         table.productId
-    //     ),
-    // })
 )
 
 export const CheckoutRelations = relations(Checkouts, ({ one, many }) => ({

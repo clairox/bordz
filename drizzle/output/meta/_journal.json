@@ -113,6 +113,13 @@
       "when": 1737498987984,
       "tag": "0015_goofy_turbo",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1737523598806,
+      "tag": "0016_goofy_boomer",
+      "breakpoints": true
     }
   ]
 }

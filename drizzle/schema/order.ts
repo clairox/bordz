@@ -41,12 +41,6 @@ export const OrderLines = pgTableWithAutoFields(
             table.productId
         ),
     ]
-    // table => ({
-    //     orderIdProductIdIdx: uniqueIndex('order_id_product_id_idx').on(
-    //         table.orderId,
-    //         table.productId
-    //     ),
-    // })
 )
 
 export const OrderRelations = relations(Orders, ({ one, many }) => ({

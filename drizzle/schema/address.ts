@@ -36,11 +36,6 @@ export const Addresses = pgTableWithAutoFields(
             .on(table.ownerId, table.fullName, table.formatted)
             .where(isNotNull(table.ownerId)),
     ]
-    // table => ({
-    //     ownerIdFullNameAddressIdx: uniqueIndex('owner_id_full_name_address_idx')
-    //         .on(table.ownerId, table.fullName, table.formatted)
-    //         .where(isNotNull(table.ownerId)),
-    // })
 )
 
 export const AddressRelations = relations(Addresses, ({ one }) => ({

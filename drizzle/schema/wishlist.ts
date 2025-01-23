@@ -32,12 +32,6 @@ export const WishlistItems = pgTableWithAutoFields(
             table.productId
         ),
     ]
-    // table => ({
-    //     wishlistIdProductIdIdx: uniqueIndex('wishlist_id_product_id_idx').on(
-    //         table.wishlistId,
-    //         table.productId
-    //     ),
-    // })
 )
 
 export const WishlistRelations = relations(Wishlists, ({ one, many }) => ({
@@ -45,7 +39,7 @@ export const WishlistRelations = relations(Wishlists, ({ one, many }) => ({
         fields: [Wishlists.ownerId],
         references: [Customers.id],
     }),
-    lines: many(WishlistItems),
+    items: many(WishlistItems),
 }))
 
 export const WishlistItemRelations = relations(WishlistItems, ({ one }) => ({
