@@ -166,7 +166,9 @@ type OrderLine = {
 
 type Page<T> = {
     data: T[]
-    nextPage?: number
+    totalCount: number
+    totalPages: number
+    nextPage?: number | null
 }
 
 type Product = {

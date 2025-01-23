@@ -17,15 +17,12 @@ import {
 } from '../errors'
 import { AddWishlistItemValues, CreateWishlistValues } from '@/types/services'
 import { PaginatedQueryOptions } from '@/types/api'
-import { SortKey } from '@/types/sorting'
-import { asc, desc, SQL } from 'drizzle-orm'
-import { WishlistItems } from '@/drizzle/schema/wishlist'
 import {
     DEFAULT_PAGE_NUMBER,
     DEFAULT_PAGE_SIZE,
     DEFAULT_SORT_KEY,
 } from '@/utils/constants'
-import { calculateNextPage } from '@/utils/math'
+import { calculateNextPage, calculateTotalPages } from '@/utils/math'
 
 export async function createWishlist(
     values?: CreateWishlistValues
@@ -88,27 +85,14 @@ export async function mergeWishlists(
     return mergedWishlist!
 }
 
-export async function getWishlistItemsByWishlistId(
-    id: string,
-    options?: PaginatedQueryOptions
-): Promise<{ items: WishlistLineQueryResult[]; nextPage: number | undefined }> {
-    const sorts: Partial<Record<SortKey, SQL>> = {
-        'date-desc': desc(WishlistItems.createdAt),
-        'date-asc': asc(WishlistItems.createdAt),
+export async function getWishlistItem(
+    id: string
+): Promise<WishlistLineQueryResult> {
+    const wishlistItem = await _getWishlistItem(id)
+    if (!wishlistItem) {
+        throw createNotFoundError('Wishlist item')
     }
-
-    const page = options?.page ?? DEFAULT_PAGE_NUMBER
-    const size = options?.page ?? DEFAULT_PAGE_SIZE
-    const orderBy = options?.orderBy ?? DEFAULT_SORT_KEY
-
-    const { items, totalCount } = await _getWishlistItemsByWishlistId(id, {
-        limit: size,
-        offset: (page - 1) * size,
-        orderBy: sorts[orderBy],
-    })
-
-    const nextPage = calculateNextPage(page, size, totalCount)
-    return { items, nextPage }
+    return wishlistItem
 }
 
 export async function addWishlistItem(
@@ -150,12 +134,21 @@ export async function removeWishlistItem(
     return updatedWishlist
 }
 
-export async function getWishlistItem(
-    id: string
-): Promise<WishlistLineQueryResult> {
-    const wishlistItem = await _getWishlistItem(id)
-    if (!wishlistItem) {
-        throw createNotFoundError('Wishlist item')
-    }
-    return wishlistItem
+export async function getWishlistItemsByWishlistId(
+    id: string,
+    options?: PaginatedQueryOptions
+): Promise<Page<WishlistLineQueryResult>> {
+    const page = options?.page ?? DEFAULT_PAGE_NUMBER
+    const size = options?.size ?? DEFAULT_PAGE_SIZE
+    const orderBy = options?.orderBy ?? DEFAULT_SORT_KEY
+
+    const { items, totalCount } = await _getWishlistItemsByWishlistId(id, {
+        limit: size,
+        offset: (page - 1) * size,
+        orderBy,
+    })
+
+    const totalPages = calculateTotalPages(size, totalCount)
+    const nextPage = calculateNextPage(page, size, totalCount)
+    return { data: items, totalCount, totalPages, nextPage }
 }

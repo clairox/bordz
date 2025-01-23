@@ -18,11 +18,8 @@ export const GET = async (request: NextRequest) =>
             'wishlistId'
         )
         const options = getRequestOptionsParams(request)
-        const { items, nextPage } = await getWishlistItemsByWishlistId(
-            wishlistId,
-            options
-        )
-        return NextResponse.json({ data: items, nextPage })
+        const data = await getWishlistItemsByWishlistId(wishlistId, options)
+        return NextResponse.json(data)
     })
 
 export const POST = async (request: NextRequest) =>

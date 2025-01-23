@@ -1,6 +1,6 @@
 'use server'
 
-import { and, count, eq, SQL } from 'drizzle-orm'
+import { and, asc, desc, eq, SQL } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { WishlistItems, Wishlists } from '@/drizzle/schema/wishlist'
@@ -15,6 +15,8 @@ import {
     createInternalServerError,
     createNotFoundError,
 } from '../errors'
+import { DEFAULT_SORT_KEY } from '@/utils/constants'
+import { SortKey } from '@/types/sorting'
 
 /* Wishlist */
 
@@ -151,22 +153,31 @@ export async function deleteWishlistItem(id: string): Promise<string> {
 
 export async function getWishlistItemsByWishlistId(
     id: string,
-    options?: { limit?: number; offset?: number; orderBy?: SQL }
+    options?: { limit?: number; offset?: number; orderBy?: SortKey }
 ): Promise<{ items: WishlistLineQueryResult[]; totalCount: number }> {
+    const sorts: Partial<Record<SortKey, SQL>> = {
+        'date-desc': desc(WishlistItems.createdAt),
+        'date-asc': asc(WishlistItems.createdAt),
+    }
+
+    const orderBy = sorts[options?.orderBy ?? DEFAULT_SORT_KEY]
+
     const items = await db.query.WishlistItems.findMany({
         where: eq(WishlistItems.wishlistId, id),
         limit: options?.limit,
         offset: options?.offset,
-        orderBy: options?.orderBy,
+        orderBy,
         with: {
             product: true,
         },
     })
-    const [{ count: _count }] = await db
-        .select({ count: count(WishlistItems) })
-        .from(WishlistItems)
-        .where(eq(WishlistItems.wishlistId, id))
-    return { items, totalCount: _count }
+
+    const totalCount = await db.$count(
+        WishlistItems,
+        eq(WishlistItems.wishlistId, id)
+    )
+
+    return { items, totalCount }
 }
 
 export async function createWishlistItems(
