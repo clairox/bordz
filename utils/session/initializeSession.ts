@@ -37,11 +37,11 @@ export const initializeSession = async (
                 throw err
             })
     } else {
-        cart = await fetchSessionCart(customer?.id)
-            .then(res => mapCartResponseToCart(res))
-            .catch(err => {
-                throw err
-            })
+        // cart = await fetchSessionCart(customer?.id)
+        //     .then(res => mapCartResponseToCart(res))
+        //     .catch(err => {
+        //         throw err
+        //     })
     }
 
     let wishlist: Wishlist | undefined = undefined
@@ -52,11 +52,11 @@ export const initializeSession = async (
                 throw err
             })
     } else {
-        wishlist = await fetchSessionWishlist(customer?.id)
-            .then(res => mapWishlistResponseToWishlist(res))
-            .catch(err => {
-                throw err
-            })
+        // wishlist = await fetchSessionWishlist(customer?.id)
+        //     .then(res => mapWishlistResponseToWishlist(res))
+        //     .catch(err => {
+        //         throw err
+        //     })
     }
 
     return { customer, cart, wishlist }
