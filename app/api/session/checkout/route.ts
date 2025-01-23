@@ -1,49 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serialize } from 'cookie'
-import { eq } from 'drizzle-orm'
 
-import {
-    getCart,
-    getCheckout,
-    getRequiredRequestCookie,
-    handleRoute,
-} from '@/app/api/shared'
-import { calculateTaxManually } from '@/utils/domain'
-import { db } from '@/drizzle/db'
-import { CheckoutLines, Checkouts } from '@/drizzle/schema/checkout'
-import { createInternalServerError, createNotFoundError } from '@/lib/errors'
-import { DEFAULT_COOKIE_CONFIG, SHIPPING_COST } from '@/utils/constants'
-import { CartQueryResult, CartLineQueryResult } from '@/types/queries'
+import { getRequiredRequestCookie, handleRoute } from '@/app/api/shared'
+import { getCheckout } from 'db/checkout'
+import { attachCheckout, updateCheckout } from 'services/checkout'
+import { appendCookie } from '@/utils/session'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
         const checkoutId = request.cookies.get('checkoutId')?.value
-        const checkout = checkoutId ? await getCheckout(checkoutId) : undefined
+        let checkout = checkoutId ? await getCheckout(checkoutId) : undefined
 
         if (!checkout) {
             const { value: cartId } = getRequiredRequestCookie(
                 request,
                 'cartId'
             )
-
-            const cart = await getCart(cartId)
-            if (!cart) {
-                throw createNotFoundError('Cart')
-            }
-
-            const newCheckout = await createCheckout(cart)
-
-            const cookie = serialize('checkoutId', newCheckout.id, {
-                ...DEFAULT_COOKIE_CONFIG,
-                maxAge: 60 * 60 * 24,
-            })
-
-            const response = NextResponse.json(newCheckout)
-            response.headers.append('Set-Cookie', cookie)
-            return response
+            checkout = await attachCheckout(cartId)
         }
 
-        return NextResponse.json(checkout)
+        let response = NextResponse.json(checkout)
+        const maxAge = 60 * 60 * 24
+        response = appendCookie('checkoutId', checkout.id, response, { maxAge })
+        return response
     })
 
 export const PATCH = async (request: NextRequest) =>
@@ -53,71 +31,11 @@ export const PATCH = async (request: NextRequest) =>
             'checkoutId'
         )
         const data = await request.json()
-
-        const updatedCheckout = await db
-            .update(Checkouts)
-            .set({
-                subtotal: data.subtotal,
-                total: data.total,
-                totalShipping: data.totalShipping,
-                totalTax: data.totalTax,
-                email: data.email,
-                shippingAddressId: data.shippingAddressId,
-                paymentIntentId: data.paymentIntentId,
-                updatedAt: new Date(),
-            })
-            .where(eq(Checkouts.id, checkoutId))
-            .returning()
-            .then(async rows => await getCheckout(rows[0].id))
-
-        if (!updatedCheckout) {
-            throw createInternalServerError('Failed to update checkout.')
-        }
-
+        const updatedCheckout = await updateCheckout(checkoutId, {
+            subtotal: data.subtotal,
+            email: data.email,
+            shippingAddressId: data.shippingAddressId,
+            paymentIntentId: data.paymentIntentId,
+        })
         return NextResponse.json(updatedCheckout)
     })
-
-const createCheckout = async (cart: CartQueryResult) => {
-    const totalTax = calculateTaxManually(cart.total)
-
-    const newCheckoutId = await db
-        .insert(Checkouts)
-        .values({
-            subtotal: cart.subtotal,
-            total: cart.total + totalTax + SHIPPING_COST,
-            totalShipping: SHIPPING_COST,
-            totalTax,
-            cartId: cart.id,
-            customerId: cart.ownerId,
-        })
-        .returning()
-        .then(rows => rows[0].id)
-
-    await createCheckoutLines(newCheckoutId, cart.lines)
-
-    const newCheckout = await getCheckout(newCheckoutId)
-    if (!newCheckout) {
-        throw createInternalServerError('Failed to create checkout.')
-    }
-
-    return newCheckout
-}
-
-const createCheckoutLines = async (
-    newCheckoutId: string,
-    cartLines: CartLineQueryResult[]
-) => {
-    return await db
-        .insert(CheckoutLines)
-        .values(
-            cartLines.map(line => {
-                return {
-                    unitPrice: line.product.price,
-                    quantity: line.quantity,
-                    productId: line.productId,
-                    checkoutId: newCheckoutId,
-                }
-            })
-        )
-        .returning()
-}

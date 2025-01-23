@@ -1,89 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { and, eq, notInArray } from 'drizzle-orm'
-import { serialize } from 'cookie'
 
+import { handleRoute, getRequiredRequestCookie } from '../../shared'
+import { createNotFoundError } from '@/lib/errors'
+import { CART_ID_COOKIE_MAX_AGE } from '@/utils/constants'
+import { appendCookie, expireCookies } from '@/utils/session'
 import {
     getCart,
     createCart,
-    getCartByOwnerId,
-    handleRoute,
-    getRequiredRequestCookie,
-} from '../../shared'
-import { db } from '@/drizzle/db'
-import { CartLines, Carts } from '@/drizzle/schema/cart'
-import { createInternalServerError, createNotFoundError } from '@/lib/errors'
-import {
-    CART_ID_COOKIE_MAX_AGE,
-    DEFAULT_COOKIE_CONFIG,
-} from '@/utils/constants'
-import { CartLineRecord, CartRecord } from '@/types/database'
-import { expireCookies } from '@/utils/session'
+    deleteCart,
+    getCustomerCart,
+    mergeCarts,
+} from 'services/cart'
+import { CartQueryResult } from '@/types/queries'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
         const { customerId } = await request.json()
+        const sessionCartId = request.cookies.get('cartId')?.value
 
         if (customerId) {
-            let customerCart = await getCartByOwnerId(customerId)
+            const customerCart = await getCustomerCart(customerId)
+            const guestCart = sessionCartId
+                ? await getCart(sessionCartId)
+                : undefined
 
-            if (!customerCart) {
-                customerCart = await createCart(customerId)
-
-                const cartId = request.cookies.get('cartId')?.value
-                const guestCart = cartId ? await getCart(cartId) : null
-
-                if (guestCart) {
-                    customerCart = await mergeCarts(customerCart, guestCart)
-                }
-
-                if (!customerCart) {
-                    throw createInternalServerError()
-                }
-
-                const response = NextResponse.json(customerCart)
-                return addCartIdCookieToResponse(customerCart.id, response)
+            if (guestCart) {
+                const mergedCart = await mergeCarts(guestCart, customerCart)
+                return createCartResponse(mergedCart)
             } else {
-                const cartId = request.cookies.get('cartId')?.value
-
-                if (!cartId) {
-                    const response = NextResponse.json(customerCart)
-                    return addCartIdCookieToResponse(customerCart.id, response)
-                } else if (cartId !== customerCart.id) {
-                    const guestCart = await getCart(cartId)
-                    if (guestCart) {
-                        customerCart = await mergeCarts(customerCart, guestCart)
-                    }
-
-                    if (!customerCart) {
-                        throw createInternalServerError()
-                    }
-
-                    const response = NextResponse.json(customerCart)
-                    return addCartIdCookieToResponse(customerCart.id, response)
-                } else {
-                    const response = NextResponse.json(customerCart)
-                    return response
-                }
+                return createCartResponse(customerCart)
             }
         } else {
-            const cartId = request.cookies.get('cartId')?.value
+            let guestCart = sessionCartId
+                ? await getCart(sessionCartId)
+                : undefined
 
-            if (cartId) {
-                let guestCart = await getCart(cartId)
-
-                if (!guestCart) {
-                    guestCart = await createCart(customerId)
-
-                    const response = NextResponse.json(guestCart)
-                    return addCartIdCookieToResponse(guestCart.id, response)
-                } else {
-                    return NextResponse.json(guestCart)
-                }
+            if (guestCart) {
+                return createCartResponse(guestCart)
             } else {
-                const newGuestCart = await createCart()
-
-                const response = NextResponse.json(newGuestCart)
-                return addCartIdCookieToResponse(newGuestCart.id, response)
+                guestCart = await createCart()
+                return createCartResponse(guestCart)
             }
         }
     })
@@ -92,13 +48,8 @@ export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
         const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
 
-        const deletedCart = await db
-            .delete(Carts)
-            .where(eq(Carts.id, cartId))
-            .returning()
-            .then(rows => rows[0])
-
-        if (!deletedCart) {
+        const deletedCartId = await deleteCart(cartId)
+        if (!deletedCartId) {
             throw createNotFoundError('Cart')
         }
 
@@ -107,74 +58,18 @@ export const DELETE = async (request: NextRequest) =>
         return response
     })
 
-type CartType = CartRecord & { lines: CartLineRecord[] }
-const mergeCarts = async (target: CartType, source: CartType) => {
-    if (source.lines.length === 0) {
-        return await getCart(target.id)
-    }
-
-    const sourceLines = await db
-        .select()
-        .from(CartLines)
-        .where(
-            and(
-                eq(CartLines.cartId, source.id),
-                notInArray(
-                    CartLines.productId,
-                    target.lines.map(line => line.productId)
-                )
-            )
-        )
-
-    if (sourceLines.length) {
-        await db.insert(CartLines).values(
-            sourceLines.map(line => {
-                return {
-                    subtotal: line.subtotal,
-                    total: line.total,
-                    quantity: line.quantity,
-                    productId: line.productId,
-                    cartId: target.id,
-                }
-            })
-        )
-    }
-
-    await db.delete(Carts).where(eq(Carts.id, source.id))
-
-    if (sourceLines.length) {
-        return await db
-            .update(Carts)
-            .set({
-                subtotal:
-                    target.subtotal +
-                    sourceLines.reduce(
-                        (subtotal, line) => subtotal + line.subtotal,
-                        0
-                    ),
-                total:
-                    target.total +
-                    sourceLines.reduce((total, line) => total + line.total, 0),
-                totalQuantity: target.totalQuantity + sourceLines.length,
-                updatedAt: new Date(),
-            })
-            .where(eq(Carts.id, target.id))
-            .returning()
-            .then(async rows => {
-                const id = rows[0].id
-                return await getCart(id)
-            })
-    } else {
-        return await getCart(target.id)
-    }
-}
-
-const addCartIdCookieToResponse = (cartId: string, response: NextResponse) => {
-    const cookie = serialize('cartId', cartId, {
-        ...DEFAULT_COOKIE_CONFIG,
+const appendCartCookie = (
+    value: string,
+    response: NextResponse<CartQueryResult>
+): NextResponse<CartQueryResult> => {
+    return appendCookie('cartId', value, response, {
         maxAge: CART_ID_COOKIE_MAX_AGE,
     })
+}
 
-    response.headers.append('Set-Cookie', cookie)
-    return response
+const createCartResponse = (
+    cart: CartQueryResult
+): NextResponse<CartQueryResult> => {
+    const response = NextResponse.json(cart)
+    return appendCartCookie(cart.id, response)
 }

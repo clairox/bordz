@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getWishlist } from '@/lib/db'
-import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { handleRoute } from '../../shared'
+import { getWishlist } from 'services/wishlist'
 
 type Props = DynamicRoutePropsWithParams<{ wishlistId: string }>
 
@@ -12,10 +11,6 @@ export const GET = async (
     { params: { wishlistId } }: Props
 ) =>
     await handleRoute(async () => {
-        const cart = await getWishlist(wishlistId)
-        if (!cart) {
-            throw createNotFoundError('Cart')
-        }
-
-        return NextResponse.json(cart)
+        const wishlist = await getWishlist(wishlistId)
+        return NextResponse.json(wishlist)
     })

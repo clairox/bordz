@@ -1,4 +1,4 @@
-import { AddressRecord, WishlistRecord } from './database'
+import { AddressRecord } from './database'
 import {
     BoardFullQueryResult,
     BoardQueryResult,
@@ -10,6 +10,7 @@ import {
     OrderQueryResult,
     ProductQueryResult,
     WishlistLineQueryResult,
+    WishlistQueryResult,
 } from './queries'
 import { SortKey } from './sorting'
 
@@ -24,7 +25,7 @@ type BoardComponentResponse = BoardComponentQueryResult
 type CustomerResponse = CustomerQueryResult
 type OrderResponse = OrderQueryResult
 type ProductResponse = ProductQueryResult
-type WishlistResponse = WishlistRecord & { lines: WishlistLineQueryResult[] }
+type WishlistResponse = WishlistQueryResult
 type WishlistLinesResponse = {
     data: WishlistLineQueryResult[]
     nextPage: number | undefined

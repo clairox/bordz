@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getCart } from '@/lib/db'
-import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { handleRoute } from '../../shared'
+import { getCart } from 'services/cart'
 
 type Props = DynamicRoutePropsWithParams<{ cartId: string }>
 
@@ -13,9 +12,5 @@ export const GET = async (
 ) =>
     await handleRoute(async () => {
         const cart = await getCart(cartId)
-        if (!cart) {
-            throw createNotFoundError('Cart')
-        }
-
         return NextResponse.json(cart)
     })

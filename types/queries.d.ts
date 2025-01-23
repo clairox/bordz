@@ -16,6 +16,7 @@ import {
     SizeRecord,
     VendorRecord,
     WishlistLineRecord,
+    WishlistRecord,
 } from './database'
 
 type BoardQueryResult = BoardRecord & {
@@ -48,7 +49,7 @@ type CheckoutQueryResult = CheckoutRecord & {
 }
 
 type CheckoutLineQueryResult = CheckoutLineRecord & {
-    product: ProductQueryResult
+    product: ProductQueryResult | null
 }
 
 type BoardComponentQueryResult = BoardComponentRecord & {
@@ -80,6 +81,10 @@ type OrderLineQueryResult = OrderLineRecord & {
 }
 
 type ProductQueryResult = ProductRecord
+
+type WishlistQueryResult = WishlistRecord & {
+    items: WishlistLineQueryResult[]
+}
 
 type WishlistLineQueryResult = WishlistLineRecord & {
     product: ProductQueryResult

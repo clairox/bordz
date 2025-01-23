@@ -1,31 +1,15 @@
-import {
-    getRequiredRequestCookie,
-    getWishlist,
-    handleRoute,
-} from '@/app/api/shared'
-import { db } from '@/drizzle/db'
-import { WishlistItems, Wishlists } from '@/drizzle/schema/wishlist'
-import { createInternalServerError, createNotFoundError } from '@/lib/errors'
-import { DynamicRoutePropsWithParams } from '@/types/api'
-import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
+
+import { getRequiredRequestCookie, handleRoute } from '@/app/api/shared'
+import { DynamicRoutePropsWithParams } from '@/types/api'
+import { getWishlistItem, removeWishlistItem } from 'services/wishlist'
 
 type Props = DynamicRoutePropsWithParams<{ lineId: string }>
 
 export const GET = async (_: NextRequest, { params: { lineId } }: Props) =>
     await handleRoute(async () => {
-        const wishlistLine = await db.query.WishlistItems.findFirst({
-            where: eq(WishlistItems.id, lineId),
-            with: {
-                product: true,
-            },
-        })
-
-        if (!wishlistLine) {
-            throw createNotFoundError('Wishlist line')
-        }
-
-        return NextResponse.json(wishlistLine)
+        const wishlistItem = await getWishlistItem(lineId)
+        return NextResponse.json(wishlistItem)
     })
 
 export const DELETE = async (
@@ -38,49 +22,6 @@ export const DELETE = async (
             'wishlistId'
         )
 
-        await deleteWishlistLine(lineId)
-        const updatedWishlist = await updateWishlistWithDeletedLine(wishlistId)
-
+        const updatedWishlist = await removeWishlistItem(wishlistId, lineId)
         return NextResponse.json(updatedWishlist)
     })
-
-const deleteWishlistLine = async (id: string) => {
-    const deletedWishlistLine = await db
-        .delete(WishlistItems)
-        .where(eq(WishlistItems.id, id))
-        .returning()
-        .then(rows => rows[0])
-
-    if (!deletedWishlistLine) {
-        throw createNotFoundError('Wishlist line')
-    }
-
-    return deletedWishlistLine
-}
-
-const updateWishlistWithDeletedLine = async (id: string) => {
-    const oldWishlist = await getWishlist(id)
-
-    if (!oldWishlist) {
-        throw createNotFoundError('Wishlist')
-    }
-
-    const updatedWishlist = await db
-        .update(Wishlists)
-        .set({
-            quantity: oldWishlist.quantity - 1,
-            updatedAt: new Date(),
-        })
-        .where(eq(Wishlists.id, id))
-        .returning()
-        .then(async rows => {
-            const updatedWishlistId = rows[0].id
-            return await getWishlist(updatedWishlistId)
-        })
-
-    if (!updatedWishlist) {
-        throw createInternalServerError('Failed to update wishlist.')
-    }
-
-    return updatedWishlist
-}
