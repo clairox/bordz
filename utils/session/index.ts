@@ -1,3 +1,4 @@
+export * from './appendCookie'
 export * from './clearSessionCookies'
 export * from './decodeSessionToken'
 export * from './expireCookies'
