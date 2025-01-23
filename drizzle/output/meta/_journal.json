@@ -120,6 +120,13 @@
       "when": 1737523598806,
       "tag": "0016_goofy_boomer",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1737659627572,
+      "tag": "0017_military_sersi",
+      "breakpoints": true
     }
   ]
 }
