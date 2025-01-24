@@ -22,3 +22,4 @@ type UpdateCheckoutValues = Omit<
     UpdateCheckoutRecordArgs,
     'total' | 'totalShipping' | 'totalTax' | 'completedAt'
 >
+type UpdateProductValues = UpdateProductRecordArgs

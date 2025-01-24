@@ -2,13 +2,17 @@ import { and, asc, desc, eq, SQL } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { Products } from '@/drizzle/schema/product'
-import { CreateProductRecordArgs } from '@/types/database'
+import {
+    CreateProductRecordArgs,
+    ProductRecord,
+    UpdateProductRecordArgs,
+} from '@/types/database'
 import { ProductQueryResult } from '@/types/queries'
 import { SortKey } from '@/types/sorting'
 import { DEFAULT_SORT_KEY } from '@/utils/constants'
 
 export async function getProduct(
-    id: string
+    id: ProductRecord['id']
 ): Promise<ProductQueryResult | undefined> {
     return await db.query.Products.findFirst({
         where: eq(Products.id, id),
@@ -25,7 +29,19 @@ export async function createProduct(
     return newProduct
 }
 
-export async function deleteProduct(id: string): Promise<string> {
+export async function updateProduct(
+    id: ProductRecord['id'],
+    values: UpdateProductRecordArgs
+): Promise<ProductQueryResult> {
+    const [updatedProduct] = await db
+        .update(Products)
+        .set(values)
+        .where(eq(Products.id, id))
+        .returning()
+    return updatedProduct
+}
+
+export async function deleteProduct(id: ProductRecord['id']): Promise<string> {
     const [{ id: deletedProductId }] = await db
         .delete(Products)
         .where(eq(Products.id, id))
@@ -65,7 +81,9 @@ export async function getProducts(options?: {
     return { products, totalCount }
 }
 
-export async function deleteProducts(ids: string[]): Promise<string[]> {
+export async function deleteProducts(
+    ids: ProductRecord['id'][]
+): Promise<string[]> {
     const deletedProductIds: string[] = []
     for await (const id of ids) {
         const deletedProductId = await deleteProduct(id)

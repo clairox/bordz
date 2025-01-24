@@ -7,12 +7,31 @@ import {
     DEFAULT_SORT_KEY,
 } from '@/utils/constants'
 import * as db from 'db/product'
-import { CreateProductValues } from '@/types/services'
+import { CreateProductValues, UpdateProductValues } from '@/types/services'
+import { ProductRecord } from '@/types/database'
+import { createNotFoundError } from '../errors'
+
+export async function getProduct(
+    id: ProductRecord['id']
+): Promise<ProductQueryResult> {
+    const product = await db.getProduct(id)
+    if (!product) {
+        throw createNotFoundError('Product')
+    }
+    return product
+}
 
 export async function createProduct(
     values: CreateProductValues
 ): Promise<ProductQueryResult> {
     return await db.createProduct(values)
+}
+
+export async function updateProduct(
+    id: ProductRecord['id'],
+    values: UpdateProductValues
+): Promise<ProductQueryResult> {
+    return await db.updateProduct(id, values)
 }
 
 export async function deleteProduct(id: string): Promise<string> {
@@ -39,6 +58,8 @@ export async function getProducts(
     return { data: products, totalCount, totalPages, nextPage }
 }
 
-export async function deleteProducts(ids: string[]): Promise<string[]> {
+export async function deleteProducts(
+    ids: ProductRecord['id'][]
+): Promise<string[]> {
     return await db.deleteProducts(ids)
 }

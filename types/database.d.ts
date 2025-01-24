@@ -71,3 +71,6 @@ type UpdateCartRecordArgs = Partial<Omit<CreateCartRecordArgs, 'ownerId'>>
 type UpdateCheckoutRecordArgs = Partial<
     Omit<CreateCheckoutRecordArgs, 'customerId'>
 >
+type UpdateProductRecordArgs = Partial<
+    Omit<CreateProductRecordArgs, 'productType'>
+>

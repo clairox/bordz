@@ -9,9 +9,8 @@ type Props = DynamicRoutePropsWithParams<{ productId: string }>
 
 export const GET = async (req: NextRequest, { params: { productId } }: Props) =>
     await handleRoute(async () => {
-        const full = req.nextUrl.searchParams.get('full')
-
-        const board = await getBoardByProductId(productId, full === 'true')
+        // const full = req.nextUrl.searchParams.get('full')
+        const board = await getBoardByProductId(productId)
         if (!board) {
             throw createNotFoundError('Board')
         }
