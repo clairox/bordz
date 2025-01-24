@@ -60,7 +60,7 @@ export async function updateCheckout(
     return result!
 }
 
-export async function completeComplete(
+export async function completeCheckout(
     id: string
 ): Promise<CheckoutQueryResult> {
     return await db.transaction(async tx => {

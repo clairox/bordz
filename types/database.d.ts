@@ -36,30 +36,33 @@ type WishlistLineRecord = typeof WishlistItems.$inferSelect
 
 /* Create */
 
-type CreateCartRecordArgs = Omit<
-    typeof Carts.$inferInsert,
-    'id' | 'createdAt' | 'updatedAt'
->
+type DefaultOmissions = 'id' | 'createdAt' | 'updatedAt'
+
+type CreateBoardRecordArgs = Omit<typeof Boards.$inferInsert, DefaultOmissions>
+type CreateCartRecordArgs = Omit<typeof Carts.$inferInsert, DefaultOmissions>
 type CreateCartLineRecordArgs = Pick<
     typeof CartLines.$inferInsert,
     'cartId' | 'productId' | 'quantity'
 >
 type CreateCheckoutRecordArgs = Omit<
     typeof Checkouts.$inferInsert,
-    'id' | 'createdAt' | 'updatedAt'
+    DefaultOmissions
 >
 type CreateCheckoutLineRecordArgs = Pick<
     typeof CheckoutLines.$inferInsert & { productId: string },
     'checkoutId' | 'productId' | 'quantity'
 >
+type CreateProductRecordArgs = Omit<
+    typeof Products.$inferInsert & { type: 'BOARD' | 'OTHER' },
+    DefaultOmissions | 'productType'
+>
 type CreateWishlistRecordArgs = Omit<
     typeof Wishlists.$inferInsert,
-    'id' | 'createdAt' | 'updatedAt'
+    DefaultOmissions
 >
-
 type CreateWishlistItemRecordArgs = Omit<
     typeof WishlistItems.$inferInsert,
-    'id' | 'createdAt' | 'updatedAt'
+    DefaultOmissions
 >
 
 /* Update */

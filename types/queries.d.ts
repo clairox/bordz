@@ -53,16 +53,16 @@ type CheckoutLineQueryResult = CheckoutLineRecord & {
 }
 
 type BoardComponentQueryResult = BoardComponentRecord & {
-    attrs: BoardComponentAttrsQueryResult
+    attrs: BoardComponentAttrsQueryResult | null
 }
 
 type BoardComponentSummaryQueryResult = BoardComponentRecord
 
 type BoardComponentAttrsQueryResult = BoardComponentAttrsRecord & {
-    category: CategoryRecord
-    vendor: VendorRecord
-    size: SizeRecord
-    color: ColorRecord
+    category: CategoryRecord | null
+    vendor: VendorRecord | null
+    size: SizeRecord | null
+    color: ColorRecord | null
 }
 
 type CustomerQueryResult = CustomerRecord & {

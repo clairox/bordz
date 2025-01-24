@@ -1,12 +1,5 @@
 import { CheckoutQueryResult } from '@/types/queries'
-import {
-    createCheckout,
-    createCheckoutLines,
-    getCart,
-    getCheckout,
-    updateCheckout as _updateCheckout,
-    completeComplete as _completeComplete,
-} from '../db'
+import * as db from '../db'
 import {
     createConflictError,
     createInternalServerError,
@@ -18,13 +11,13 @@ import { SHIPPING_COST } from '@/utils/constants'
 export async function getCheckoutByCartId(
     cartId: string
 ): Promise<CheckoutQueryResult | undefined> {
-    const cart = await getCart(cartId)
+    const cart = await db.getCart(cartId)
     if (!cart) {
         throw createNotFoundError('Cart')
     }
 
     if (cart.checkout) {
-        const checkout = await getCheckout(cart.checkout.id)
+        const checkout = await db.getCheckout(cart.checkout.id)
         if (!checkout) {
             throw createInternalServerError()
         }
@@ -36,7 +29,7 @@ export async function getCheckoutByCartId(
 export async function attachCheckout(
     cartId: string
 ): Promise<CheckoutQueryResult> {
-    const cart = await getCart(cartId)
+    const cart = await db.getCart(cartId)
     if (!cart) {
         throw createNotFoundError('Cart')
     }
@@ -45,12 +38,12 @@ export async function attachCheckout(
         throw createConflictError('A checkout for this cart')
     }
 
-    const checkout = await createCheckout({
+    const checkout = await db.createCheckout({
         cartId: cart.id,
         customerId: cart.ownerId,
     })
 
-    await createCheckoutLines(
+    await db.createCheckoutLines(
         cart.lines.map(line => ({
             checkoutId: checkout.id,
             productId: line.productId,
@@ -58,7 +51,7 @@ export async function attachCheckout(
         }))
     )
 
-    const updatedCheckout = await getCheckout(checkout.id)
+    const updatedCheckout = await db.getCheckout(checkout.id)
     return updatedCheckout!
 }
 
@@ -79,7 +72,7 @@ export async function updateCheckout(
             calculatedValues.totalTax + calculatedValues.totalShipping
     }
 
-    return await _updateCheckout(id, {
+    return await db.updateCheckout(id, {
         ...values,
         ...calculatedValues,
     })
@@ -88,5 +81,5 @@ export async function updateCheckout(
 export async function completeCheckout(
     id: string
 ): Promise<CheckoutQueryResult> {
-    return await _completeComplete(id)
+    return await db.completeCheckout(id)
 }

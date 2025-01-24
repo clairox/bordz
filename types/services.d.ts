@@ -1,6 +1,13 @@
-import { CreateCartRecordArgs, UpdateCheckoutRecordArgs } from './database'
+import {
+    CreateBoardRecordArgs,
+    CreateCartRecordArgs,
+    CreateProductRecordArgs,
+    UpdateCheckoutRecordArgs,
+} from './database'
 
+type CreateBoardValues = CreateBoardRecordArgs
 type CreateCartValues = CreateCartRecordArgs
+type CreateProductValues = CreateProductRecordArgs
 type CreateWishlistValues = CreateWishlistRecordArgs
 
 type AddCartLineValues = {
