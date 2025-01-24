@@ -1,9 +1,11 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import {
     PaginatedQueryOptions,
+    ProductCreateArgs,
     ProductResponse,
     ProductUpdateArgs,
 } from '@/types/api'
+import { mapProductResponseToProduct } from '@/utils/conversions'
 
 export const fetchProduct = async (id: string) => {
     return await fetchAbsolute<ProductResponse>(`/products/${id}`, {
@@ -41,6 +43,16 @@ export const fetchProducts = async ({
     return await fetchAbsolute<Page<ProductResponse>>(path, {
         cache: 'no-cache',
     })
+}
+
+export const createProduct = async (
+    args: ProductCreateArgs
+): Promise<Product> => {
+    const response = await fetchAbsolute<ProductResponse>('/products', {
+        method: 'POST',
+        body: JSON.stringify(args),
+    })
+    return mapProductResponseToProduct(response)
 }
 
 export const updateProduct = async (

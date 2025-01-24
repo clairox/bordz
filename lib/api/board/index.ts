@@ -1,5 +1,5 @@
 import fetchAbsolute from '@/lib/fetchAbsolute'
-import { BoardFullResponse, BoardResponse } from '@/types/api'
+import { BoardCreateArgs, BoardFullResponse, BoardResponse } from '@/types/api'
 import {
     mapBoardResponseToBoard,
     mapBoardResponseToBoardFull,
@@ -21,4 +21,12 @@ export const fetchBoardFullByProductId = async (
         `/products/${productId}/board?full=true`
     )
     return mapBoardResponseToBoardFull(data)
+}
+
+export const createBoard = async (args: BoardCreateArgs): Promise<Board> => {
+    const response = await fetchAbsolute<BoardResponse>('/boards', {
+        method: 'POST',
+        body: JSON.stringify(args),
+    })
+    return mapBoardResponseToBoard(response)
 }

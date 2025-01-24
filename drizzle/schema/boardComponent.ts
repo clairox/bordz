@@ -21,6 +21,7 @@ export const BoardComponents = pgTableWithAutoFields('board_components', {
     price: integer('price').default(0).notNull(),
     description: text('description'),
     specifications: text('specifications').array(),
+    usageCount: integer('usage_count').default(0).notNull(),
     availableForSale: boolean('available_for_sale').default(false).notNull(),
     totalInventory: smallint('total_inventory').default(0).notNull(),
 })

@@ -1,0 +1,1 @@
+ALTER TABLE "board_components" ADD COLUMN "usage_count" integer DEFAULT 0 NOT NULL;

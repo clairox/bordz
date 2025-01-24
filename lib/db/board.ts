@@ -1,6 +1,6 @@
 'use server'
 
-import { eq, or, SQL } from 'drizzle-orm'
+import { eq, or, sql, SQL } from 'drizzle-orm'
 
 import {
     BoardComponentQueryResult,
@@ -10,11 +10,24 @@ import {
 } from '@/types/queries'
 import { db } from '@/drizzle/db'
 import { Boards } from '@/drizzle/schema/board'
-import { CreateBoardRecordArgs } from '@/types/database'
+import {
+    BoardComponentRecord,
+    BoardRecord,
+    CreateBoardRecordArgs,
+} from '@/types/database'
 import { BoardComponents } from '@/drizzle/schema/boardComponent'
 
+export async function getBoard(
+    id: BoardRecord['id']
+): Promise<BoardQueryResult | undefined> {
+    return await db.query.Boards.findFirst({
+        where: eq(Boards.id, id),
+        with: boardWith(false),
+    })
+}
+
 export async function getBoardByProductId(
-    productId: string
+    productId: BoardRecord['productId']
 ): Promise<BoardQueryResult | undefined> {
     return await db.query.Boards.findFirst({
         where: eq(Boards.productId, productId),
@@ -33,8 +46,19 @@ export async function createBoard(
     return result!
 }
 
-export async function getBoardComponents(
-    ids: string[]
+export async function getBoardComponent(
+    id: BoardComponentRecord['id']
+): Promise<BoardComponentQueryResult | undefined> {
+    return await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, id),
+        with: {
+            attrs: componentAttrsWith(true),
+        },
+    })
+}
+
+export async function getBoardComponentsByIds(
+    ids: BoardComponentRecord['id'][]
 ): Promise<BoardComponentQueryResult[]> {
     const conditions: SQL[] = []
     ids.forEach(id => conditions.push(eq(BoardComponents.id, id)))
@@ -42,9 +66,18 @@ export async function getBoardComponents(
     return await db.query.BoardComponents.findMany({
         where: or(...conditions),
         with: {
-            attrs: componentWith(true),
+            attrs: componentAttrsWith(true),
         },
     })
+}
+
+export async function incrementBoardComponentUsageCount(
+    id: BoardComponentRecord['id']
+): Promise<void> {
+    await db
+        .update(BoardComponents)
+        .set({ usageCount: sql`${BoardComponents.usageCount} + 1` })
+        .where(eq(BoardComponents.id, id))
 }
 
 const boardWith = (full: boolean = false) => ({
@@ -56,7 +89,7 @@ const boardWith = (full: boolean = false) => ({
     griptape: withAttributes(full),
 })
 
-const componentWith = (full: boolean = false) => {
+const componentAttrsWith = (full: boolean = false) => {
     const value = withAttributes(full)
     if (typeof value !== 'boolean') {
         return value.with.attrs

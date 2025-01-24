@@ -1,0 +1,1 @@
+ALTER TABLE "boards" ADD CONSTRAINT "boards_product_id_unique" UNIQUE("product_id");

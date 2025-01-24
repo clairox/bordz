@@ -50,6 +50,8 @@
 -   [x] Change all instances of "boardSetup" and "BoardSetup" to "board" and "Board"
 -   [x] Change all instances of "component" to "boardComponent"
 -   [x] Change all instances of "componentAttributes" to "boardComponentAttrs" or "attrs"
+-   [ ] Hide components which are out of stock
+-   [ ] Hide boards which are unavailable
 
 ### Cart
 

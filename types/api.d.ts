@@ -44,6 +44,15 @@ type AddressCreateArgs = {
     ownerId?: string
     isCustomerDefault?: boolean
 }
+type BoardCreateArgs = {
+    productId: string
+    deckId: string
+    trucksId: string
+    wheelsId: string
+    bearingsId: string
+    hardwareId: string
+    griptapeId: string
+}
 type BoardComponentCreateArgs = {
     title: string
     price: number
@@ -64,6 +73,14 @@ type CustomerCreateArgs = {
     lastName: string
     birthDate?: Date
     phone?: string
+}
+type ProductCreateArgs = {
+    title: string
+    price: number
+    type: 'BOARD' | 'OTHER'
+    featuredImage?: string
+    availableForSale?: boolean
+    isPublic?: boolean
 }
 
 /* Updating */

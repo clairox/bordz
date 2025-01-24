@@ -6,6 +6,7 @@ import { Boards } from './board'
 
 export const ProductType = pgEnum('product_type', ['BOARD', 'OTHER'])
 
+// TODO: Add quantity
 export const Products = pgTableWithAutoFields('products', {
     title: varchar('title', { length: 100 }).notNull(),
     featuredImage: varchar('featured_image', { length: 200 }),

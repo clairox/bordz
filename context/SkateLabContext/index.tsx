@@ -10,6 +10,7 @@ import { useAddWishlistLine } from '@/hooks/data/wishlist'
 import fetchAbsolute from '@/lib/fetchAbsolute'
 import { ProductResponse } from '@/types/api'
 import { mapProductResponseToProduct } from '@/utils/conversions'
+import { createBoard, createProduct, fetchBoardComponent } from '@/lib/api'
 
 type SkateLabContextValue = {
     selectedBoardComponents: Record<
@@ -78,23 +79,45 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     const createProductFromSelectedBoardComponents = async (
         publish?: boolean
     ): Promise<Product> => {
-        const { deck, trucks, wheels, bearings, hardware, griptape } =
-            selectedBoardComponents
+        const board = selectedBoardComponents
+        const components = Object.values(board).filter(value => !!value)
+        if (components.length < 6) {
+            throw new Error('Missing component')
+        }
 
-        const data = await fetchAbsolute<ProductResponse>('/products', {
-            method: 'POST',
-            body: JSON.stringify({
-                type: 'board',
-                isPublic: publish,
-                deckId: deck?.id,
-                trucksId: trucks?.id,
-                wheelsId: wheels?.id,
-                bearingsId: bearings?.id,
-                hardwareId: hardware?.id,
-                griptapeId: griptape?.id,
-            }),
+        const totalPrice = components.reduce((total, c) => total + c.price, 0)
+        const availability = components.every(c => c.availableForSale)
+        const featuredImage = board.deck!.images[0]
+
+        const { usageCount: deckUsageCount } = await fetchBoardComponent(
+            board.deck!.id
+        )
+        let baseTitle: string = board.deck!.title
+        if (baseTitle.toLowerCase().endsWith(' deck')) {
+            baseTitle = baseTitle.slice(0, -5)
+        }
+        const productTitle = `${baseTitle} Complete #${deckUsageCount + 1}`
+
+        const newProduct = await createProduct({
+            title: productTitle,
+            price: totalPrice,
+            type: 'BOARD',
+            availableForSale: availability,
+            isPublic: publish,
+            featuredImage,
         })
-        return mapProductResponseToProduct(data)
+
+        await createBoard({
+            productId: newProduct.id,
+            deckId: board.deck!.id,
+            trucksId: board.trucks!.id,
+            wheelsId: board.wheels!.id,
+            bearingsId: board.bearings!.id,
+            hardwareId: board.hardware!.id,
+            griptapeId: board.griptape!.id,
+        })
+
+        return newProduct
     }
 
     const { mutateAsync: addCartLine } = useAddCartLine()

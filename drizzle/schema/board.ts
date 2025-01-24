@@ -6,6 +6,7 @@ import { BoardComponents } from './boardComponent'
 
 export const Boards = pgTableWithAutoFields('boards', {
     productId: shortUuid('product_id')
+        .unique()
         .references(() => Products.id, { onDelete: 'cascade' })
         .notNull(),
     deckId: shortUuid('deck_id')

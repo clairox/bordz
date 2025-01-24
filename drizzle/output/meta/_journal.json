@@ -127,6 +127,20 @@
       "when": 1737659627572,
       "tag": "0017_military_sersi",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1737753375908,
+      "tag": "0018_eminent_the_santerians",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1737759977422,
+      "tag": "0019_illegal_blue_blade",
+      "breakpoints": true
     }
   ]
 }

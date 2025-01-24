@@ -6,9 +6,10 @@ import {
     BoardComponentAttrs,
     BoardComponents,
 } from '@/drizzle/schema/boardComponent'
-import { createInternalServerError, createNotFoundError } from '@/lib/errors'
+import { createInternalServerError } from '@/lib/errors'
 import { handleRoute } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
+import { getBoardComponent } from 'services/board'
 
 type Props = DynamicRoutePropsWithParams<{ boardComponentId: string }>
 
@@ -17,24 +18,7 @@ export const GET = async (
     { params: { boardComponentId } }: Props
 ) =>
     await handleRoute(async () => {
-        const boardComponent = await db.query.BoardComponents.findFirst({
-            where: eq(BoardComponents.id, boardComponentId),
-            with: {
-                attrs: {
-                    with: {
-                        category: true,
-                        size: true,
-                        color: true,
-                        vendor: true,
-                    },
-                },
-            },
-        })
-
-        if (!boardComponent) {
-            throw createNotFoundError('BoardComponent')
-        }
-
+        const boardComponent = await getBoardComponent(boardComponentId)
         return NextResponse.json(boardComponent)
     })
 

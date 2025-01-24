@@ -94,6 +94,7 @@ type BoardComponent = {
     price: number
     compareAtPrice?: number
     specifications?: string[]
+    usageCount: number
     availableForSale: boolean
     totalInventory: number
     category: Category
@@ -108,6 +109,7 @@ type BoardComponentSummary = {
     featuredImage?: string
     price: number
     compareAtPrice?: number
+    usageCount: number
     availableForSale: boolean
     totalInventory: number
 }

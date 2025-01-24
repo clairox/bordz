@@ -12,12 +12,13 @@ export const mapBoardComponentResponseToBoardComponent = (
         price: response.price,
         compareAtPrice: response.compareAtPrice ?? undefined,
         specifications: response.specifications ?? undefined,
+        usageCount: response.usageCount,
         availableForSale: response.availableForSale,
         totalInventory: response.totalInventory,
-        category: response.attrs.category,
-        vendor: response.attrs.vendor,
-        size: response.attrs.size,
-        color: response.attrs.color,
+        category: response.attrs!.category!,
+        vendor: response.attrs!.vendor!,
+        size: response.attrs!.size!,
+        color: response.attrs!.color!,
     }
 }
 
@@ -30,6 +31,7 @@ export const mapBoardComponentResponseToBoardComponentSummary = (
         featuredImage: response.images?.[0] ?? undefined,
         price: response.price,
         compareAtPrice: response.compareAtPrice ?? undefined,
+        usageCount: response.usageCount,
         availableForSale: response.availableForSale,
         totalInventory: response.totalInventory,
     }
