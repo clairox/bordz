@@ -1,8 +1,19 @@
 import { BoardComponentQueryResult, BoardQueryResult } from '@/types/queries'
-import { CreateBoardValues } from '@/types/services'
+import {
+    CreateBoardComponentValues,
+    CreateBoardValues,
+    UpdateBoardComponentValues,
+} from '@/types/services'
 import * as db from 'db'
 import { createBadRequestError, createNotFoundError } from '../errors'
-import { BoardComponentRecord } from '@/types/database'
+import { BoardComponentRecord, CategoryRecord } from '@/types/database'
+import { PaginatedQueryOptions } from '@/types/api'
+import {
+    DEFAULT_PAGE_NUMBER,
+    DEFAULT_PAGE_SIZE,
+    DEFAULT_SORT_KEY,
+} from '@/utils/constants'
+import { calculateNextPage, calculateTotalPages } from '@/utils/math'
 
 export async function createBoard(
     values: CreateBoardValues
@@ -39,23 +50,50 @@ export async function getBoardComponent(
     return component
 }
 
-// export async function getBoardComponents(
-//     options?: PaginatedQueryOptions
-// ): Promise<Page<BoardComponentQueryResult>> {
-//     const page = options?.page ?? DEFAULT_PAGE_NUMBER
-//     const size = options?.size ?? DEFAULT_PAGE_SIZE
-//     const orderBy = options?.orderBy ?? DEFAULT_SORT_KEY
-//
-//     const { components, totalCount } = await db.getBoardComponents({
-//         limit: size,
-//         offset: (page - 1) * size,
-//         orderBy,
-//     })
-//
-//     const totalPages = calculateTotalPages(size, totalCount)
-//     const nextPage = calculateNextPage(page, size, totalCount)
-//     return { data: components, totalCount, totalPages, nextPage }
-// }
+export async function createBoardComponent(
+    values: CreateBoardComponentValues
+): Promise<BoardComponentQueryResult> {
+    return await db.createBoardComponent(values)
+}
+
+export async function updateBoardComponent(
+    id: BoardComponentRecord['id'],
+    values: UpdateBoardComponentValues
+): Promise<BoardComponentQueryResult> {
+    return await db.updateBoardComponent(id, values)
+}
+
+export async function deleteBoardComponent(
+    id: BoardComponentRecord['id']
+): Promise<BoardComponentRecord['id']> {
+    return await db.deleteBoardComponent(id)
+}
+
+export async function getBoardComponents(
+    category: CategoryRecord['label'] | undefined,
+    options?: PaginatedQueryOptions
+): Promise<Page<BoardComponentQueryResult>> {
+    const page = options?.page ?? DEFAULT_PAGE_NUMBER
+    const size = options?.size ?? DEFAULT_PAGE_SIZE
+    const orderBy = options?.orderBy ?? DEFAULT_SORT_KEY
+
+    const { boardComponents, totalCount } = await db.getBoardComponents({
+        category,
+        limit: size,
+        offset: (page - 1) * size,
+        orderBy,
+    })
+
+    const totalPages = calculateTotalPages(size, totalCount)
+    const nextPage = calculateNextPage(page, size, totalCount)
+    return { data: boardComponents, totalCount, totalPages, nextPage }
+}
+
+export async function deleteBoardComponents(
+    ids: BoardComponentRecord['id'][]
+): Promise<BoardComponentRecord['id'][]> {
+    return await db.deleteBoardComponents(ids)
+}
 
 // Verify that all components are present and of the correct categories
 function validateBoardComponents(

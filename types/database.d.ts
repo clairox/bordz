@@ -39,6 +39,19 @@ type WishlistLineRecord = typeof WishlistItems.$inferSelect
 type DefaultOmissions = 'id' | 'createdAt' | 'updatedAt'
 
 type CreateBoardRecordArgs = Omit<typeof Boards.$inferInsert, DefaultOmissions>
+type CreateBoardComponentRecordArgs = Omit<
+    typeof BoardComponents.$inferInsert & {
+        category: CategoryRecord['id']
+        vendor: VendorRecord['id']
+        size: SizeRecord['id']
+        color: ColorRecord['id']
+    },
+    DefaultOmissions | 'usageCount' | 'availableForSale'
+>
+type CreateBoardComponentAttrsRecordArgs = Omit<
+    typeof BoardComponentAttrs.$inferInsert,
+    DefaultOmissions
+>
 type CreateCartRecordArgs = Omit<typeof Carts.$inferInsert, DefaultOmissions>
 type CreateCartLineRecordArgs = Pick<
     typeof CartLines.$inferInsert,
@@ -67,6 +80,9 @@ type CreateWishlistItemRecordArgs = Omit<
 
 /* Update */
 
+type UpdateBoardComponentRecordArgs = Partial<CreateBoardComponentRecordArgs>
+type UpdateBoardComponentAttrsRecordArgs =
+    Partial<CreateBoardComponentAttrsRecordArgs>
 type UpdateCartRecordArgs = Partial<Omit<CreateCartRecordArgs, 'ownerId'>>
 type UpdateCheckoutRecordArgs = Partial<
     Omit<CreateCheckoutRecordArgs, 'customerId'>

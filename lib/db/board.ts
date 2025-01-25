@@ -1,21 +1,36 @@
 'use server'
 
-import { eq, or, sql, SQL } from 'drizzle-orm'
+import { asc, desc, eq, inArray, or, sql, SQL } from 'drizzle-orm'
 
 import {
     BoardComponentQueryResult,
-    BoardComponentSummaryQueryResult,
     BoardFullQueryResult,
     BoardQueryResult,
 } from '@/types/queries'
 import { db } from '@/drizzle/db'
 import { Boards } from '@/drizzle/schema/board'
 import {
+    BoardComponentAttrsRecord,
     BoardComponentRecord,
     BoardRecord,
+    CategoryRecord,
+    CreateBoardComponentAttrsRecordArgs,
+    CreateBoardComponentRecordArgs,
     CreateBoardRecordArgs,
+    UpdateBoardComponentArgs,
+    UpdateBoardComponentAttrsRecordArgs,
+    UpdateBoardComponentRecordArgs,
 } from '@/types/database'
-import { BoardComponents } from '@/drizzle/schema/boardComponent'
+import {
+    BoardComponentAttrs,
+    BoardComponents,
+    Categories,
+    Colors,
+    Sizes,
+    Vendors,
+} from '@/drizzle/schema/boardComponent'
+import { SortKey } from '@/types/sorting'
+import { DEFAULT_PAGE_SIZE, DEFAULT_SORT_KEY } from '@/utils/constants'
 
 export async function getBoard(
     id: BoardRecord['id']
@@ -57,6 +72,148 @@ export async function getBoardComponent(
     })
 }
 
+export async function createBoardComponent(
+    values: CreateBoardComponentRecordArgs
+): Promise<BoardComponentQueryResult> {
+    const { category, vendor, size, color, ...rest } = values
+    const availableForSale = !!rest.totalInventory && rest.totalInventory > 0
+    const [newComponent] = await db
+        .insert(BoardComponents)
+        .values({ ...rest, availableForSale })
+        .returning()
+
+    await createBoardComponentAttrs({
+        boardComponentId: newComponent.id,
+        categoryId: category,
+        vendorId: vendor,
+        sizeId: size,
+        colorId: color,
+    })
+
+    const result = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, newComponent.id),
+        with: {
+            attrs: componentAttrsWith(true),
+        },
+    })
+
+    return result!
+}
+
+export async function updateBoardComponent(
+    id: BoardComponentRecord['id'],
+    values: UpdateBoardComponentRecordArgs
+): Promise<BoardComponentQueryResult> {
+    const { category, vendor, size, color, ...rest } = values
+    const availableForSale = !!rest.totalInventory && rest.totalInventory > 0
+    const [updatedComponent] = await db
+        .update(BoardComponents)
+        .set({ ...rest, availableForSale })
+        .where(eq(BoardComponents.id, id))
+        .returning()
+
+    if (category || vendor || size || color) {
+        await updateBoardComponentAttrs(updatedComponent.id, {
+            categoryId: category,
+            vendorId: vendor,
+            sizeId: size,
+            colorId: color,
+        })
+    }
+
+    const result = await db.query.BoardComponents.findFirst({
+        where: eq(BoardComponents.id, updatedComponent.id),
+        with: {
+            attrs: componentAttrsWith(true),
+        },
+    })
+
+    return result!
+}
+
+export async function deleteBoardComponent(
+    id: BoardComponentRecord['id']
+): Promise<BoardComponentRecord['id']> {
+    const [{ id: deletedComponentId }] = await db
+        .delete(BoardComponents)
+        .where(eq(BoardComponents.id, id))
+        .returning({ id: BoardComponents.id })
+    return deletedComponentId
+}
+
+// TODO: Use category id instead of label
+export async function getBoardComponents(options?: {
+    category?: CategoryRecord['label']
+    limit?: number
+    offset?: number
+    orderBy?: SortKey
+}): Promise<{
+    boardComponents: BoardComponentQueryResult[]
+    totalCount: number
+}> {
+    const sorts: Partial<Record<SortKey, SQL>> = {
+        'date-desc': desc(BoardComponents.createdAt),
+        'date-asc': asc(BoardComponents.createdAt),
+        'price-desc': desc(BoardComponents.price),
+        'price-asc': asc(BoardComponents.price),
+    }
+
+    const orderBy = sorts[options?.orderBy ?? DEFAULT_SORT_KEY] as SQL
+
+    const componentQuery = db
+        .select()
+        .from(BoardComponents)
+        .innerJoin(
+            BoardComponentAttrs,
+            eq(BoardComponents.id, BoardComponentAttrs.boardComponentId)
+        )
+        .innerJoin(
+            Categories,
+            eq(BoardComponentAttrs.categoryId, Categories.id)
+        )
+        .innerJoin(Sizes, eq(BoardComponentAttrs.sizeId, Sizes.id))
+        .innerJoin(Colors, eq(BoardComponentAttrs.colorId, Colors.id))
+        .innerJoin(Vendors, eq(BoardComponentAttrs.vendorId, Vendors.id))
+        .where(
+            options?.category
+                ? eq(Categories.label, options?.category)
+                : undefined
+        )
+
+    const totalCount = await db.$count(componentQuery)
+    const boardComponents = await componentQuery
+        .limit(options?.limit || DEFAULT_PAGE_SIZE)
+        .offset(options?.offset || 0)
+        .orderBy(orderBy)
+        .then(rows => {
+            return rows.map(row => {
+                return {
+                    ...row.board_components,
+                    attrs: {
+                        ...row.board_component_attrs,
+                        category: { ...row.categories },
+                        size: { ...row.sizes },
+                        color: { ...row.colors },
+                        vendor: { ...row.vendors },
+                    },
+                }
+            })
+        })
+
+    return { boardComponents, totalCount }
+}
+
+export async function deleteBoardComponents(
+    ids: BoardComponentRecord['id'][]
+): Promise<BoardComponentRecord['id'][]> {
+    const deletedComponents = await db
+        .delete(BoardComponents)
+        .where(inArray(BoardComponents.id, ids))
+        .returning({ id: BoardComponents.id })
+
+    return deletedComponents.map(c => c.id)
+}
+
 export async function getBoardComponentsByIds(
     ids: BoardComponentRecord['id'][]
 ): Promise<BoardComponentQueryResult[]> {
@@ -69,6 +226,28 @@ export async function getBoardComponentsByIds(
             attrs: componentAttrsWith(true),
         },
     })
+}
+
+export async function createBoardComponentAttrs(
+    values: CreateBoardComponentAttrsRecordArgs
+): Promise<BoardComponentAttrsRecord> {
+    const [newAttrs] = await db
+        .insert(BoardComponentAttrs)
+        .values(values)
+        .returning()
+    return newAttrs
+}
+
+export async function updateBoardComponentAttrs(
+    boardComponentId: BoardComponentAttrsRecord['boardComponentId'],
+    values: UpdateBoardComponentAttrsRecordArgs
+): Promise<BoardComponentAttrsRecord> {
+    const [newAttrs] = await db
+        .update(BoardComponentAttrs)
+        .set(values)
+        .where(eq(BoardComponentAttrs.boardComponentId, boardComponentId))
+        .returning()
+    return newAttrs
 }
 
 export async function incrementBoardComponentUsageCount(
