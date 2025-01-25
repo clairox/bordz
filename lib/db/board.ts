@@ -155,6 +155,8 @@ export async function getBoardComponents(options?: {
         'date-asc': asc(BoardComponents.createdAt),
         'price-desc': desc(BoardComponents.price),
         'price-asc': asc(BoardComponents.price),
+        'alpha-desc': desc(BoardComponents.title),
+        'alpha-asc': asc(BoardComponents.title),
     }
 
     const orderBy = sorts[options?.orderBy ?? DEFAULT_SORT_KEY] as SQL

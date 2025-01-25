@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
 
-import { db } from '@/drizzle/db'
-import { Customers } from '@/drizzle/schema/customer'
-import { createNotFoundError } from '@/lib/errors'
-import { getCustomerByUserId, handleRoute } from '../../shared'
+import { handleRoute } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
+import {
+    deleteCustomerByUserId,
+    getCustomerByUserId,
+    updateCustomerByUserId,
+} from 'services/customer'
 
 type Props = DynamicRoutePropsWithParams<{ userId: string }>
 
 export const GET = async (_: NextRequest, { params: { userId } }: Props) =>
     await handleRoute(async () => {
         const customer = await getCustomerByUserId(userId)
-        if (!customer) {
-            throw createNotFoundError('Customer')
-        }
         return NextResponse.json(customer)
     })
 
@@ -25,22 +23,16 @@ export const PATCH = async (
     await handleRoute(async () => {
         const data = await request.json()
 
-        const customer = await db
-            .update(Customers)
-            .set({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                phone: data.phone,
-            })
-            .where(eq(Customers.userId, userId))
-            .returning()
-            .then(async rows => await getCustomerByUserId(rows[0].userId))
-
-        return NextResponse.json(customer)
+        const updatedCustomer = await updateCustomerByUserId(userId, {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phone: data.phone,
+        })
+        return NextResponse.json(updatedCustomer)
     })
 
 export const DELETE = async (_: NextRequest, { params: { userId } }: Props) =>
     await handleRoute(async () => {
-        await db.delete(Customers).where(eq(Customers.userId, userId))
+        await deleteCustomerByUserId(userId)
         return new NextResponse(null, { status: 204 })
     })

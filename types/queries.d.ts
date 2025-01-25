@@ -19,6 +19,8 @@ import {
     WishlistRecord,
 } from './database'
 
+type AddressQueryResult = AddressRecord
+
 type BoardQueryResult = BoardRecord & {
     deck: BoardComponentSummaryQueryResult
     trucks: BoardComponentSummaryQueryResult
@@ -72,12 +74,12 @@ type CustomerQueryResult = CustomerRecord & {
 
 type OrderQueryResult = OrderRecord & {
     lines: OrderLineQueryResult[]
-    customer: CustomerRecord
-    shippingAddress: AddressRecord
+    customer: CustomerRecord | null
+    shippingAddress: AddressRecord | null
 }
 
 type OrderLineQueryResult = OrderLineRecord & {
-    product: ProductQueryResult
+    product: ProductQueryResult | null
 }
 
 type ProductQueryResult = ProductRecord

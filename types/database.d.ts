@@ -25,11 +25,11 @@ type CategoryRecord = typeof Categories.$inferSelect
 type CheckoutRecord = typeof Checkouts.$inferSelect
 type CheckoutLineRecord = typeof CheckoutLines.$inferSelect
 type ColorRecord = typeof Colors.$inferSelect
+type CustomerRecord = typeof Customers.$inferSelect
 type OrderRecord = typeof Orders.$inferSelect
 type OrderLineRecord = typeof OrderLines.$inferSelect
 type ProductRecord = typeof Products.$inferSelect
 type SizeRecord = typeof Sizes.$inferSelect
-type CustomerRecord = typeof Customers.$inferSelect
 type VendorRecord = typeof Vendors.$inferSelect
 type WishlistRecord = typeof Wishlists.$inferSelect
 type WishlistLineRecord = typeof WishlistItems.$inferSelect
@@ -38,6 +38,10 @@ type WishlistLineRecord = typeof WishlistItems.$inferSelect
 
 type DefaultOmissions = 'id' | 'createdAt' | 'updatedAt'
 
+type CreateAddressRecordArgs = Omit<
+    typeof Addresses.$inferInsert,
+    DefaultOmissions
+>
 type CreateBoardRecordArgs = Omit<typeof Boards.$inferInsert, DefaultOmissions>
 type CreateBoardComponentRecordArgs = Omit<
     typeof BoardComponents.$inferInsert & {
@@ -65,6 +69,11 @@ type CreateCheckoutLineRecordArgs = Pick<
     typeof CheckoutLines.$inferInsert & { productId: string },
     'checkoutId' | 'productId' | 'quantity'
 >
+type CreateCustomerRecordArgs = Omit<
+    typeof Customers.$inferInsert,
+    DefaultOmissions | 'displayName' | 'numberOfOrders'
+>
+type CreateOrderRecordArgs = Omit<typeof Orders.$inferInsert, DefaultOmissions>
 type CreateProductRecordArgs = Omit<
     typeof Products.$inferInsert & { type: 'BOARD' | 'OTHER' },
     DefaultOmissions | 'productType'
@@ -80,12 +89,19 @@ type CreateWishlistItemRecordArgs = Omit<
 
 /* Update */
 
+type UpdateAddressRecordArgs = Partial<CreateAddressRecordArgs>
 type UpdateBoardComponentRecordArgs = Partial<CreateBoardComponentRecordArgs>
 type UpdateBoardComponentAttrsRecordArgs =
     Partial<CreateBoardComponentAttrsRecordArgs>
 type UpdateCartRecordArgs = Partial<Omit<CreateCartRecordArgs, 'ownerId'>>
 type UpdateCheckoutRecordArgs = Partial<
     Omit<CreateCheckoutRecordArgs, 'customerId'>
+>
+type UpdateCustomerRecordArgs = Partial<
+    Omit<CreateCustomerRecordArgs, 'userId'>
+>
+type UpdateOrderRecordArgs = Partial<
+    Omit<CreateOrderRecordArgs, 'subtotal' | 'total'>
 >
 type UpdateProductRecordArgs = Partial<
     Omit<CreateProductRecordArgs, 'productType'>

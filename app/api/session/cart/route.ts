@@ -48,11 +48,7 @@ export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
         const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
 
-        const deletedCartId = await deleteCart(cartId)
-        if (!deletedCartId) {
-            throw createNotFoundError('Cart')
-        }
-
+        await deleteCart(cartId)
         let response = new NextResponse(null, { status: 204 })
         response = expireCookies('cartId', response)
         return response

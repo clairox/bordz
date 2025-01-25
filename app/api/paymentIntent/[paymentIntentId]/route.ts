@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import stripe from '@/lib/stripe/server'
 import { handleRoute } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
+import { getPaymentIntent } from 'services/paymentIntent'
 
 type Props = DynamicRoutePropsWithParams<{ paymentIntentId: string }>
 
@@ -11,7 +11,6 @@ export const GET = async (
     { params: { paymentIntentId } }: Props
 ) =>
     await handleRoute(async () => {
-        const paymentIntent =
-            await stripe.paymentIntents.retrieve(paymentIntentId)
+        const paymentIntent = await getPaymentIntent(paymentIntentId)
         return NextResponse.json(paymentIntent)
     })

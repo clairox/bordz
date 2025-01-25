@@ -72,14 +72,22 @@ export async function updateCheckout(
             calculatedValues.totalTax + calculatedValues.totalShipping
     }
 
-    return await db.updateCheckout(id, {
+    const updatedCheckout = await db.updateCheckout(id, {
         ...values,
         ...calculatedValues,
     })
+    if (!updatedCheckout) {
+        throw createNotFoundError('Checkout')
+    }
+    return updatedCheckout
 }
 
 export async function completeCheckout(
     id: string
 ): Promise<CheckoutQueryResult> {
-    return await db.completeCheckout(id)
+    const completedCheckout = await db.completeCheckout(id)
+    if (!completedCheckout) {
+        throw createNotFoundError('Checkout')
+    }
+    return completedCheckout
 }

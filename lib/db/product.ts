@@ -65,6 +65,8 @@ export async function getProducts(options?: {
         'date-asc': asc(Products.createdAt),
         'price-desc': desc(Products.price),
         'price-asc': asc(Products.price),
+        'alpha-desc': desc(Products.title),
+        'alpha-asc': asc(Products.title),
     }
 
     const orderBy = sorts[options?.orderBy ?? DEFAULT_SORT_KEY]

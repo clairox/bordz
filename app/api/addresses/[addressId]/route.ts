@@ -1,23 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { and, eq, sql } from 'drizzle-orm'
 
 import { handleRoute } from '../../shared'
-import { db } from '@/drizzle/db'
-import { Addresses, DefaultAddresses } from '@/drizzle/schema/address'
-import { createNotFoundError } from '@/lib/errors'
-import { toLongUUID } from '@/lib/uuidTranslator'
 import { DynamicRoutePropsWithParams } from '@/types/api'
+import { deleteAddress, getAddress, updateAddress } from 'services/address'
 
 type Props = DynamicRoutePropsWithParams<{ addressId: string }>
 
 export const GET = async (_: NextRequest, { params: { addressId } }: Props) =>
     await handleRoute(async () => {
-        const address = await db.query.Addresses.findFirst({
-            where: eq(Addresses.id, addressId),
-        })
-        if (!address) {
-            throw createNotFoundError('Address')
-        }
+        const address = await getAddress(addressId)
         return NextResponse.json(address)
     })
 
@@ -28,43 +19,14 @@ export const PATCH = async (
     await handleRoute(async () => {
         const data = await request.json()
 
-        const updatedAddress = await db
-            .update(Addresses)
-            .set({
-                fullName: data.fullName,
-                line1: data.line1,
-                line2: data.line2,
-                city: data.city,
-                state: data.state,
-                postalCode: data.postalCode,
-                updatedAt: new Date(),
-            })
-            .where(eq(Addresses.id, addressId))
-            .returning()
-            .then(rows => rows[0])
-
-        if (updatedAddress.ownerId && data.isCustomerDefault === true) {
-            await db
-                .insert(DefaultAddresses)
-                .values({
-                    ownerId: updatedAddress.ownerId,
-                    addressId: updatedAddress.id,
-                })
-                .onConflictDoUpdate({
-                    target: DefaultAddresses.ownerId,
-                    set: { addressId: updatedAddress.id },
-                })
-        } else if (updatedAddress.ownerId && data.isCustomerDefault === false) {
-            await db
-                .delete(DefaultAddresses)
-                .where(
-                    and(
-                        eq(DefaultAddresses.ownerId, updatedAddress.ownerId),
-                        eq(DefaultAddresses.addressId, updatedAddress.id)
-                    )
-                )
-        }
-
+        const updatedAddress = await updateAddress(addressId, {
+            fullName: data.fullName,
+            line1: data.line1,
+            line2: data.line2,
+            city: data.city,
+            state: data.state,
+            postalCode: data.postalCode,
+        })
         return NextResponse.json(updatedAddress)
     })
 
@@ -73,24 +35,6 @@ export const DELETE = async (
     { params: { addressId } }: Props
 ) =>
     await handleRoute(async () => {
-        const deletedAddress = await db
-            .delete(Addresses)
-            .where(eq(Addresses.id, addressId))
-            .returning()
-            .then(rows => rows[0])
-
-        if (deletedAddress.ownerId) {
-            // Attempt to set a new default address, in case deletedAddress was previous default
-            await db.execute(sql`
-                INSERT INTO default_addresses (owner_id, address_id)
-                SELECT ${toLongUUID(deletedAddress.ownerId)}, id
-                FROM addresses
-                WHERE owner_id = ${toLongUUID(deletedAddress.ownerId)}
-                ORDER BY created_at DESC
-                LIMIT 1
-                ON CONFLICT DO NOTHING;
-            `)
-        }
-
+        await deleteAddress(addressId)
         return new NextResponse(null, { status: 204 })
     })

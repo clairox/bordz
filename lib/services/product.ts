@@ -31,11 +31,19 @@ export async function updateProduct(
     id: ProductRecord['id'],
     values: UpdateProductValues
 ): Promise<ProductQueryResult> {
-    return await db.updateProduct(id, values)
+    const updatedProduct = await db.updateProduct(id, values)
+    if (!updatedProduct) {
+        throw createNotFoundError('Product')
+    }
+    return updatedProduct
 }
 
 export async function deleteProduct(id: string): Promise<string> {
-    return await db.deleteProduct(id)
+    const deletedProductId = await db.deleteProduct(id)
+    if (!deletedProductId) {
+        throw createNotFoundError('Product')
+    }
+    return deletedProductId
 }
 
 export async function getProducts(

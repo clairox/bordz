@@ -1,29 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
 
-import { db } from '@/drizzle/db'
-import { Orders } from '@/drizzle/schema/order'
 import { handleRoute } from '../../shared'
-import { createNotFoundError } from '@/lib/errors'
 import { DynamicRoutePropsWithParams } from '@/types/api'
+import { getOrder, updateOrder } from '@/lib/services/order'
 
 type Props = DynamicRoutePropsWithParams<{ orderId: string }>
 
 export const GET = async (_: NextRequest, { params: { orderId } }: Props) =>
     await handleRoute(async () => {
-        const order = await db.query.Orders.findFirst({
-            where: eq(Orders.id, orderId),
-            with: {
-                customer: true,
-                shippingAddress: true,
-                lines: {
-                    with: {
-                        product: true,
-                    },
-                },
-            },
-        })
-
+        const order = await getOrder(orderId)
         return NextResponse.json(order)
     })
 
@@ -33,28 +18,13 @@ export const PATCH = async (
 ) =>
     await handleRoute(async () => {
         const data = await request.json()
-
-        const order = await db.query.Orders.findFirst({
-            where: eq(Orders.id, orderId),
+        const updatedOrder = await updateOrder(orderId, {
+            customerId: data.customerId,
+            email: data.email,
+            phone: data.phone,
+            shippingAddressId: data.shippingAddressId,
+            totalShipping: data.totalShipping,
+            totalTax: data.totalTax,
         })
-        if (!order) {
-            throw createNotFoundError('Order')
-        }
-
-        const updatedOrder = await db
-            .update(Orders)
-            .set({
-                customerId: data.customerId,
-                email: data.email,
-                phone: data.phone,
-                shippingAddressId: data.shippingAddressId,
-                totalShipping: data.totalShipping,
-                totalTax: data.totalTax,
-                total:
-                    order.total + data.totalShipping || 0 + data.totalTax || 0,
-                updatedAt: new Date(),
-            })
-            .where(eq(Orders.id, orderId))
-
         return NextResponse.json(updatedOrder)
     })

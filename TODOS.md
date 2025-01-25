@@ -52,6 +52,8 @@
 -   [x] Change all instances of "componentAttributes" to "boardComponentAttrs" or "attrs"
 -   [ ] Hide components which are out of stock
 -   [ ] Hide boards which are unavailable
+-   [ ] Add not found error checks to resource updates
+-   [ ] Add not founc error checks to resource deletions
 
 ### Cart
 

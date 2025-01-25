@@ -1,22 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { uuid } from 'short-uuid'
 
-import stripe from '@/lib/stripe/server'
 import { handleRoute, validateRequestBody } from '../shared'
+import { createPaymentIntent } from 'services/paymentIntent'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
         const data = await request.json()
         validateRequestBody(data, ['checkout'])
 
-        const paymentIntent = await stripe.paymentIntents.create(
-            {
-                amount: data.checkout.total,
-                currency: 'usd',
-            },
-            { idempotencyKey: uuid() }
-        )
-
+        const paymentIntent = await createPaymentIntent(data)
         return NextResponse.json(paymentIntent)
     })
 

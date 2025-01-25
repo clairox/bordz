@@ -15,6 +15,16 @@ import {
 } from '@/utils/constants'
 import { calculateNextPage, calculateTotalPages } from '@/utils/math'
 
+export async function getBoardByProductId(
+    productId: string
+): Promise<BoardQueryResult> {
+    const board = await db.getBoardByProductId(productId)
+    if (!board) {
+        throw createNotFoundError('Board')
+    }
+    return board
+}
+
 export async function createBoard(
     values: CreateBoardValues
 ): Promise<BoardQueryResult> {
@@ -60,13 +70,21 @@ export async function updateBoardComponent(
     id: BoardComponentRecord['id'],
     values: UpdateBoardComponentValues
 ): Promise<BoardComponentQueryResult> {
-    return await db.updateBoardComponent(id, values)
+    const updatedComponent = await db.updateBoardComponent(id, values)
+    if (!updatedComponent) {
+        throw createNotFoundError('Board component')
+    }
+    return updatedComponent
 }
 
 export async function deleteBoardComponent(
     id: BoardComponentRecord['id']
 ): Promise<BoardComponentRecord['id']> {
-    return await db.deleteBoardComponent(id)
+    const deletedComponentId = await db.deleteBoardComponent(id)
+    if (!deletedComponentId) {
+        throw createNotFoundError('Board component')
+    }
+    return deletedComponentId
 }
 
 export async function getBoardComponents(
