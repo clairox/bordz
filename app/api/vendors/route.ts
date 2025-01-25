@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { db } from '@/drizzle/db'
 import { handleRoute, validateRequestBody } from '../shared'
-import { Vendors } from '@/drizzle/schema/boardComponent'
+import { getVendors, createVendor } from 'services/vendor'
 
 export const GET = async () =>
     await handleRoute(async () => {
-        const vendors = await db.query.Vendors.findMany()
+        const vendors = await getVendors()
         return NextResponse.json(vendors)
     })
 
@@ -15,10 +14,6 @@ export const POST = async (request: NextRequest) =>
         const data = await request.json()
         validateRequestBody(data, ['name'])
 
-        const newVendor = await db
-            .insert(Vendors)
-            .values({ name: data.name })
-            .returning()
-            .then(rows => rows[0])
+        const newVendor = await createVendor(data.name)
         return NextResponse.json(newVendor)
     })

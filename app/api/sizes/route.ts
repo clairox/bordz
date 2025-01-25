@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { db } from '@/drizzle/db'
 import { handleRoute, validateRequestBody } from '../shared'
-import { Sizes } from '@/drizzle/schema/boardComponent'
+import { getSizes, createSize } from 'services/size'
 
 export const GET = async () =>
     await handleRoute(async () => {
-        const sizes = await db.query.Sizes.findMany()
+        const sizes = await getSizes()
         return NextResponse.json(sizes)
     })
 
@@ -15,10 +14,6 @@ export const POST = async (request: NextRequest) =>
         const data = await request.json()
         validateRequestBody(data, ['size'])
 
-        const newSize = await db
-            .insert(Sizes)
-            .values({ label: data.size })
-            .returning()
-            .then(rows => rows[0])
+        const newSize = await createSize(data.size)
         return NextResponse.json(newSize)
     })
