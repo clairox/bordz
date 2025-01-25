@@ -35,7 +35,7 @@ export async function updateProduct(
 ): Promise<ProductQueryResult> {
     const [updatedProduct] = await db
         .update(Products)
-        .set(values)
+        .set({ ...values, updatedAt: new Date() })
         .where(eq(Products.id, id))
         .returning()
     return updatedProduct

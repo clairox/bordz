@@ -7,7 +7,6 @@ import { CheckoutLines, Checkouts } from '@/drizzle/schema/checkout'
 import {
     CreateCheckoutLineRecordArgs,
     CreateCheckoutRecordArgs,
-    OrderRecord,
     UpdateCheckoutRecordArgs,
 } from '@/types/database'
 import { CheckoutLineQueryResult, CheckoutQueryResult } from '@/types/queries'

@@ -17,7 +17,6 @@ import {
     CreateBoardComponentAttrsRecordArgs,
     CreateBoardComponentRecordArgs,
     CreateBoardRecordArgs,
-    UpdateBoardComponentArgs,
     UpdateBoardComponentAttrsRecordArgs,
     UpdateBoardComponentRecordArgs,
 } from '@/types/database'
@@ -108,7 +107,7 @@ export async function updateBoardComponent(
     const availableForSale = !!rest.totalInventory && rest.totalInventory > 0
     const [updatedComponent] = await db
         .update(BoardComponents)
-        .set({ ...rest, availableForSale })
+        .set({ ...rest, availableForSale, updatedAt: new Date() })
         .where(eq(BoardComponents.id, id))
         .returning()
 
@@ -244,7 +243,7 @@ export async function updateBoardComponentAttrs(
 ): Promise<BoardComponentAttrsRecord> {
     const [newAttrs] = await db
         .update(BoardComponentAttrs)
-        .set(values)
+        .set({ ...values, updatedAt: new Date() })
         .where(eq(BoardComponentAttrs.boardComponentId, boardComponentId))
         .returning()
     return newAttrs
