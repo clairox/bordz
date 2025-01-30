@@ -6,6 +6,8 @@ import { db } from '@/drizzle/db'
 import { CartLines, Carts } from '@/drizzle/schema/cart'
 import { CartLineQueryResult, CartQueryResult } from '@/types/queries'
 import {
+    CartLineRecord,
+    CartRecord,
     CreateCartLineRecordArgs,
     CreateCartRecordArgs,
     UpdateCartRecordArgs,
@@ -23,7 +25,7 @@ import { SHIPPING_COST } from '@/utils/constants'
 /* Cart */
 
 export async function getCart(
-    id: string
+    id: CartRecord['id']
 ): Promise<CartQueryResult | undefined> {
     return await db.query.Carts.findFirst({
         where: eq(Carts.id, id),
@@ -55,9 +57,9 @@ export async function createCart(
 }
 
 export async function updateCart(
-    id: string,
+    id: CartRecord['id'],
     values: UpdateCartRecordArgs
-): Promise<CartQueryResult> {
+): Promise<CartQueryResult | undefined> {
     const [updatedCart] = await db
         .update(Carts)
         .set({
@@ -72,10 +74,12 @@ export async function updateCart(
         with: cartWith,
     })
 
-    return result!
+    return result
 }
 
-export async function deleteCart(id: string): Promise<string | undefined> {
+export async function deleteCart(
+    id: CartRecord['id']
+): Promise<CartRecord['id'] | undefined> {
     return await db
         .delete(Carts)
         .where(eq(Carts.id, id))
@@ -86,7 +90,7 @@ export async function deleteCart(id: string): Promise<string | undefined> {
 /* Cart Lines */
 
 export async function getCartLine(
-    id: string
+    id: CartLineRecord['id']
 ): Promise<CartLineQueryResult | undefined> {
     return await db.query.CartLines.findFirst({
         where: eq(CartLines.id, id),
@@ -184,7 +188,9 @@ export async function createCartLine(
     })
 }
 
-export async function deleteCartLine(id: string): Promise<string> {
+export async function deleteCartLine(
+    id: CartLineRecord['id']
+): Promise<CartLineRecord['id']> {
     return await db.transaction(async tx => {
         const [deletedCartLine] = await tx
             .delete(CartLines)
@@ -244,7 +250,7 @@ export async function deleteCartLine(id: string): Promise<string> {
 }
 
 export async function getCartLinesByCartId(
-    cartId: string
+    cartId: CartRecord['id']
 ): Promise<CartLineQueryResult[]> {
     return await db.query.CartLines.findMany({
         where: eq(CartLines.cartId, cartId),
@@ -266,7 +272,9 @@ export async function createCartLines(
     return lines
 }
 
-export async function deleteCartLines(ids: string[]): Promise<string[]> {
+export async function deleteCartLines(
+    ids: CartLineRecord['id'][]
+): Promise<CartLineRecord['id'][]> {
     const deletedLines: string[] = []
     for await (const id of ids) {
         const deletedLineId = await deleteCartLine(id)

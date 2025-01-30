@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 
 import {
     AccountHeading,
+    DeleteAccountDialogButton,
     AccountSection as Section,
 } from '@/components/features/Account'
 import { AddressDashboard } from '@/components/features/Addresses'
@@ -65,14 +66,15 @@ const SettingsPage: React.FC = () => {
                 </Section.Header>
                 <Section.Content>
                     <div className="mb-3 px-8 pb-4">
-                        <Button
-                            onClick={() =>
-                                router.push('/account/delete-account')
-                            }
-                            className="w-fit"
-                        >
-                            Delete Account
-                        </Button>
+                        <DeleteAccountDialogButton />
+                        {/* <Button */}
+                        {/*     onClick={() => */}
+                        {/*         router.push('/account/delete-account') */}
+                        {/*     } */}
+                        {/*     className="w-fit" */}
+                        {/* > */}
+                        {/*     Delete Account */}
+                        {/* </Button> */}
                     </div>
                 </Section.Content>
             </Section>

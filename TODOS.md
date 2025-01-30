@@ -45,15 +45,15 @@
 -   [x] Move id to mutation fn in data mutation hooks
 -   [x] Center the bordz logo in the header
 -   [x] Move customer provider logic back into provider
--   [ ] Make DAL functions
+-   [x] Make DAL functions
 -   [x] Rename drizzle schemas
 -   [x] Change all instances of "boardSetup" and "BoardSetup" to "board" and "Board"
 -   [x] Change all instances of "component" to "boardComponent"
 -   [x] Change all instances of "componentAttributes" to "boardComponentAttrs" or "attrs"
 -   [ ] Hide components which are out of stock
 -   [ ] Hide boards which are unavailable
--   [ ] Add not found error checks to resource updates
--   [ ] Add not founc error checks to resource deletions
+-   [x] Add not found error checks to resource updates
+-   [x] Add not founc error checks to resource deletions
 
 ### Cart
 
@@ -103,7 +103,7 @@
 -   [x] Create personal details page
 -   [x] Base styling
 -   [x] Add heading to sidebar
--   [ ] Use alert dialog for delete account, get rid of delete account page "Are you sure you would like to delete your account? This action cannot be undone. Please enter your password to confirm."
+-   [x] Use alert dialog for delete account, get rid of delete account page "Are you sure you would like to delete your account? This action cannot be undone. Please enter your password to confirm."
 
 ### Wishlist
 

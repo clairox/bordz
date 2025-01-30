@@ -76,10 +76,7 @@ export async function createWishlistItem(
     values: CreateWishlistItemRecordArgs
 ): Promise<WishlistLineQueryResult> {
     return await db.transaction(async tx => {
-        const productWhere = and(
-            eq(Products.id, values.productId),
-            eq(Products.availableForSale, true)
-        )
+        const productWhere = and(eq(Products.id, values.productId))
         const [product] = await tx.select().from(Products).where(productWhere)
 
         if (!product) {

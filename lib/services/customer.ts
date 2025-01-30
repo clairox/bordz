@@ -72,7 +72,7 @@ export async function deleteCustomer(
 export async function deleteCustomerByUserId(
     userId: CustomerRecord['userId']
 ): Promise<CustomerRecord['id']> {
-    const deletedCustomerId = await db.deleteCustomer(userId)
+    const deletedCustomerId = await db.deleteCustomerByUserId(userId)
     if (!deletedCustomerId) {
         throw createNotFoundError('Order')
     }

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, SQL } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, SQL } from 'drizzle-orm'
 
 import { db } from '@/drizzle/db'
 import { Products } from '@/drizzle/schema/product'
@@ -87,11 +87,10 @@ export async function getProducts(options?: {
 export async function deleteProducts(
     ids: ProductRecord['id'][]
 ): Promise<string[]> {
-    const deletedProductIds: string[] = []
-    for await (const id of ids) {
-        const deletedProductId = await deleteProduct(id)
-        deletedProductIds.push(deletedProductId)
-    }
+    const deletedProducts = await db
+        .delete(Products)
+        .where(inArray(Products.id, ids))
+        .returning({ id: Products.id })
 
-    return deletedProductIds
+    return deletedProducts.map(product => product.id)
 }
