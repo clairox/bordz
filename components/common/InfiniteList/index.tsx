@@ -25,7 +25,6 @@ const InfiniteList = <T extends object>({
     hasNextPage,
     fetchNextPage,
     render,
-    autoFetch = false, // TODO: automatically fetchNextPage upon scrolling to bottom
 }: InfiniteListProps<T>) => {
     const items = useCombinedPages(pages)
 

@@ -4,13 +4,7 @@ import { useState } from 'react'
 
 import {
     AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/AlertDialog'
 import { Button } from '@/components/ui/Button'
@@ -25,10 +19,7 @@ export const DeleteAccountDialogButton = () => {
                 <Button>Delete Account</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-                <DeleteAccountDialogForm
-                    open={open}
-                    setOpen={value => setOpen(value)}
-                />
+                <DeleteAccountDialogForm setOpen={value => setOpen(value)} />
             </AlertDialogContent>
         </AlertDialog>
     )

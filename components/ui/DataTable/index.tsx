@@ -54,7 +54,6 @@ export function DataTable<TData extends object, TValue>({
     hasNextPage,
     fetchNextPage,
     deleteRows,
-    autoFetch = false, // TODO: automatically fetchNextPage upon scrolling to bottom
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [rowSelection, setRowSelection] = useState({})

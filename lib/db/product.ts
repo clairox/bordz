@@ -83,7 +83,6 @@ export async function getProducts(options?: {
     return { products, totalCount }
 }
 
-// TODO: Update this and all many deletion db functions to use single query
 export async function deleteProducts(
     ids: ProductRecord['id'][]
 ): Promise<string[]> {

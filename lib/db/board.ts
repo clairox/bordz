@@ -99,6 +99,7 @@ export async function createBoardComponent(
     return result!
 }
 
+// TODO: Generate handle on title update
 export async function updateBoardComponent(
     id: BoardComponentRecord['id'],
     values: UpdateBoardComponentRecordArgs

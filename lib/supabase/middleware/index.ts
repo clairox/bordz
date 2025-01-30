@@ -37,7 +37,6 @@ const updateSession = async (request: NextRequest) => {
         data: { session },
     } = await supabase.auth.getSession()
 
-    // TODO: Admin sign in and customer sign in should only work for respective roles
     if (session) {
         const pathname = request.nextUrl.pathname
 

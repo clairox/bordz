@@ -1,26 +1,21 @@
-'use client'
-
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AuthApiError } from '@supabase/supabase-js'
 
 import {
-    AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
-    AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from '@/components/ui/AlertDialog'
 import DeleteAccountFormSchema from './schema'
 import { useFormMessage } from '@/hooks/forms'
 import { useDeleteAccount } from '@/hooks/data/account'
-import { Fragment, useEffect } from 'react'
 import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
-import { AuthApiError } from '@supabase/supabase-js'
 import { Form } from '@/components/ui/Form'
 import FormMessage from '@/components/ui/FormMessage'
 import ButtonAsync from '@/components/ui/ButtonAsync'
@@ -29,13 +24,12 @@ import { FormPasswordField } from '@/components/formControls'
 type FieldValues = z.infer<typeof DeleteAccountFormSchema>
 
 type DeleteAccountDialogFormProps = {
-    open: boolean
     setOpen: (value: boolean) => void
 }
 
 export const DeleteAccountDialogForm: React.FC<
     DeleteAccountDialogFormProps
-> = ({ open, setOpen }) => {
+> = ({ setOpen }) => {
     const form = useForm<FieldValues>({
         resolver: zodResolver(DeleteAccountFormSchema),
         defaultValues: { password: '' },

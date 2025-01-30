@@ -56,6 +56,7 @@ export async function createCart(
         }))
 }
 
+// TODO: Update total with respect to subtotal
 export async function updateCart(
     id: CartRecord['id'],
     values: UpdateCartRecordArgs

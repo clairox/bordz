@@ -1,7 +1,6 @@
 import { WishlistResponse } from '@/types/api'
 import { mapProductResponseToProduct } from '.'
 
-// TODO: Change 'lines' to 'items' throughout app
 export const mapWishlistResponseToWishlist = (
     response: WishlistResponse
 ): Wishlist => {
