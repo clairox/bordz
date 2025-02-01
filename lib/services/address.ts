@@ -38,7 +38,8 @@ export async function updateAddress(
         throw createNotFoundError('Address')
     }
 
-    const { ownerId, isCustomerDefault } = values
+    const { isCustomerDefault } = values
+    const { ownerId } = updatedAddress
     if (ownerId && isCustomerDefault === true) {
         await db.updateCustomerDefaultAddress(ownerId, updatedAddress.id, true)
     } else if (ownerId && isCustomerDefault === false) {

@@ -1,0 +1,5 @@
+export * from './AddAddressView'
+export * from './ChangePasswordView'
+export * from './PersonalDetailsView'
+export * from './UpdateAddressView'
+export * from './UpdateDefaultAddressView'

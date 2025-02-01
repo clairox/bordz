@@ -8,6 +8,7 @@ import {
 import { fetchBoardByProductId } from '@/lib/api'
 import { CaretDown } from '@phosphor-icons/react'
 import { QueryClient, useQuery } from '@tanstack/react-query'
+import { BoardDetailsView } from '../Board/BoardDetailsView'
 
 type BoardDetailsPopoverProps = {
     productId: string
@@ -60,14 +61,5 @@ const BoardDetailsPopoverContent: React.FC<BoardDetailsPopoverContentProps> = ({
         return <div>Loading...</div>
     }
 
-    return (
-        <ul className="flex flex-col gap-2 text-sm">
-            <li className="line-clamp-1">{data!.deck.title}</li>
-            <li className="line-clamp-1">{data!.trucks.title}</li>
-            <li className="line-clamp-1">{data!.wheels.title}</li>
-            <li className="line-clamp-1">{data!.bearings.title}</li>
-            <li className="line-clamp-1">{data!.hardware.title}</li>
-            <li className="line-clamp-1">{data!.griptape.title}</li>
-        </ul>
-    )
+    return <BoardDetailsView board={data!} />
 }

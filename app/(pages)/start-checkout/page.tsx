@@ -14,23 +14,31 @@ const StartCheckoutPage: React.FC<StartCheckoutPageProps> = ({
         <div className="flex gap-5 w-full">
             <div className="w-full">
                 {searchParams.register ? (
-                    <div>
-                        <h2>Sign up</h2>
-                        <SignupForm redirectTo="/checkout" />
+                    <div className="flex justify-center">
+                        <div className="p-8 w-[500px]">
+                            <h2>Sign up</h2>
+                            <SignupForm redirectTo="/checkout" />
 
-                        <LinkToLogin />
+                            <LinkToLogin />
+                        </div>
                     </div>
                 ) : (
-                    <div>
-                        <h2>Log in</h2>
-                        <LoginForm />
-                        <LinkToSignup />
+                    <div className="flex justify-center">
+                        <div className="p-8 w-[500px]">
+                            <h2>Log in</h2>
+                            <LoginForm />
+                            <LinkToSignup />
+                        </div>
                     </div>
                 )}
             </div>
             <div className="w-full">
-                <h2>Continue as Guest</h2>
-                <ContinueAsGuestForm />
+                <div className="flex justify-center">
+                    <div className="p-8 w-[500px]">
+                        <h2>Continue as Guest</h2>
+                        <ContinueAsGuestForm />
+                    </div>
+                </div>
             </div>
         </div>
     )

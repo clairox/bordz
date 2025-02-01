@@ -1,31 +1,24 @@
 import { redirect } from 'next/navigation'
 
-import PriceRepr from '@/components/common/PriceRepr'
-import { getQueryClient } from '@/lib/queryClient'
 import { fetchOrder } from '@/lib/api'
 import { mapOrderResponseToOrder } from '@/utils/conversions'
+import { OrderConfirmationView } from '@/components/features/Orders'
 
-const queryClient = getQueryClient()
-
-type CheckoutCompletePageProps = {
+type OrderConfirmationPageProps = {
     searchParams: { order: string }
 }
 
-const CheckoutCompletePage: React.FC<CheckoutCompletePageProps> = async ({
+const OrderConfirmationPage: React.FC<OrderConfirmationPageProps> = async ({
     searchParams,
 }) => {
     const { order: orderId } = searchParams
+
     if (!orderId) {
         redirect('/')
     }
 
-    const order = await queryClient.fetchQuery<Order>({
-        queryKey: ['order', orderId],
-        queryFn: async () => {
-            const response = await fetchOrder(orderId)
-            return mapOrderResponseToOrder(response)
-        },
-    })
+    const orderResponse = await fetchOrder(orderId)
+    const order = mapOrderResponseToOrder(orderResponse)
 
     if (!order) {
         redirect('/')
@@ -33,49 +26,13 @@ const CheckoutCompletePage: React.FC<CheckoutCompletePageProps> = async ({
 
     return (
         <div>
-            <h1>Thank you for your order!</h1>
-            <p>Order No: {order.id}</p>
-            <div>
-                {order.lines.map(line => {
-                    return (
-                        <article key={line.id}>
-                            <h3>
-                                {line.quantity} x {line.title}
-                            </h3>
-                            {line.product?.board && (
-                                <ul className="text-sm">
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.deck.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.trucks.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.wheels.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.bearings.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.hardware.title}
-                                    </li>
-                                    <li className="line-clamp-1">
-                                        {line.product.board?.griptape.title}
-                                    </li>
-                                </ul>
-                            )}
-                            <p>
-                                <PriceRepr value={line.total} />
-                            </p>
-                        </article>
-                    )
-                })}
+            <div className="mb-4">
+                <h1>Thank you for your order!</h1>
+                <p>Order No: {order.id}</p>
             </div>
-            <p>
-                Total: <PriceRepr value={order.total} />
-            </p>
+            <OrderConfirmationView order={order} />
         </div>
     )
 }
 
-export default CheckoutCompletePage
+export default OrderConfirmationPage

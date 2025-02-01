@@ -1,31 +1,31 @@
 'use client'
 
 import { Fragment } from 'react'
-// import { ArrowClockwise } from '@phosphor-icons/react'
+import { ArrowClockwise } from '@phosphor-icons/react'
 
 import { CartLineList } from '../CartLineList'
 import { CartSummary } from '../CartSummary'
 import { useSessionCart } from '@/hooks/session'
-// import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 
 export const CartContainer: React.FC = () => {
-    const { data: cart /* error, isPending, refetch */ } = useSessionCart()
+    const { data: cart, error, isPending, refetch } = useSessionCart()
 
-    // if (error) {
-    //     return (
-    //         <div className="flex flex-col gap-3 justify-center items-center w-full h-[300px]">
-    //             <p>There was a problem loading your cart.</p>
-    //             <Button onClick={() => refetch()} className="flex">
-    //                 <span>Retry</span>
-    //                 <ArrowClockwise size={22} weight="light" />
-    //             </Button>
-    //         </div>
-    //     )
-    // }
-    //
-    // if (isPending) {
-    //     return <Fallback />
-    // }
+    if (error) {
+        return (
+            <div className="flex flex-col gap-3 justify-center items-center w-full h-[300px]">
+                <p>There was a problem loading your cart.</p>
+                <Button onClick={() => refetch()} className="flex">
+                    <span>Retry</span>
+                    <ArrowClockwise size={22} weight="light" />
+                </Button>
+            </div>
+        )
+    }
+
+    if (isPending) {
+        return <Fallback />
+    }
 
     return (
         <Fragment>
@@ -47,6 +47,6 @@ export const CartContainer: React.FC = () => {
     )
 }
 
-// const Fallback = () => {
-//     return <div>Loading...</div>
-// }
+const Fallback = () => {
+    return <div>Loading...</div>
+}

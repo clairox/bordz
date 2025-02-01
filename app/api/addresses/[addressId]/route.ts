@@ -26,6 +26,7 @@ export const PATCH = async (
             city: data.city,
             state: data.state,
             postalCode: data.postalCode,
+            isCustomerDefault: data.isCustomerDefault,
         })
         return NextResponse.json(updatedAddress)
     })

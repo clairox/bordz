@@ -21,6 +21,7 @@ import {
     FormDateSelectField,
     FormInputField,
     FormPasswordField,
+    FormRadioGroupField,
     FormSelectField,
     FormTextareaField,
     FormTextListField,
@@ -31,6 +32,7 @@ import { SelectedAssets } from '@/components/features/Assets'
 import { Form } from '@/components/ui/Form'
 import { ButtonProps } from '@/components/ui/Button'
 import { UNEXPECTED_ERROR_TEXT } from '@/utils/constants'
+import { FormRadioGroupItem } from '@/types/forms'
 
 type UnknownZodObject = z.ZodObject<
     z.ZodRawShape,
@@ -64,6 +66,12 @@ type FieldDataDef<TFieldValues extends object, TName = Path<TFieldValues>> =
           type: 'checkbox'
           name: TName
           label: string
+      }
+    | {
+          type: 'radioGroup'
+          name: TName
+          label: string
+          items: FormRadioGroupItem[]
       }
     | {
           type: 'select'
@@ -283,6 +291,15 @@ const DataForm = <
                                         <FormCheckboxField
                                             key={field.name}
                                             control={form.control}
+                                            {...omit(field, ['type'])}
+                                        />
+                                    )
+                                case 'radioGroup':
+                                    return (
+                                        <FormRadioGroupField
+                                            key={field.name}
+                                            control={form.control}
+                                            schema={Schema}
                                             {...omit(field, ['type'])}
                                         />
                                     )
