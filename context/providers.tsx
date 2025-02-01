@@ -8,21 +8,17 @@ import { SupabaseProvider } from './SupabaseContext'
 import { CustomerProvider } from './CustomerContext'
 import { WishlistProvider } from './WishlistContext'
 
-type ProvidersProps = React.PropsWithChildren<{
-    initialState: InitialAppState
-}>
+type ProvidersProps = React.PropsWithChildren
 
-const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
+const Providers: React.FC<ProvidersProps> = ({ children }) => {
     const queryClient = getQueryClient()
 
     return (
         <SupabaseProvider>
             <QueryClientProvider client={queryClient}>
-                <CustomerProvider initialData={initialState.customer}>
-                    <CartProvider initialData={initialState.cart}>
-                        <WishlistProvider initialData={initialState.wishlist}>
-                            {children}
-                        </WishlistProvider>
+                <CustomerProvider>
+                    <CartProvider>
+                        <WishlistProvider>{children}</WishlistProvider>
                     </CartProvider>
                 </CustomerProvider>
             </QueryClientProvider>

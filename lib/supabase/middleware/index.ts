@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 import { getUserRole } from '@/utils/session'
+import { validateSessionCookies } from '@/lib/middleware/validateSessionCookies'
 
 const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -37,10 +38,12 @@ const updateSession = async (request: NextRequest) => {
         data: { session },
     } = await supabase.auth.getSession()
 
-    if (session) {
-        const pathname = request.nextUrl.pathname
+    const pathname = request.nextUrl.pathname
+    const isClientRoute =
+        !pathname.startsWith('/_next') && !pathname.startsWith('/api')
 
-        if (!pathname.startsWith('/_next') && !pathname.startsWith('/api')) {
+    if (session) {
+        if (isClientRoute) {
             const userRole = getUserRole(session)
             // console.log(
             //     `Requesting ${request.nextUrl.pathname} with role '${userRole}'.`
@@ -83,6 +86,18 @@ const updateSession = async (request: NextRequest) => {
         const url = request.nextUrl.clone()
         url.pathname = '/'
         return NextResponse.redirect(url)
+    }
+
+    if (user && isClientRoute) {
+        try {
+            supabaseResponse = await validateSessionCookies(
+                user,
+                request,
+                supabaseResponse
+            )
+        } catch {
+            // TODO: Redirect to 500 error page
+        }
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

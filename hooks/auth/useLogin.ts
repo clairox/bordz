@@ -38,14 +38,14 @@ export const useLogin = (redirectTo?: string) => {
             if (userRole === 'admin') {
                 router.push('/admin')
             } else if (userRole === 'customer') {
+                router.push(redirectTo ?? '/')
+
                 const session = await fetchSessionData(access_token)
                 if (session) {
                     queryClient.setQueryData(['customer'], session.customer)
                     queryClient.setQueryData(['cart'], session.cart)
                     queryClient.setQueryData(['wishlist'], session.wishlist)
                 }
-
-                router.push(redirectTo ?? '/')
             }
         },
     })

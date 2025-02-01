@@ -6,9 +6,6 @@ import '@/styles/globals.css'
 import Providers from '@/context/providers'
 import { Header } from '@/components/layout/Header'
 import { cn } from '@/utils'
-import { createClient } from '@/lib/supabase/server'
-import { initializeSession } from '@/utils/session'
-import { cookies } from 'next/headers'
 
 const publicSans = Public_Sans({
     subsets: ['latin'],
@@ -23,12 +20,6 @@ export const metadata: Metadata = {
 const RootLayout: React.FC<Readonly<React.PropsWithChildren>> = async ({
     children,
 }) => {
-    const supabase = createClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-    const initialAppState = await initializeSession(user, cookies())
-
     return (
         <html lang="en">
             <body
@@ -37,7 +28,7 @@ const RootLayout: React.FC<Readonly<React.PropsWithChildren>> = async ({
                     publicSans.className
                 )}
             >
-                <Providers initialState={initialAppState}>
+                <Providers>
                     <Header />
                     <main className="pt-14 h-full overflow-hidden">
                         {children}

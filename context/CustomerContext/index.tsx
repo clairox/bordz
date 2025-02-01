@@ -9,18 +9,13 @@ import { fetchCustomer } from '@/lib/api'
 import { mapCustomerResponseToCustomer } from '@/utils/conversions'
 
 type CustomerContextValue = UseQueryResult<Customer | null>
-type CustomerProviderProps = React.PropsWithChildren<{
-    initialData?: Customer | null
-}>
+type CustomerProviderProps = React.PropsWithChildren
 
 const CustomerContext = createContext<CustomerContextValue>(
     {} as CustomerContextValue
 )
 
-const CustomerProvider: React.FC<CustomerProviderProps> = ({
-    initialData,
-    children,
-}) => {
+const CustomerProvider: React.FC<CustomerProviderProps> = ({ children }) => {
     const supabase = useSupabase()
     const getSessionUserRole = useGetSessionUserRole()
 
@@ -51,7 +46,6 @@ const CustomerProvider: React.FC<CustomerProviderProps> = ({
             const response = await fetchCustomer(user!.id)
             return mapCustomerResponseToCustomer(response)
         },
-        initialData,
     })
 
     return (
