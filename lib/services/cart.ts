@@ -50,7 +50,8 @@ export async function getCustomerCart(
     if (!customerCart) {
         return await db.createCart({ ownerId: customerId })
     }
-    return customerCart
+
+    return removeUnavailableCartItems(customerCart)
 }
 
 export async function getCart(id: string): Promise<CartQueryResult> {
@@ -58,7 +59,8 @@ export async function getCart(id: string): Promise<CartQueryResult> {
     if (!cart) {
         throw createNotFoundError('Cart')
     }
-    return cart
+
+    return removeUnavailableCartItems(cart)
 }
 
 export async function createCart(
@@ -121,6 +123,26 @@ export async function removeCartLine(
     }
 
     return updatedCart
+}
+
+export async function removeUnavailableCartItems(
+    cart: CartQueryResult
+): Promise<CartQueryResult> {
+    const unavailableCartItems = cart.lines
+        .filter(line => {
+            if (!line.product.availableForSale) {
+                return line
+            }
+        })
+        .map(line => line.id)
+
+    if (unavailableCartItems.length > 0) {
+        await db.deleteCartLines(unavailableCartItems)
+        const updatedCart = await db.getCart(cart.id)
+        return updatedCart!
+    }
+
+    return cart
 }
 
 export async function clearCart(id: string): Promise<CartQueryResult> {
