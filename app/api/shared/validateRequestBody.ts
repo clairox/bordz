@@ -1,6 +1,6 @@
 import { createBadRequestError } from '@/lib/errors'
 
-const validateRequestBody = (
+export const validateRequestBody = (
     body: Record<string, unknown>,
     requiredFields: string[]
 ) => {
@@ -14,5 +14,3 @@ const validateRequestBody = (
         )
     }
 }
-
-export default validateRequestBody

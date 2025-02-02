@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { handleError } from '@/lib/errors'
 
-const handleRoute = async (
+export const handleRoute = async (
     callback: () => Promise<NextResponse>
 ): Promise<NextResponse> => {
     try {
@@ -11,5 +11,3 @@ const handleRoute = async (
         return handleError(error as Error)
     }
 }
-
-export default handleRoute
