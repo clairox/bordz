@@ -29,6 +29,7 @@
 -   [ ] Handle data fetching/mutations through server components/actions
 -   [ ] Implement timed checkout abandonment
 -   [ ] @bug Fix missing checkoutId cookie
+-   [ ] @bug Fix page reloading when navigating to new layout
 
 ### Future ideas
 
