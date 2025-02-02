@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute, validateRequestBody } from '../shared'
+import { handleRoute, PostPaymentIntentSchema } from '../shared'
 import { createPaymentIntent } from 'services/paymentIntent'
+import { chkRequest } from '@/lib/validator'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['checkout'])
-
+        const data = await chkRequest(PostPaymentIntentSchema, request)
         const paymentIntent = await createPaymentIntent(data)
         return NextResponse.json(paymentIntent)
     })

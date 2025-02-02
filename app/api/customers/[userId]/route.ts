@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute } from '../../shared'
+import { handleRoute, PatchCustomerSchema } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import {
     deleteCustomerByUserId,
     getCustomerByUserId,
     updateCustomerByUserId,
 } from 'services/customer'
+import { chkRequest } from '@/lib/validator'
 
 type Props = DynamicRoutePropsWithParams<{ userId: string }>
 
@@ -21,13 +22,8 @@ export const PATCH = async (
     { params: { userId } }: Props
 ) =>
     await handleRoute(async () => {
-        const data = await request.json()
-
-        const updatedCustomer = await updateCustomerByUserId(userId, {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            phone: data.phone,
-        })
+        const data = await chkRequest(PatchCustomerSchema, request)
+        const updatedCustomer = await updateCustomerByUserId(userId, data)
         return NextResponse.json(updatedCustomer)
     })
 

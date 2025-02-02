@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute } from '../../shared'
+import { handleRoute, PatchBoardComponentSchema } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { getBoardComponent, updateBoardComponent } from 'services/board'
+import { chkRequest } from '@/lib/validator'
 
 type Props = DynamicRoutePropsWithParams<{ boardComponentId: string }>
 
@@ -20,24 +21,10 @@ export const PATCH = async (
     { params: { boardComponentId } }: Props
 ) =>
     await handleRoute(async () => {
-        const data = await request.json()
-
+        const data = await chkRequest(PatchBoardComponentSchema, request)
         const updatedBoardComponent = await updateBoardComponent(
             boardComponentId,
-            {
-                title: data.title,
-                images: data.images,
-                model: data.model,
-                compareAtPrice: data.compareAtPrice,
-                price: data.price,
-                description: data.description,
-                specifications: data.specifications,
-                totalInventory: data.totalInventory,
-                category: data.category,
-                vendor: data.vendor,
-                size: data.size,
-                color: data.color,
-            }
+            data
         )
         return NextResponse.json(updatedBoardComponent)
     })

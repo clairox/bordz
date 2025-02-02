@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import {
+    DeleteBoardComponentSchema,
     getRequestOptionsParams,
     handleRoute,
-    validateRequestBody,
+    PostBoardComponentSchema,
 } from '../shared'
 import {
     createBoardComponent,
     deleteBoardComponents,
     getBoardComponents,
 } from 'services/board'
-import { createUrlHandle } from '@/utils/url'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -22,40 +23,14 @@ export const GET = async (request: NextRequest) =>
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        const requiredFields = [
-            'title',
-            'price',
-            'totalInventory',
-            'category',
-            'vendor',
-            'size',
-            'color',
-        ]
-        validateRequestBody(data, requiredFields)
-
-        const newComponent = await createBoardComponent({
-            title: data.title,
-            handle: createUrlHandle(data.title),
-            price: parseInt(data.price),
-            images: data.images,
-            model: data.model,
-            description: data.description,
-            specifications: data.specifications,
-            totalInventory: parseInt(data.totalInventory),
-            category: data.category,
-            vendor: data.vendor,
-            size: data.size,
-            color: data.color,
-        })
+        const data = await chkRequest(PostBoardComponentSchema, request)
+        const newComponent = await createBoardComponent(data)
         return NextResponse.json(newComponent)
     })
 
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['ids'])
-
-        await deleteBoardComponents(data.ids)
+        const { ids } = await chkRequest(DeleteBoardComponentSchema, request)
+        await deleteBoardComponents(ids)
         return new NextResponse(null, { status: 204 })
     })

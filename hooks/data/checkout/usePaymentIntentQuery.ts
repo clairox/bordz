@@ -10,7 +10,7 @@ export const usePaymentIntentQuery = (checkout: Checkout) => {
         queryKey: ['paymentIntent', checkout.id],
         queryFn: async () => {
             if (!checkout.paymentIntentId) {
-                return await createPaymentIntent(checkout)
+                return await createPaymentIntent({ total: checkout.total })
             }
             return await fetchPaymentIntent(checkout.paymentIntentId)
         },

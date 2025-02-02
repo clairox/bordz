@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute, validateRequestBody } from '../shared'
+import { handleRoute, PostVendorSchema } from '../shared'
 import { getVendors, createVendor } from 'services/vendor'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async () =>
     await handleRoute(async () => {
@@ -11,9 +12,7 @@ export const GET = async () =>
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['name'])
-
-        const newVendor = await createVendor(data.name)
+        const { name } = await chkRequest(PostVendorSchema, request)
+        const newVendor = await createVendor(name)
         return NextResponse.json(newVendor)
     })

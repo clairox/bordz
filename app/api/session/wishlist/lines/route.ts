@@ -4,12 +4,13 @@ import {
     getRequestOptionsParams,
     getRequiredRequestCookie,
     handleRoute,
-    validateRequestBody,
+    PostWishlistItemSchema,
 } from '../../../shared'
 import {
     addWishlistItem,
     getWishlistItemsByWishlistId,
 } from 'services/wishlist'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -28,10 +29,7 @@ export const POST = async (request: NextRequest) =>
             request,
             'wishlistId'
         )
-        const data = await request.json()
-        validateRequestBody(data, ['productId'])
-        const updatedWishlist = await addWishlistItem(wishlistId, {
-            productId: data.productId,
-        })
+        const data = await chkRequest(PostWishlistItemSchema, request)
+        const updatedWishlist = await addWishlistItem(wishlistId, data)
         return NextResponse.json(updatedWishlist)
     })

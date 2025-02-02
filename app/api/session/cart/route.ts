@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute, getRequiredRequestCookie } from '../../shared'
+import {
+    handleRoute,
+    getRequiredRequestCookie,
+    PostSessionCart,
+} from '../../shared'
 import { createNotFoundError } from '@/lib/errors'
 import { CART_ID_COOKIE_MAX_AGE } from '@/utils/constants'
 import { appendCookie, expireCookies } from '@/utils/session'
@@ -12,10 +16,11 @@ import {
     mergeCarts,
 } from 'services/cart'
 import { CartQueryResult } from '@/types/queries'
+import { chkRequest } from '@/lib/validator'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const { customerId } = await request.json()
+        const { customerId } = await chkRequest(PostSessionCart, request)
         const sessionCartId = request.cookies.get('cartId')?.value
 
         if (customerId) {

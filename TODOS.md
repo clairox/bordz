@@ -4,7 +4,7 @@
 
 -   [ ] Move local DB to external DB service
 -   [ ] Handle data fetching/mutations through server components/actions
--   [ ] Use zod for request validation
+-   [x] Use zod for request validation
 -   [ ] Hide out of stock/unavailable items in UI
 -   [ ] Implement timed checkout abandonment
 -   [ ] Handle payment intent statuses
@@ -22,6 +22,7 @@
 -   [ ] Update product availability, price, title on board component update/delete
 -   [ ] Update cart line subtotal, total on product update
 -   [ ] Update cart subtotal, quantity on cart line update/insert/delete
+-   [ ] Remove many order delete feature
 -   [ ] Complete Skate Lab
     -   [ ] Edit mode
     -   [ ] Filtering/sorting

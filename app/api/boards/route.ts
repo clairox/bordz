@@ -1,31 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleRoute, validateRequestBody } from '../shared'
+import { handleRoute, PostBoardSchema } from '../shared'
 import { createBoard } from 'services/board'
+import { chkRequest } from '@/lib/validator'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-
-        const requiredFields = [
-            'productId',
-            'deckId',
-            'trucksId',
-            'wheelsId',
-            'bearingsId',
-            'hardwareId',
-            'griptapeId',
-        ]
-        validateRequestBody(data, requiredFields)
-
-        const newBoard = await createBoard({
-            productId: data.productId,
-            deckId: data.deckId,
-            trucksId: data.trucksId,
-            wheelsId: data.wheelsId,
-            bearingsId: data.bearingsId,
-            hardwareId: data.hardwareId,
-            griptapeId: data.griptapeId,
-        })
-
+        const data = await chkRequest(PostBoardSchema, request)
+        const newBoard = await createBoard(data)
         return NextResponse.json(newBoard)
     })

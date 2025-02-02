@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute } from '../../shared'
+import { handleRoute, PostSessionWishlist } from '../../shared'
 import { CART_ID_COOKIE_MAX_AGE } from '@/utils/constants'
 import {
     getWishlist,
@@ -10,10 +10,11 @@ import {
 } from 'services/wishlist'
 import { WishlistQueryResult } from '@/types/queries'
 import { appendCookie } from '@/utils/session'
+import { chkRequest } from '@/lib/validator'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const { customerId } = await request.json()
+        const { customerId } = await chkRequest(PostSessionWishlist, request)
         const sessionWishlistId = request.cookies.get('wishlistId')?.value
 
         if (customerId) {

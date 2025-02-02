@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getRequiredRequestCookie, handleRoute } from '@/app/api/shared'
+import {
+    getRequiredRequestCookie,
+    handleRoute,
+    PatchCheckoutSchema,
+} from '@/app/api/shared'
 import { getCheckout } from 'db/checkout'
 import { attachCheckout, updateCheckout } from 'services/checkout'
 import { appendCookie } from '@/utils/session'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -30,12 +35,7 @@ export const PATCH = async (request: NextRequest) =>
             request,
             'checkoutId'
         )
-        const data = await request.json()
-        const updatedCheckout = await updateCheckout(checkoutId, {
-            subtotal: data.subtotal,
-            email: data.email,
-            shippingAddressId: data.shippingAddressId,
-            paymentIntentId: data.paymentIntentId,
-        })
+        const data = await chkRequest(PatchCheckoutSchema, request)
+        const updatedCheckout = await updateCheckout(checkoutId, data)
         return NextResponse.json(updatedCheckout)
     })

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute } from '../../shared'
+import { handleRoute, PatchProductSchema } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { getProduct, updateProduct } from 'services/product'
+import { chkRequest } from '@/lib/validator'
 
 type Props = DynamicRoutePropsWithParams<{ productId: string }>
 
@@ -17,13 +18,7 @@ export const PATCH = async (
     { params: { productId } }: Props
 ) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        const updatedProduct = await updateProduct(productId, {
-            title: data.title,
-            price: data.price,
-            featuredImage: data.featuredImage,
-            availableForSale: data.availableForSale,
-            isPublic: data.isPublic,
-        })
+        const data = await chkRequest(PatchProductSchema, request)
+        const updatedProduct = await updateProduct(productId, data)
         return NextResponse.json(updatedProduct)
     })

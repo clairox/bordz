@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute } from '../../shared'
+import { handleRoute, PatchAddressSchema } from '../../shared'
 import { DynamicRoutePropsWithParams } from '@/types/api'
 import { deleteAddress, getAddress, updateAddress } from 'services/address'
+import { chkRequest } from '@/lib/validator'
 
 type Props = DynamicRoutePropsWithParams<{ addressId: string }>
 
@@ -17,17 +18,8 @@ export const PATCH = async (
     { params: { addressId } }: Props
 ) =>
     await handleRoute(async () => {
-        const data = await request.json()
-
-        const updatedAddress = await updateAddress(addressId, {
-            fullName: data.fullName,
-            line1: data.line1,
-            line2: data.line2,
-            city: data.city,
-            state: data.state,
-            postalCode: data.postalCode,
-            isCustomerDefault: data.isCustomerDefault,
-        })
+        const data = await chkRequest(PatchAddressSchema, request)
+        const updatedAddress = await updateAddress(addressId, data)
         return NextResponse.json(updatedAddress)
     })
 

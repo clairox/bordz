@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 
 import fetchAbsolute from '@/lib/fetchAbsolute'
+import { PaymentIntentCreateArgs } from '@/types/api'
 
 export const fetchPaymentIntent = async (
     id: string
@@ -9,10 +10,10 @@ export const fetchPaymentIntent = async (
 }
 
 export const createPaymentIntent = async (
-    checkout: Checkout
+    args: PaymentIntentCreateArgs
 ): Promise<Stripe.PaymentIntent> => {
     return await fetchAbsolute<Stripe.PaymentIntent>('/paymentIntent', {
         method: 'POST',
-        body: JSON.stringify({ checkout }),
+        body: JSON.stringify({ total: args.total }),
     })
 }

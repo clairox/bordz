@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import {
     handleRoute,
     getRequestOptionsParams,
-    validateRequestBody,
+    DeleteOrdersSchema,
 } from '../shared'
 import { deleteOrders, getOrders } from 'services/order'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -21,8 +22,7 @@ export const GET = async (request: NextRequest) =>
 
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['ids'])
-        await deleteOrders(data.ids)
+        const { ids } = await chkRequest(DeleteOrdersSchema, request)
+        await deleteOrders(ids)
         return new NextResponse(null, { status: 204 })
     })

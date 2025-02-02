@@ -3,20 +3,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import {
     getRequiredRequestCookie,
     handleRoute,
-    validateRequestBody,
+    PostCartLineSchema,
 } from '@/app/api/shared'
 import { addCartLine, clearCart } from 'services/cart'
+import { chkRequest } from '@/lib/validator'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
         const { value: cartId } = getRequiredRequestCookie(request, 'cartId')
-        const data = await request.json()
-        validateRequestBody(data, ['productId', 'quantity'])
-
-        const updatedCart = await addCartLine(cartId, {
-            productId: data.productId,
-            quantity: data.quantity,
-        })
+        const data = await chkRequest(PostCartLineSchema, request)
+        const updatedCart = await addCartLine(cartId, data)
 
         return NextResponse.json(updatedCart)
     })

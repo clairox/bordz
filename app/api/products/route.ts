@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import {
+    DeleteProductsSchema,
     getRequestOptionsParams,
     handleRoute,
-    validateRequestBody,
+    PostProductSchema,
 } from '../shared'
 import { createProduct, deleteProducts, getProducts } from 'services/product'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async (request: NextRequest) =>
     await handleRoute(async () => {
@@ -19,25 +21,15 @@ export const GET = async (request: NextRequest) =>
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['title', 'price', 'type'])
-
-        const newProduct = await createProduct({
-            title: data.title,
-            featuredImage: data.featuredImage,
-            price: data.price,
-            type: data.type,
-            availableForSale: data.availableForSale,
-            isPublic: data.isPublic,
-        })
+        const data = await chkRequest(PostProductSchema, request)
+        const newProduct = await createProduct(data)
 
         return NextResponse.json(newProduct)
     })
 
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['ids'])
-        await deleteProducts(data.ids)
+        const { ids } = await chkRequest(DeleteProductsSchema, request)
+        await deleteProducts(ids)
         return new NextResponse(null, { status: 204 })
     })

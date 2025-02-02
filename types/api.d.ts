@@ -74,6 +74,9 @@ type CustomerCreateArgs = {
     birthDate?: Date
     phone?: string
 }
+type PaymentIntentCreateArgs = {
+    total: number
+}
 type ProductCreateArgs = {
     title: string
     price: number

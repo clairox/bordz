@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleRoute, validateRequestBody } from '../../shared'
+import { handleRoute, PostValidateSessionCookiesSchema } from '../../shared'
 import { getCart } from 'services/cart'
 import { getWishlist } from 'services/wishlist'
+import { chkRequest } from '@/lib/validator'
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        try {
-            validateRequestBody(data, ['customerId', 'cartId', 'wishlistId'])
-        } catch {
+        const data = await chkRequest(PostValidateSessionCookiesSchema, request)
+            .then(data => data)
+            .catch(() => undefined)
+        if (!data) {
             return NextResponse.json({ isValid: false })
         }
 

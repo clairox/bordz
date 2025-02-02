@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRoute, validateRequestBody } from '../shared'
+import { handleRoute, PostSizeSchema } from '../shared'
 import { getSizes, createSize } from 'services/size'
+import { chkRequest } from '@/lib/validator'
 
 export const GET = async () =>
     await handleRoute(async () => {
@@ -11,9 +12,7 @@ export const GET = async () =>
 
 export const POST = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const data = await request.json()
-        validateRequestBody(data, ['size'])
-
-        const newSize = await createSize(data.size)
+        const { size } = await chkRequest(PostSizeSchema, request)
+        const newSize = await createSize(size)
         return NextResponse.json(newSize)
     })
