@@ -2,7 +2,7 @@
 
 ### General
 
--   [ ] Increase customer number of orders on checkout completion
+-   [x] Increase customer number of orders on checkout completion
 -   [ ] Reduce board component count on checkout completion
 -   [ ] Remove many order delete feature
 -   [ ] Hide out of stock/unavailable items in UI
