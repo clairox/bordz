@@ -24,9 +24,11 @@
     -   [ ] Edit mode
     -   [ ] Filtering/sorting
     -   [ ] Sockets
+-   [ ] Add UI styles
 -   [ ] Move local DB to external DB service
 -   [ ] Handle data fetching/mutations through server components/actions
 -   [ ] Implement timed checkout abandonment
+-   [ ] @bug Fix missing checkoutId cookie
 
 ### Future ideas
 
