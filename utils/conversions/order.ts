@@ -21,12 +21,15 @@ export const mapOrderResponseToOrder = (response: OrderResponse): Order => {
         lines: lines,
         email: response.email,
         phone: response.phone ?? undefined,
-        shippingAddress: {
-            ...response.shippingAddress,
-            ownerId: response.shippingAddress.ownerId ?? undefined,
-            line2: response.shippingAddress.line2 ?? undefined,
-            phone: response.shippingAddress.phone ?? undefined,
-        },
+        shippingAddress: response.shippingAddress
+            ? {
+                  ...response.shippingAddress,
+                  ownerId: response.shippingAddress.ownerId ?? undefined,
+                  line2: response.shippingAddress.line2 ?? undefined,
+                  phone: response.shippingAddress.phone ?? undefined,
+              }
+            : undefined,
+        formattedShippingAddress: response.formattedShippingAddress,
         subtotal: response.subtotal,
         totalShipping: response.totalShipping,
         totalTax: response.totalTax,

@@ -140,7 +140,8 @@ type Order = {
     lines: OrderLine[]
     email: string
     phone?: string
-    shippingAddress: Address
+    shippingAddress?: Address
+    formattedShippingAddress: string
     subtotal: number
     totalShipping: number
     totalTax: number

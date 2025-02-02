@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ADD COLUMN "shipping_address" varchar(1000) DEFAULT '' NOT NULL;

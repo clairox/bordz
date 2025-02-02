@@ -10,7 +10,7 @@
 -   [ ] Update cart line subtotal, total on product update
 -   [ ] Update cart subtotal, quantity on cart line update/insert/delete
 -   [ ] Use 'wishlist item' in place of 'wishlist line'
--   [ ] Switch to text shipping addresses on orders
+-   [x] Switch to text shipping addresses on orders
 -   [ ] Add payment method to orders
 -   [ ] Switch to traditional pagination in admin data tables
 -   [ ] Implement cart notifications

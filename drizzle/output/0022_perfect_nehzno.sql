@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ALTER COLUMN "formatted_shipping_address" DROP DEFAULT;

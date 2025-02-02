@@ -1,10 +1,10 @@
 'use client'
 
 import { useOrder } from '@/hooks/data/order'
-import { AddressCard } from '../Addresses'
 import PriceRepr from '@/components/common/PriceRepr'
 import StoredPreviewImage from '@/components/common/StoredPreviewImage'
 import { BoardDetailsPopover } from '../Products'
+import { convertNewLinesToJsxBr } from '@/utils/string'
 
 type OrderDetailsProps = {
     id: string
@@ -24,7 +24,9 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({ id }) => {
             <div className="flex gap-[1px] bg-gray-400">
                 <div className="w-full bg-white px-8 py-4">
                     <h3 className="pb-2 font-semibold">Shipping address</h3>
-                    <AddressCard address={order.shippingAddress} />
+                    <p>
+                        {convertNewLinesToJsxBr(order.formattedShippingAddress)}
+                    </p>
                 </div>
                 <div className="w-full bg-white px-8 py-4">
                     <h3 className="pb-2 font-semibold">Payment method</h3>

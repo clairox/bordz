@@ -1,0 +1,1 @@
+ALTER TABLE "orders" RENAME COLUMN "shipping_address" TO "formatted_shipping_address";

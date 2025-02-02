@@ -20,6 +20,7 @@ import {
 import { SHIPPING_COST } from '@/utils/constants'
 import { calculateTaxManually } from '@/utils/domain'
 import { OrderLines, Orders } from '@/drizzle/schema/order'
+import { Addresses } from '@/drizzle/schema/address'
 
 export async function getCheckout(
     id: string
@@ -73,7 +74,23 @@ export async function completeCheckout(
             throw createUnprocessableEntityError(
                 "The 'email' field is missing on the checkout resource. This might be due to a prior API call."
             )
+        } else if (!checkout.shippingAddressId) {
+            throw createUnprocessableEntityError(
+                "The 'shippingAddressId' field is missing on the checkout resource. This might be due to a prior API call."
+            )
         }
+
+        const [shippingAddress] = await tx
+            .select()
+            .from(Addresses)
+            .where(eq(Addresses.id, checkout.shippingAddressId))
+
+        const formattedShippingAddress =
+            `${shippingAddress.fullName}\\n` +
+            `${shippingAddress.line1}\\n` +
+            `${shippingAddress.line2 ? shippingAddress.line2 + '\\n' : ''}` +
+            `${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.postalCode}\\n` +
+            `${shippingAddress.countryCode}`
 
         const [newOrder] = await tx
             .insert(Orders)
@@ -81,6 +98,7 @@ export async function completeCheckout(
                 email: checkout.email,
                 customerId: checkout.customerId,
                 shippingAddressId: checkout.shippingAddressId,
+                formattedShippingAddress,
                 subtotal: checkout.subtotal,
                 total: checkout.total,
                 totalTax: checkout.totalTax,

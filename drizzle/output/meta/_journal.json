@@ -141,6 +141,27 @@
       "when": 1737759977422,
       "tag": "0019_illegal_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1738522912056,
+      "tag": "0020_careful_black_tarantula",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1738523430082,
+      "tag": "0021_demonic_plazm",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1738525649477,
+      "tag": "0022_perfect_nehzno",
+      "breakpoints": true
     }
   ]
 }

@@ -13,6 +13,9 @@ export const Orders = pgTableWithAutoFields('orders', {
     total: integer('total').default(0).notNull(),
     totalShipping: integer('total_shipping').default(0).notNull(),
     totalTax: integer('total_tax').default(0).notNull(),
+    formattedShippingAddress: varchar('formatted_shipping_address', {
+        length: 1000,
+    }).notNull(),
     customerId: shortUuid('customer_id').references(() => Customers.id, {
         onDelete: 'set null',
     }),
