@@ -5,7 +5,7 @@
 -   [x] Increase customer number of orders on checkout completion
 -   [ ] Reduce board component count on checkout completion
 -   [ ] Remove many order delete feature
--   [x] Hide out of stock/unavailable items in UI
+-   [x] Hide/mark out of stock/unavailable items in UI
 -   [ ] Update product availability, price, title on board component update/delete
 -   [ ] Update cart line subtotal, total on product update
 -   [ ] Update cart subtotal, quantity on cart line update/insert/delete
