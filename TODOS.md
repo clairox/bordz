@@ -21,6 +21,7 @@
 -   [ ] Disallow mismatched role sign in through non-dedicated login form
 -   [ ] Add search feature to admin data tables
 -   [ ] Reauthenticate on user password update
+-   [ ] Add Home Page
 -   [ ] Complete Skate Lab
     -   [ ] Edit mode
     -   [ ] Filtering/sorting
