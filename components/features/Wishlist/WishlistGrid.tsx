@@ -80,9 +80,13 @@ const WishlistItemCard: React.FC<WishlistItemCardProps> = ({
                     )}
                 </div>
                 <div className="flex justify-between">
-                    <p>
-                        <PriceRepr value={product.price} />
-                    </p>
+                    {product.availableForSale ? (
+                        <p>
+                            <PriceRepr value={product.price} />
+                        </p>
+                    ) : (
+                        <p>Unavailable</p>
+                    )}
                     {product.productType === 'BOARD' && (
                         <Link
                             href={`/lab?mode=edit&id=${item.id}`}
