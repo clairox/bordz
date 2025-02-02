@@ -11,6 +11,7 @@ import {
     UpdateCheckoutRecordArgs,
     UpdateCustomerRecordArgs,
     UpdateOrderRecordArgs,
+    UpdateProductRecordArgs,
 } from './database'
 
 type CreateAddressValues = CreateAddressRecordArgs & {
@@ -21,6 +22,7 @@ type CreateBoardComponentValues = Omit<CreateBoardComponentRecordArgs, 'handle'>
 type CreateCartValues = CreateCartRecordArgs
 type CreateCustomerValues = CreateCustomerRecordArgs
 type CreateOrderValues = CreateOrderRecordArgs
+type CreatePaymentIntentValues = { total: number }
 type CreateProductValues = CreateProductRecordArgs
 type CreateWishlistValues = CreateWishlistRecordArgs
 

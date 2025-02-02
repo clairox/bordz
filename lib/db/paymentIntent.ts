@@ -3,6 +3,7 @@
 import Stripe from 'stripe'
 import stripe from '@/lib/stripe/server'
 import { uuid } from 'short-uuid'
+import { CreatePaymentIntentValues } from '@/types/services'
 
 export async function getPaymentIntent(
     id: Stripe.PaymentIntent['id']
@@ -11,11 +12,11 @@ export async function getPaymentIntent(
 }
 
 export async function createPaymentIntent(
-    checkout: Checkout
+    values: CreatePaymentIntentValues
 ): Promise<Stripe.Response<Stripe.PaymentIntent>> {
     return await stripe.paymentIntents.create(
         {
-            amount: checkout.total,
+            amount: values.total,
             currency: 'usd',
         },
         { idempotencyKey: uuid() }

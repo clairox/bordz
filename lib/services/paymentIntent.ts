@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 
 import * as db from 'db'
+import { CreatePaymentIntentValues } from '@/types/services'
 
 export async function getPaymentIntent(
     id: Stripe.PaymentIntent['id']
@@ -9,7 +10,7 @@ export async function getPaymentIntent(
 }
 
 export async function createPaymentIntent(
-    checkout: Checkout
+    values: CreatePaymentIntentValues
 ): Promise<Stripe.Response<Stripe.PaymentIntent>> {
-    return await db.createPaymentIntent(checkout)
+    return await db.createPaymentIntent(values)
 }
