@@ -5,7 +5,7 @@
 -   [x] Increase customer number of orders on checkout completion
 -   [ ] Reduce board component count on checkout completion
 -   [ ] Remove many order delete feature
--   [ ] Hide out of stock/unavailable items in UI
+-   [x] Hide out of stock/unavailable items in UI
 -   [ ] Update product availability, price, title on board component update/delete
 -   [ ] Update cart line subtotal, total on product update
 -   [ ] Update cart subtotal, quantity on cart line update/insert/delete
@@ -13,6 +13,7 @@
 -   [ ] Switch to text shipping addresses on orders
 -   [ ] Add payment method to orders
 -   [ ] Switch to traditional pagination in admin data tables
+-   [ ] Implement cart notifications
 -   [ ] Improve message generation in server error creation functions
 -   [ ] Implement automatic fetching on infinite scroll pagination
 -   [x] Use zod for request validation
