@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import {
-    DeleteBoardComponentSchema,
+    DeleteBoardComponentsSchema,
     getRequestOptionsParams,
     handleRoute,
     PostBoardComponentSchema,
@@ -30,7 +30,7 @@ export const POST = async (request: NextRequest) =>
 
 export const DELETE = async (request: NextRequest) =>
     await handleRoute(async () => {
-        const { ids } = await chkRequest(DeleteBoardComponentSchema, request)
+        const { ids } = await chkRequest(DeleteBoardComponentsSchema, request)
         await deleteBoardComponents(ids)
         return new NextResponse(null, { status: 204 })
     })
