@@ -35,7 +35,7 @@ type AddWishlistItemValues = {
 type UpdateAddressValues = UpdateAddressRecordArgs & {
     isCustomerDefault?: boolean
 }
-type UpdateBoardComponentValues = UpdateBoardComponentRecordArgs
+type UpdateBoardComponentValues = Omit<UpdateBoardComponentRecordArgs, 'handle'>
 type UpdateCheckoutValues = Omit<
     UpdateCheckoutRecordArgs,
     'total' | 'totalShipping' | 'totalTax' | 'completedAt'

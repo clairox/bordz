@@ -74,7 +74,10 @@ export async function updateBoardComponent(
     id: BoardComponentRecord['id'],
     values: UpdateBoardComponentValues
 ): Promise<BoardComponentQueryResult> {
-    const updatedComponent = await db.updateBoardComponent(id, values)
+    const updatedComponent = await db.updateBoardComponent(id, {
+        ...values,
+        handle: values.title ? createUrlHandle(values.title) : undefined,
+    })
     if (!updatedComponent) {
         throw createNotFoundError('Board component')
     }
