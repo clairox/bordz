@@ -98,7 +98,7 @@ type UpdateCheckoutRecordArgs = Partial<
     Omit<CreateCheckoutRecordArgs, 'customerId'>
 >
 type UpdateCustomerRecordArgs = Partial<
-    Omit<CreateCustomerRecordArgs, 'userId'>
+    Omit<CreateCustomerRecordArgs, 'userId'> & { numberOfOrders: number }
 >
 type UpdateOrderRecordArgs = Partial<
     Omit<CreateOrderRecordArgs, 'subtotal' | 'total'>

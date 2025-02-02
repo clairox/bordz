@@ -102,3 +102,18 @@ export async function getCustomers(
     const nextPage = calculateNextPage(page, size, totalCount)
     return { data: customers, totalCount, totalPages, nextPage }
 }
+
+export async function incrementCustomerOrderCount(
+    id: CustomerRecord['id']
+): Promise<number> {
+    const customer = await db.getCustomer(id)
+    if (!customer) {
+        throw createNotFoundError('Customer')
+    }
+
+    const { numberOfOrders } = await db.updateCustomer(id, {
+        numberOfOrders: customer.numberOfOrders + 1,
+    })
+
+    return numberOfOrders
+}
