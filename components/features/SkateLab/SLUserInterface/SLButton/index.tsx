@@ -12,7 +12,7 @@ const SLButton = React.forwardRef<HTMLButtonElement, SLButtonProps>(
                 ref={ref}
                 disabled={disabled}
                 onClick={onClick}
-                className={`w-32 h-12 pointer-events-auto`}
+                className={`w-full h-12 pointer-events-auto`}
             >
                 {children}
             </Button>

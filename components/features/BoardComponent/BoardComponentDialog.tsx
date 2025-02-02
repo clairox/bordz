@@ -39,6 +39,11 @@ export const BoardComponentDialog: React.FC<BoardComponentDialogProps> = ({
                                 {boardComponent.title}
                             </DialogTitle>
                         </div>
+                        {!boardComponent.availableForSale && (
+                            <div className="text-lg text-gray-600">
+                                Out of stock
+                            </div>
+                        )}
                         <div className="font-semibold text-lg">
                             <PriceRepr value={boardComponent.price} />
                         </div>

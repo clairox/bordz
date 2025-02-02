@@ -13,13 +13,17 @@ export const fetchProduct = async (id: string) => {
     })
 }
 
-type FetchProductsOptions = PaginatedQueryOptions & { publicOnly?: boolean }
+type FetchProductsOptions = PaginatedQueryOptions & {
+    publicOnly?: boolean
+    available?: boolean
+}
 
 export const fetchProducts = async ({
     size,
     page,
     orderBy,
     publicOnly,
+    available,
 }: FetchProductsOptions): Promise<Page<ProductResponse>> => {
     const params = []
     if (size != undefined) {
@@ -36,6 +40,10 @@ export const fetchProducts = async ({
 
     if (publicOnly) {
         params.push(`publicOnly=${publicOnly}`)
+    }
+
+    if (available) {
+        params.push(`available=${available}`)
     }
 
     const paramString = params.length ? '?' + params.join('&') : ''

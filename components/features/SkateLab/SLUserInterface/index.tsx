@@ -18,6 +18,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/Sheet'
+import { Warning } from '@phosphor-icons/react'
 
 const SLUserInterface: React.FC = () => {
     const { mode, isComplete, isTouched, finishEditing, reset } =
@@ -26,7 +27,7 @@ const SLUserInterface: React.FC = () => {
     return (
         <div className="z-10 absolute w-full h-full pointer-events-none">
             <SLMenu />
-            <div className="fixed top-24 right-10 flex flex-col gap-4">
+            <div className="fixed top-24 right-10 flex flex-col gap-4 w-32">
                 <Sheet>
                     <SheetTrigger asChild>
                         <SLButton disabled={!isComplete} onClick={() => {}}>
@@ -40,7 +41,32 @@ const SLUserInterface: React.FC = () => {
                 <SLButton disabled={!isTouched} onClick={reset}>
                     Reset
                 </SLButton>
+                {!isComplete && <UnavailableComponentsList />}
             </div>
+        </div>
+    )
+}
+
+const UnavailableComponentsList = () => {
+    const { selectedBoardComponents } = useSkateLabContext()
+    const components = Object.values(selectedBoardComponents)
+    const unavailableComponents = components.filter(component => {
+        if (component && !component.availableForSale) {
+            return component
+        }
+    })
+
+    return (
+        <div className="flex flex-col gap-4">
+            {unavailableComponents.map(component => (
+                <div
+                    key={component!.id}
+                    className="flex items-center gap-3 w-full text-sm"
+                >
+                    <Warning size={24} color="red" weight="fill" />
+                    <span>{component!.category.label} out of stock</span>
+                </div>
+            ))}
         </div>
     )
 }

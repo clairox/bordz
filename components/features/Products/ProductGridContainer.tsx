@@ -23,6 +23,7 @@ export const ProductGridContainer = () => {
     const { data, hasNextPage, fetchNextPage } = useProducts({
         size: pageSize,
         orderBy,
+        available: true,
     })
 
     return (

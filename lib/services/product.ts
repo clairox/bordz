@@ -47,15 +47,20 @@ export async function deleteProduct(id: string): Promise<string> {
 }
 
 export async function getProducts(
-    publicOnly: boolean = false,
-    options?: PaginatedQueryOptions
+    options?: PaginatedQueryOptions & {
+        publicOnly?: boolean
+        available?: boolean
+    }
 ): Promise<Page<ProductQueryResult>> {
     const page = options?.page ?? DEFAULT_PAGE_NUMBER
     const size = options?.size ?? DEFAULT_PAGE_SIZE
     const orderBy = options?.orderBy ?? DEFAULT_SORT_KEY
+    const publicOnly = options?.publicOnly ?? false
+    const available = options?.available ?? false
 
     const { products, totalCount } = await db.getProducts({
         publicOnly,
+        available,
         limit: size,
         offset: (page - 1) * size,
         orderBy,

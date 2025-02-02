@@ -51,6 +51,7 @@ export async function deleteProduct(id: ProductRecord['id']): Promise<string> {
 
 export async function getProducts(options?: {
     publicOnly?: boolean
+    available?: boolean
     limit?: number
     offset?: number
     orderBy?: SortKey
@@ -58,6 +59,9 @@ export async function getProducts(options?: {
     const conditions: (SQL | undefined)[] = []
     if (options?.publicOnly) {
         conditions.push(eq(Products.isPublic, true))
+    }
+    if (options?.available) {
+        conditions.push(eq(Products.availableForSale, true))
     }
 
     const sorts: Partial<Record<SortKey, SQL>> = {

@@ -93,12 +93,17 @@ const SLBoardComponentCard: React.FC<SLBoardComponentCardProps> = ({
                                 'font-normal text-base text-red-500'
                             }`}
                         >
-                            <PriceRepr
-                                isPreSalePrice={
-                                    boardComponent.compareAtPrice != undefined
-                                }
-                                value={boardComponent.price}
-                            />
+                            {boardComponent.availableForSale ? (
+                                <PriceRepr
+                                    isPreSalePrice={
+                                        boardComponent.compareAtPrice !=
+                                        undefined
+                                    }
+                                    value={boardComponent.price}
+                                />
+                            ) : (
+                                <div>Out of stock</div>
+                            )}
                         </span>
 
                         {boardComponent.compareAtPrice && (

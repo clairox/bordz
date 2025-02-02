@@ -58,12 +58,11 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
     const [activeBoardComponentType, setActiveBoardComponentType] =
         useState<BoardComponentTypeOrNone>('none')
 
-    const isComplete = !Object.values(selectedBoardComponents).includes(
-        undefined
-    )
-    const isTouched = !Object.values(selectedBoardComponents).every(
-        boardComponent => boardComponent == undefined
-    )
+    const components = Object.values(selectedBoardComponents)
+    const isComplete =
+        !components.includes(undefined) &&
+        components.every(c => c?.availableForSale)
+    const isTouched = !components.every(c => c == undefined)
 
     const selectBoardComponent = (
         type: BoardComponentType,
@@ -80,13 +79,13 @@ const SkateLabProvider: React.FC<SkateLabProviderProps> = ({ children }) => {
         publish?: boolean
     ): Promise<Product> => {
         const board = selectedBoardComponents
-        const components = Object.values(board).filter(value => !!value)
-        if (components.length < 6) {
+        const _components = Object.values(board).filter(value => !!value)
+        if (_components.length < 6) {
             throw new Error('Missing component')
         }
 
-        const totalPrice = components.reduce((total, c) => total + c.price, 0)
-        const availability = components.every(c => c.availableForSale)
+        const totalPrice = _components.reduce((total, c) => total + c.price, 0)
+        const availability = _components.every(c => c.availableForSale)
         const featuredImage = board.deck!.images[0]
 
         const { usageCount: deckUsageCount } = await fetchBoardComponent(

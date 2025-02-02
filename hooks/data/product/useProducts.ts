@@ -6,7 +6,10 @@ import { fetchProducts } from '@/lib/api'
 import { mapProductResponseToProduct } from '@/utils/conversions'
 import { PaginatedQueryOptions } from '@/types/api'
 
-type UseProductsArgs = PaginatedQueryOptions & { publicOnly?: boolean }
+type UseProductsArgs = PaginatedQueryOptions & {
+    publicOnly?: boolean
+    available?: boolean
+}
 
 export const useProducts = (args: UseProductsArgs) => {
     return useSuspenseInfiniteQuery<Page<Product>>({
@@ -16,6 +19,7 @@ export const useProducts = (args: UseProductsArgs) => {
                 ...args,
                 page: pageParam as number,
                 publicOnly: args.publicOnly ?? true,
+                available: args.available ?? false,
             })
 
             return {

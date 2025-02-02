@@ -15,7 +15,12 @@ export const GET = async (request: NextRequest) =>
 
         const options = getRequestOptionsParams(request)
         const publicOnly = searchParams.get('publicOnly') === 'true' || false
-        const data = await getProducts(publicOnly, options)
+        const available = searchParams.get('available') === 'true' || false
+        const data = await getProducts({
+            ...options,
+            publicOnly,
+            available,
+        })
         return NextResponse.json(data)
     })
 
