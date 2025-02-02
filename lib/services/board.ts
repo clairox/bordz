@@ -14,6 +14,7 @@ import {
     DEFAULT_SORT_KEY,
 } from '@/utils/constants'
 import { calculateNextPage, calculateTotalPages } from '@/utils/math'
+import { createUrlHandle } from '@/utils/url'
 
 export async function getBoardByProductId(
     productId: string
@@ -63,7 +64,10 @@ export async function getBoardComponent(
 export async function createBoardComponent(
     values: CreateBoardComponentValues
 ): Promise<BoardComponentQueryResult> {
-    return await db.createBoardComponent(values)
+    return await db.createBoardComponent({
+        ...values,
+        handle: createUrlHandle(values.title),
+    })
 }
 
 export async function updateBoardComponent(

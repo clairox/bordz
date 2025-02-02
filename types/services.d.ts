@@ -17,7 +17,7 @@ type CreateAddressValues = CreateAddressRecordArgs & {
     isCustomerDefault?: boolean
 }
 type CreateBoardValues = CreateBoardRecordArgs
-type CreateBoardComponentValues = CreateBoardComponentRecordArgs
+type CreateBoardComponentValues = Omit<CreateBoardComponentRecordArgs, 'handle'>
 type CreateCartValues = CreateCartRecordArgs
 type CreateCustomerValues = CreateCustomerRecordArgs
 type CreateOrderValues = CreateOrderRecordArgs
